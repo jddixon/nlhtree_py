@@ -1,0 +1,7 @@
+cd ~/dev/py/nlhtree_py
+rm -rf build
+pySloc -v \
+    txt:.gitignore \
+    bash:countem bash:test.all\
+    txt:MANIFEST.in \
+    $@

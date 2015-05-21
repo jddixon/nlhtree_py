@@ -1,2 +1,5 @@
 py/nlhtree_py/TODO
 
+2015-05-20
+    * working on NLHBase in __init__.py
+

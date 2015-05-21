@@ -1,2 +1,9 @@
 py/nlhtree_py/CHANGES
 
+v0.1.0
+    2015-05-21
+        * testNLHLeaf.py succeeds                                   * SLOC  217
+v0.0.0
+    2015-05-20
+        * initial import                                            * SLOC   47
+

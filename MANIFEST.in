@@ -1,0 +1,12 @@
+# see http://docs.python.org/distutils/sourcedist.html
+
+include countem test.all
+include CHANGES MANIFEST.in README* TODO 
+
+recursive-include ghpDocs *
+recursive-include scripts/  *
+recursive-include nlhtree/ *.py
+
+global-exclude junk* .*swp *.pyc
+
+

@@ -1,5 +1,8 @@
 py/nlhtree_py/CHANGES
 
+v0.2.0
+    2015-05-22
+        * testNLHTree.py and *2.py succeed                          * SLOC  533
 v0.1.0
     2015-05-21
         * testNLHLeaf.py succeeds                                   * SLOC  217

@@ -1,19 +1,24 @@
 # nlhtree_py/nlhtree/__init__.py
 
-import binascii, fnmatch, os
+import binascii, fnmatch, os, re
 from stat       import *
 from xlattice.u import fileSHA1, fileSHA2
 
 from xlattice   import (
-        SHA1_BIN_LEN, SHA2_BIN_LEN, SHA1_BIN_NONE, SHA2_BIN_NONE)
+        SHA1_BIN_LEN, SHA2_BIN_LEN, 
+        SHA1_HEX_LEN, SHA2_HEX_LEN, 
+        SHA1_BIN_NONE, SHA2_BIN_NONE)
 
 __all__ = [ '__version__',      '__version_date__',
             'NLHBase',  'NLHNode',  'NLHLeaf',  'NLHTree',
         ]
 
-__version__         = '0.2.0'
-__version_date__    = '2015-05-22'
+__version__         = '0.2.1'
+__version_date__    = '2015-05-23'
 
+
+class NLHParseError(RuntimeError):
+    pass
 
 class NLHBase(object):
 
@@ -134,6 +139,14 @@ class NLHLeaf(NLHNode):
             return None
 
 class NLHTree(NLHNode):
+    
+    # notice the terminating forward slash and lack of newlines or CR-LF
+    DIR_LINE_RE    = re.compile(r'^( *)([a-z0-9_\$\+\-\.~]+/?)$',
+                                re.IGNORECASE)
+    FILE_LINE_RE_1 = re.compile(r'^( *)([0-9a-f]{40}) ([a-z0-9_\$\+\-\.~]+/?)$',
+                                re.IGNORECASE)
+    FILE_LINE_RE_2 = re.compile(r'^( *)([0-9a-f]{64}) ([a-z0-9_\$\+\-\._]+/?)$',
+                                re.IGNORECASE)
     def __init__(self, name):
         super().__init__(name)
         self._nodes = []
@@ -279,3 +292,61 @@ class NLHTree(NLHNode):
                     tree._nodes.append(node)
 
         return tree
+
+    @staticmethod
+    def parseFirstLine(s):
+        """
+        Return the name found in the first line or raise an exception.
+        """
+        m = NLHTree.DIR_LINE_RE.match(s)
+        if not m:
+            raise NLHParseError("first line doesn't match expected pattern")
+        if len(m.group(1)) != 0:
+            # DEBUG
+            print("LINE: %s" % s)
+            print("  indent: %d" % len(m.group(1)))
+            print("  name:   %d" % m.group(2))
+            # END
+            raise NLHParseError("unexpected indent on first line")
+        return m.group(2)   # the name
+
+    @staticmethod
+    def parseOtherLine(s):
+        """
+        Return the indent (the number of spaces), the name on the line,
+        and other None or the hash found.
+        """
+        
+        m = NLHTree.DIR_LINE_RE.match(s)
+        if m:
+            return len(m.group(1)), m.group(2), None
+
+        m = NLHTree.FILE_LINE_RE_1.match(s)
+        if m:
+            return len(m.group(1)), m.group(3), m.group(2)
+
+        m = NLHTree.FILE_LINE_RE_2.match(s)
+        if m:
+            return len(m.group(1)), m.group(3), m.group(2)
+
+        raise NLHParseError("can't parse line: '%s'" % s)
+
+    @staticmethod
+    def createFromStringArray(ss):
+        # at entry, we don't know whether the string array uses
+        # SHA1 or SHA256
+
+        if len(ss) == 0:    return None
+
+        levels  = []
+        
+        name = NLHTree.parseFirstLine(ss[0])
+        root = curLevel = levels[0] = NLHTree(name)     # our first push
+        depth = 0
+
+        ss = ss[1:]
+        for line in ss:
+            indent, name, hash = NLHTree.parseOtherLine(line)
+            # DEBUG
+            print("%d %s %s" % (indent, name, hash))
+            # END

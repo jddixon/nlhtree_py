@@ -1,6 +1,6 @@
 # see http://docs.python.org/distutils/sourcedist.html
 
-include countem test.all
+include countem installit test.all
 include CHANGES MANIFEST.in README* TODO 
 
 recursive-include ghpDocs *

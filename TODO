@@ -1,5 +1,9 @@
 py/nlhtree_py/TODO
 
+2015-05-24
+    * swap fields in serialization so that the name is at the
+        beginning of the line
+
 2015-05-21
     * testNLHTree2.py hacked from testMerkleTree.py, needs to
         be reviewed

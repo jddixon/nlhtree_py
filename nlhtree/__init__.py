@@ -13,8 +13,8 @@ __all__ = [ '__version__',      '__version_date__',
             'NLHBase',  'NLHNode',  'NLHLeaf',  'NLHTree',
         ]
 
-__version__         = '0.2.1'
-__version_date__    = '2015-05-23'
+__version__         = '0.2.2'
+__version_date__    = '2015-05-25'
 
 
 class NLHParseError(RuntimeError):
@@ -91,6 +91,16 @@ class NLHNode(object):
         else:
             raise RuntimeError('not a valid SHA hash length')
 
+    __SPACES__ = ['']
+    @staticmethod
+    def getSpaces(n):
+        """ cache strings of N spaces """
+        k = len(NLHNode.__SPACES__) - 1
+        while k < n:
+            k = k + 1
+            NLHNode.__SPACES__.append( ' ' * k) 
+        return NLHNode.__SPACES__[n] 
+
 class NLHLeaf(NLHNode):
 
     def __init__(self, name, hash):
@@ -100,7 +110,7 @@ class NLHLeaf(NLHNode):
 
     @property
     def hexHash(self):
-        return binascii.b2a_hex(self._hash, 'ascii')
+        return binascii.b2a_hex(self._hash).decode('utf-8')
 
     @property
     def binHash(self):
@@ -120,6 +130,12 @@ class NLHLeaf(NLHNode):
         if not isinstance(other, NLHLeaf):
             return False
         return (self.name == other.name) and (self._hash == other._hash)
+
+    def _toString(self, indent):
+        return "%s%s %s" % (
+                NLHNode.getSpaces(indent), 
+                self.name, 
+                self.hexHash)
 
     @staticmethod
     def createFromFileSystem(path, name, usingSHA1=False):
@@ -143,9 +159,10 @@ class NLHTree(NLHNode):
     # notice the terminating forward slash and lack of newlines or CR-LF
     DIR_LINE_RE    = re.compile(r'^( *)([a-z0-9_\$\+\-\.~]+/?)$',
                                 re.IGNORECASE)
-    FILE_LINE_RE_1 = re.compile(r'^( *)([0-9a-f]{40}) ([a-z0-9_\$\+\-\.~]+/?)$',
+    FILE_LINE_RE_1=re.compile(r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{40})$',
                                 re.IGNORECASE)
-    FILE_LINE_RE_2 = re.compile(r'^( *)([0-9a-f]{64}) ([a-z0-9_\$\+\-\._]+/?)$',
+    
+    FILE_LINE_RE_2=re.compile(r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{64})$',
                                 re.IGNORECASE)
     def __init__(self, name):
         super().__init__(name)
@@ -243,6 +260,20 @@ class NLHTree(NLHNode):
                     el.append('* ' + q.name)
         return el
 
+    def __str__(self):
+        ss = []
+        self.toStrings(ss, 0)
+        s = '\n'.join(ss) + '\n'
+        return s
+
+    def toStrings(self, ss, indent):
+        ss.append( "%s%s" % (NLHNode.getSpaces(indent), self.name))
+        for node in self._nodes:
+            if node.isLeaf:
+                ss.append( node._toString(indent+1))
+            else:
+                node.toStrings(ss, indent+1)
+
     @staticmethod
     def createFromFileSystem(pathToDir, usingSHA1 = False, 
                                         exRE = None, matchRE = None):
@@ -302,11 +333,6 @@ class NLHTree(NLHNode):
         if not m:
             raise NLHParseError("first line doesn't match expected pattern")
         if len(m.group(1)) != 0:
-            # DEBUG
-            print("LINE: %s" % s)
-            print("  indent: %d" % len(m.group(1)))
-            print("  name:   %d" % m.group(2))
-            # END
             raise NLHParseError("unexpected indent on first line")
         return m.group(2)   # the name
 
@@ -323,11 +349,11 @@ class NLHTree(NLHNode):
 
         m = NLHTree.FILE_LINE_RE_1.match(s)
         if m:
-            return len(m.group(1)), m.group(3), m.group(2)
+            return len(m.group(1)), m.group(2), m.group(3)
 
         m = NLHTree.FILE_LINE_RE_2.match(s)
         if m:
-            return len(m.group(1)), m.group(3), m.group(2)
+            return len(m.group(1)), m.group(2), m.group(3)
 
         raise NLHParseError("can't parse line: '%s'" % s)
 
@@ -336,17 +362,61 @@ class NLHTree(NLHNode):
         # at entry, we don't know whether the string array uses
         # SHA1 or SHA256
 
-        if len(ss) == 0:    return None
-
-        levels  = []
+        if len(ss) == 0:
+            return None
         
-        name = NLHTree.parseFirstLine(ss[0])
-        root = curLevel = levels[0] = NLHTree(name)     # our first push
-        depth = 0
+        name    = NLHTree.parseFirstLine(ss[0])
+        root    = curLevel = NLHTree(name)     # our first push
+        stack   = [root]
+        depth   = 0
 
         ss = ss[1:]
         for line in ss:
             indent, name, hash = NLHTree.parseOtherLine(line)
-            # DEBUG
-            print("%d %s %s" % (indent, name, hash))
-            # END
+            if hash != None:
+                bHash = binascii.a2b_hex(hash)
+
+            if indent > depth+1:
+                # DEBUG
+                print("IMPOSSIBLE: indent %d, depth %d" % (indent, depth))
+                # END
+                if hash:
+                    leaf = NLHLeaf(name, bHash)
+                    stack[depth].insert(leaf)
+                else:
+                    subtree = NLHTree(name)
+                    stack.append(subtree)
+                    depth += 1
+            elif indent == depth+1:
+                if hash == None:
+                    subtree = NLHTree(name)
+                    stack[depth].insert(subtree)
+                    stack.append(subtree)
+                    depth += 1
+                else:
+                    leaf = NLHLeaf(name, bHash)
+                    stack[depth].insert(leaf)
+
+            else:
+                while indent < depth+1:
+                    stack.pop()
+                    depth -= 1
+                if hash == None:
+                    subtree = NLHTree(name)
+                    stack[depth].insert(subtree)
+                    stack.append(subtree)
+                    depth += 1
+                else:
+                    leaf = NLHLeaf(name, bHash)
+                    stack[depth].insert(leaf)
+
+        return root
+    
+    @staticmethod
+    def parse(s):
+        if not s or s == '':
+            raise NLHParseError('cannot parse an empty string')
+        ss = s.split('\n')
+        if ss[-1] == '':
+            ss = ss[:-1]
+        return NLHTree.createFromStringArray(ss)

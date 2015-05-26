@@ -30,9 +30,14 @@ class TestNLHTree (unittest.TestCase):
     
     # actual unit tests #############################################
     def testSimpleConstructor(self):
+        self.doTestSimpleConstructor(usingSHA1=True)
+        self.doTestSimpleConstructor(usingSHA1=False)
+    
+    def doTestSimpleConstructor(self, usingSHA1):
         name = self.rng.nextFileName(8)
-        tree = NLHTree(name)
+        tree = NLHTree(name, usingSHA1)
         self.assertEqual(tree.name, name)
+        self.assertEqual(tree.usingSHA1, usingSHA1)
         self.assertEqual(len(tree.nodes), 0)
 
     def doTestInsert4Leafs(self, usingSHA1):
@@ -45,7 +50,7 @@ class TestNLHTree (unittest.TestCase):
         else:
             sha = hashlib.sha256()
         name = self.rng.nextFileName(8)
-        tree = NLHTree(name)
+        tree = NLHTree(name, usingSHA1)
         leafNames = set()
         a = self.makeLeaf(leafNames, usingSHA1)
         b = self.makeLeaf(leafNames, usingSHA1)

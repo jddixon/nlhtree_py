@@ -13,22 +13,29 @@ __all__ = [ '__version__',      '__version_date__',
             'NLHBase',  'NLHNode',  'NLHLeaf',  'NLHTree',
         ]
 
-__version__         = '0.2.1'
-__version_date__    = '2015-05-23'
+__version__         = '0.3.0'
+__version_date__    = '2015-05-25'
 
 
-class NLHParseError(RuntimeError):
+class NLHError(RuntimeError):
+    pass
+class NLHParseError(NLHError):
     pass
 
 class NLHBase(object):
 
-    def __init__(self, name):
-        self._root = NLHTree(name)          # immutable ref to a NLHTree
-        self._curTree = self._root          # the current tree; mutable
+    def __init__(self, name, usingSHA1):
+        self._root = NLHTree(name, usingSHA1)   # immutable ref to a NLHTree
+        self._curTree = self._root              # the current tree; mutable
+        self._usingSHA1 = usingSHA1
 
     @property
     def name(self):
         return self._root.name
+
+    @property
+    def usingSHA1(self):
+        return self._root.usingSHA1
 
     @property
     def root(self):
@@ -66,13 +73,18 @@ class NLHBase(object):
 
 class NLHNode(object):
 
-    def __init__(self, name):
+    def __init__(self, name, usingSHA1):
         # XXX needs checks
         self._name = name
+        self._usingSHA1 = usingSHA1
 
     @property
     def name(self):
         return self._name
+
+    @property
+    def usingSHA1(self):
+        return self._usingSHA1
 
     @property
     def isLeaf(self):
@@ -91,16 +103,26 @@ class NLHNode(object):
         else:
             raise RuntimeError('not a valid SHA hash length')
 
+    __SPACES__ = ['']
+    @staticmethod
+    def getSpaces(n):
+        """ cache strings of N spaces """
+        k = len(NLHNode.__SPACES__) - 1
+        while k < n:
+            k = k + 1
+            NLHNode.__SPACES__.append( ' ' * k) 
+        return NLHNode.__SPACES__[n] 
+
 class NLHLeaf(NLHNode):
 
     def __init__(self, name, hash):
-        super().__init__(name)
-        NLHNode.checkHash(hash)             # exception if check fails
+        usingSHA1 = NLHNode.checkHash(hash)   # exception if check fails
+        super().__init__(name, usingSHA1)
         self._hash = hash
 
     @property
     def hexHash(self):
-        return binascii.b2a_hex(self._hash, 'ascii')
+        return binascii.b2a_hex(self._hash).decode('utf-8')
 
     @property
     def binHash(self):
@@ -110,16 +132,18 @@ class NLHLeaf(NLHNode):
     def isLeaf(self):
         return True
 
-    @property
-    def usingSHA1(self):
-        return checkHash(self._hash)
-
     def __eq__(self, other):
         if other == None:
             return False
         if not isinstance(other, NLHLeaf):
             return False
         return (self.name == other.name) and (self._hash == other._hash)
+
+    def _toString(self, indent):
+        return "%s%s %s" % (
+                NLHNode.getSpaces(indent), 
+                self.name, 
+                self.hexHash)
 
     @staticmethod
     def createFromFileSystem(path, name, usingSHA1=False):
@@ -143,12 +167,13 @@ class NLHTree(NLHNode):
     # notice the terminating forward slash and lack of newlines or CR-LF
     DIR_LINE_RE    = re.compile(r'^( *)([a-z0-9_\$\+\-\.~]+/?)$',
                                 re.IGNORECASE)
-    FILE_LINE_RE_1 = re.compile(r'^( *)([0-9a-f]{40}) ([a-z0-9_\$\+\-\.~]+/?)$',
+    FILE_LINE_RE_1=re.compile(r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{40})$',
                                 re.IGNORECASE)
-    FILE_LINE_RE_2 = re.compile(r'^( *)([0-9a-f]{64}) ([a-z0-9_\$\+\-\._]+/?)$',
+    
+    FILE_LINE_RE_2=re.compile(r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{64})$',
                                 re.IGNORECASE)
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, name, usingSHA1):
+        super().__init__(name, usingSHA1)
         self._nodes = []
 
     @property
@@ -165,6 +190,8 @@ class NLHTree(NLHNode):
         if not isinstance(other, NLHTree):
             return False
         if self.name != other.name:
+            return False
+        if self.usingSHA1 != other.usingSHA1:
             return False
         if len(self._nodes) != len(other._nodes):
             return False
@@ -204,6 +231,8 @@ class NLHTree(NLHNode):
         sort order.  If a node with the same name already exists, an
         exception will be raised.
         """
+        if node.usingSHA1 != self.usingSHA1:
+            raise NLHError("incompatible SHA types")
         # XXX need checks
         lenNodes = len(self._nodes)
         name = node.name
@@ -243,6 +272,20 @@ class NLHTree(NLHNode):
                     el.append('* ' + q.name)
         return el
 
+    def __str__(self):
+        ss = []
+        self.toStrings(ss, 0)
+        s = '\r\n'.join(ss) + '\r\n'
+        return s
+
+    def toStrings(self, ss, indent):
+        ss.append( "%s%s" % (NLHNode.getSpaces(indent), self.name))
+        for node in self._nodes:
+            if node.isLeaf:
+                ss.append( node._toString(indent+1))
+            else:
+                node.toStrings(ss, indent+1)
+
     @staticmethod
     def createFromFileSystem(pathToDir, usingSHA1 = False, 
                                         exRE = None, matchRE = None):
@@ -260,7 +303,7 @@ class NLHTree(NLHNode):
         if path == '':
             raise RuntimeError("cannot parse path " + pathToDir)
 
-        tree = NLHTree(name)
+        tree = NLHTree(name, usingSHA1)
 
         # Create data structures for constituent files and subdirectories
         # These are sorted by the bare name
@@ -302,11 +345,6 @@ class NLHTree(NLHNode):
         if not m:
             raise NLHParseError("first line doesn't match expected pattern")
         if len(m.group(1)) != 0:
-            # DEBUG
-            print("LINE: %s" % s)
-            print("  indent: %d" % len(m.group(1)))
-            print("  name:   %d" % m.group(2))
-            # END
             raise NLHParseError("unexpected indent on first line")
         return m.group(2)   # the name
 
@@ -323,30 +361,74 @@ class NLHTree(NLHNode):
 
         m = NLHTree.FILE_LINE_RE_1.match(s)
         if m:
-            return len(m.group(1)), m.group(3), m.group(2)
+            return len(m.group(1)), m.group(2), m.group(3)
 
         m = NLHTree.FILE_LINE_RE_2.match(s)
         if m:
-            return len(m.group(1)), m.group(3), m.group(2)
+            return len(m.group(1)), m.group(2), m.group(3)
 
         raise NLHParseError("can't parse line: '%s'" % s)
 
     @staticmethod
-    def createFromStringArray(ss):
+    def createFromStringArray(ss, usingSHA1=False):
         # at entry, we don't know whether the string array uses
         # SHA1 or SHA256
 
-        if len(ss) == 0:    return None
-
-        levels  = []
+        if len(ss) == 0:
+            return None
         
-        name = NLHTree.parseFirstLine(ss[0])
-        root = curLevel = levels[0] = NLHTree(name)     # our first push
-        depth = 0
+        name    = NLHTree.parseFirstLine(ss[0])
+        root    = curLevel = NLHTree(name, usingSHA1)     # our first push
+        stack   = [root]
+        depth   = 0
 
         ss = ss[1:]
         for line in ss:
             indent, name, hash = NLHTree.parseOtherLine(line)
-            # DEBUG
-            print("%d %s %s" % (indent, name, hash))
-            # END
+            if hash != None:
+                bHash = binascii.a2b_hex(hash)
+
+            if indent > depth+1:
+                # DEBUG
+                print("IMPOSSIBLE: indent %d, depth %d" % (indent, depth))
+                # END
+                if hash:
+                    leaf = NLHLeaf(name, bHash)
+                    stack[depth].insert(leaf)
+                else:
+                    subtree = NLHTree(name, usingSHA1)
+                    stack.append(subtree)
+                    depth += 1
+            elif indent == depth+1:
+                if hash == None:
+                    subtree = NLHTree(name, usingSHA1)
+                    stack[depth].insert(subtree)
+                    stack.append(subtree)
+                    depth += 1
+                else:
+                    leaf = NLHLeaf(name, bHash)
+                    stack[depth].insert(leaf)
+
+            else:
+                while indent < depth+1:
+                    stack.pop()
+                    depth -= 1
+                if hash == None:
+                    subtree = NLHTree(name, usingSHA1)
+                    stack[depth].insert(subtree)
+                    stack.append(subtree)
+                    depth += 1
+                else:
+                    leaf = NLHLeaf(name, bHash)
+                    stack[depth].insert(leaf)
+
+        return root
+    
+    @staticmethod
+    def parse(s, usingSHA1):
+        if not s or s == '':
+            raise NLHParseError('cannot parse an empty string')
+        ss = s.split('\r\n')
+        if ss[-1] == '':
+            ss = ss[:-1]
+        return NLHTree.createFromStringArray(ss, usingSHA1)

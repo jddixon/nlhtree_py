@@ -1,8 +1,17 @@
 py/nlhtree_py/TODO
 
+<<<<<<< HEAD
 2015-05-24
     * swap fields in serialization so that the name is at the
         beginning of the line
+=======
+2015-05-25
+    * NLHTree needs a usingSHA1 attribute                               * DONE
+
+2015-05-24
+    * swap fields in serialization so that the name is at the           * DONE
+        beginning of the line                                           * DONE
+>>>>>>> devel
 
 2015-05-21
     * testNLHTree2.py hacked from testMerkleTree.py, needs to
@@ -10,7 +19,6 @@ py/nlhtree_py/TODO
     * testNLHTree.py: extend doTestInsert4Leafs to choose a 
         leaf at random, delete it, and then verify that it's
         gone and the list is as expected
-        
 
 2015-05-20
     * working on NLHBase in __init__.py

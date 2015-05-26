@@ -1,5 +1,13 @@
 py/nlhtree_py/CHANGES
 
+<<<<<<< HEAD
+=======
+v0.3.0
+    2015-05-25
+        * NLHTree gets usingSHA1 attribute                          * SLOC  758
+        * dropped unused code                                       * SLOC  740
+        * use CRLF as line termination                              * SLOC  740
+>>>>>>> devel
 v0.2.2
     2015-05-25
         * NLHTree parse and __str__                                 * SLOC  765

@@ -9,7 +9,7 @@ from xlattice   import (
         SHA1_BIN_LEN, SHA2_BIN_LEN,
         SHA1_HEX_LEN, SHA2_HEX_LEN)
 
-class TestNLHTree (unittest.TestCase):
+class TestNLHTree3 (unittest.TestCase):
 
     # adapted from the buildList example 2015-05-22
     EXAMPLE1 = [
@@ -127,6 +127,7 @@ class TestNLHTree (unittest.TestCase):
         self.doTestPatternMatching(usingSHA1=True)
         self.doTestPatternMatching(usingSHA1=False)
 
+<<<<<<< HEAD
     def testSerialization(self):
         tree    = NT.createFromStringArray(self.EXAMPLE1)
         ss      = []
@@ -137,11 +138,29 @@ class TestNLHTree (unittest.TestCase):
 
         s       = '\n'.join(ss) + '\n'
         tree3   = NT.parse(s)
+=======
+    def doTestSerialization(self, usingSHA1):
+        if usingSHA1:
+            tree    = NT.createFromStringArray(self.EXAMPLE1, usingSHA1)
+        else:
+            tree    = NT.createFromStringArray(self.EXAMPLE2, usingSHA1)
+        self.assertEqual(tree.usingSHA1, usingSHA1)
+
+        ss      = []
+        tree.toStrings(ss, 0)
+
+        tree2   = NT.createFromStringArray(ss, usingSHA1)
+        self.assertEqual(tree, tree2)
+
+        s       = '\r\n'.join(ss) + '\r\n'
+        tree3   = NT.parse(s, usingSHA1)
+>>>>>>> devel
         s3      = tree3.__str__()
 
         self.assertEqual(s3, s)
         self.assertEqual(tree3, tree)
 
+<<<<<<< HEAD
         # DEBUG
         print("STRINGIFIED TREE3:")
         print(s3)
@@ -149,6 +168,11 @@ class TestNLHTree (unittest.TestCase):
 
 #    def testSerialization(self):
 #        doTestSerialization(self, usingSHA1=True):
+=======
+    def testSerialization(self):
+        self.doTestSerialization(usingSHA1=True)
+        self.doTestSerialization(usingSHA1=False)
+>>>>>>> devel
 
     
 if __name__ == '__main__':

@@ -16,14 +16,19 @@ class TestNLHBase (unittest.TestCase):
     # utility functions #############################################
     
     # actual unit tests #############################################
-    def testConstructor(self):
+    def doTestConstructor(self, usingSHA1):
         name = self.rng.nextFileName(8)
-        b = NLHBase(name)
+        b = NLHBase(name, usingSHA1)
         self.assertEqual(b.name, name)
+        self.assertEqual(b.usingSHA1, usingSHA1)
         root   = b.root
         ct     = b.curTree
         self.assertEqual(root.name, ct.name)
         
+    def testConstructor(self):
+        self.doTestConstructor(True)
+        self.doTestConstructor(False)
+
     def doTestWithSimpleTree(self, usingSHA1):
         if usingSHA1:
             sha = hashlib.sha1()

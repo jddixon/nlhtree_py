@@ -1,10 +1,35 @@
 py/nlhtree_py/TODO
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 2015-05-24
     * swap fields in serialization so that the name is at the
         beginning of the line
 =======
+=======
+2015-06-06
+    * BUG: typo in curTree setter path.strip('/') should be SPLIT       * FIXED
+    * rest of code in that function is ropey and obviously never
+        tested 
+        - need to be able to insert path (string containing forward
+            slashes
+
+2015-06-02
+    * G: add sample serialization 
+    * G: add explicit link to MerkleTree project
+    * G: add a link to MagicSack, which uses NLHTrees
+
+2015-05-31
+    * find() for NLHTree should accept a glob and return a value
+        - just top-level leaf nodes OK for now
+        - should eventually support glob/path as an argument 
+            like 'a/b/*'
+    * insert should also support path
+        - if force option is True
+            * should create any necessary subtrees 
+            * should overwrite hash if leaf node
+        
+>>>>>>> devel
 2015-05-25
     * NLHTree needs a usingSHA1 attribute                               * DONE
 

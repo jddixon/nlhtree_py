@@ -14,11 +14,16 @@ __all__ = [ '__version__',      '__version_date__',
         ]
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 __version__         = '0.2.2'
 =======
 __version__         = '0.3.0'
 >>>>>>> devel
 __version_date__    = '2015-05-25'
+=======
+__version__      = '0.3.1'
+__version_date__ = '2015-06-07'
+>>>>>>> devel
 
 
 class NLHError(RuntimeError):
@@ -55,7 +60,7 @@ class NLHBase(object):
 
         # needs to handle more complex cases
         path = path.strip()
-        parts = path.strip('/')             # many possible problems ignored
+        parts = path.split('/')             # many possible problems ignored
         if len(parts) == 0:
             # find a node with this name
 
@@ -69,11 +74,6 @@ class NLHBase(object):
             # XXX if the path begins with a forward slash ('/'), then
             # tentatively set the current tree to the root and then
             # apply the normal relpath logic from there
-
-    @property
-    def root(self):
-        return self._root                   # ref to an NLHTree
-
 
 class NLHNode(object):
 
@@ -280,9 +280,13 @@ class NLHTree(NLHNode):
         ss = []
         self.toStrings(ss, 0)
 <<<<<<< HEAD
+<<<<<<< HEAD
         s = '\n'.join(ss) + '\n'
 =======
         s = '\r\n'.join(ss) + '\r\n'
+>>>>>>> devel
+=======
+        s = '\n'.join(ss) + '\n'
 >>>>>>> devel
         return s
 
@@ -461,8 +465,12 @@ class NLHTree(NLHNode):
     def parse(s, usingSHA1):
         if not s or s == '':
             raise NLHParseError('cannot parse an empty string')
-        ss = s.split('\r\n')
+        ss = s.split('\n')
         if ss[-1] == '':
             ss = ss[:-1]
         return NLHTree.createFromStringArray(ss, usingSHA1)
+<<<<<<< HEAD
+>>>>>>> devel
+=======
+
 >>>>>>> devel

@@ -127,6 +127,18 @@ class TestNLHTree3 (unittest.TestCase):
         self.doTestPatternMatching(usingSHA1=True)
         self.doTestPatternMatching(usingSHA1=False)
 
+<<<<<<< HEAD
+    def testSerialization(self):
+        tree    = NT.createFromStringArray(self.EXAMPLE1)
+        ss      = []
+        tree.toStrings(ss, 0)
+
+        tree2   = NT.createFromStringArray(ss)
+        self.assertEqual(tree, tree2)
+
+        s       = '\n'.join(ss) + '\n'
+        tree3   = NT.parse(s)
+=======
     def doTestSerialization(self, usingSHA1):
         if usingSHA1:
             tree    = NT.createFromStringArray(self.EXAMPLE1, usingSHA1)
@@ -142,14 +154,25 @@ class TestNLHTree3 (unittest.TestCase):
 
         s       = '\n'.join(ss) + '\n'
         tree3   = NT.parse(s, usingSHA1)
+>>>>>>> devel
         s3      = tree3.__str__()
 
         self.assertEqual(s3, s)
         self.assertEqual(tree3, tree)
 
+<<<<<<< HEAD
+        # DEBUG
+        print("STRINGIFIED TREE3:")
+        print(s3)
+        # END
+
+#    def testSerialization(self):
+#        doTestSerialization(self, usingSHA1=True):
+=======
     def testSerialization(self):
         self.doTestSerialization(usingSHA1=True)
         self.doTestSerialization(usingSHA1=False)
+>>>>>>> devel
 
     
 if __name__ == '__main__':

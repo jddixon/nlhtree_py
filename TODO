@@ -1,5 +1,12 @@
 py/nlhtree_py/TODO
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+2015-05-24
+    * swap fields in serialization so that the name is at the
+        beginning of the line
+=======
+=======
 2015-06-06
     * BUG: typo in curTree setter path.strip('/') should be SPLIT       * FIXED
     * rest of code in that function is ropey and obviously never
@@ -22,12 +29,14 @@ py/nlhtree_py/TODO
             * should create any necessary subtrees 
             * should overwrite hash if leaf node
         
+>>>>>>> devel
 2015-05-25
     * NLHTree needs a usingSHA1 attribute                               * DONE
 
 2015-05-24
     * swap fields in serialization so that the name is at the           * DONE
         beginning of the line                                           * DONE
+>>>>>>> devel
 
 2015-05-21
     * testNLHTree2.py hacked from testMerkleTree.py, needs to

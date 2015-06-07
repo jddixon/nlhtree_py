@@ -13,8 +13,17 @@ __all__ = [ '__version__',      '__version_date__',
             'NLHBase',  'NLHNode',  'NLHLeaf',  'NLHTree',
         ]
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+__version__         = '0.2.2'
+=======
+__version__         = '0.3.0'
+>>>>>>> devel
+__version_date__    = '2015-05-25'
+=======
 __version__      = '0.3.1'
 __version_date__ = '2015-06-07'
+>>>>>>> devel
 
 
 class NLHError(RuntimeError):
@@ -270,7 +279,15 @@ class NLHTree(NLHNode):
     def __str__(self):
         ss = []
         self.toStrings(ss, 0)
+<<<<<<< HEAD
+<<<<<<< HEAD
         s = '\n'.join(ss) + '\n'
+=======
+        s = '\r\n'.join(ss) + '\r\n'
+>>>>>>> devel
+=======
+        s = '\n'.join(ss) + '\n'
+>>>>>>> devel
         return s
 
     def toStrings(self, ss, indent):
@@ -373,7 +390,11 @@ class NLHTree(NLHNode):
             return None
         
         name    = NLHTree.parseFirstLine(ss[0])
+<<<<<<< HEAD
+        root    = curLevel = NLHTree(name)     # our first push
+=======
         root    = curLevel = NLHTree(name, usingSHA1)     # our first push
+>>>>>>> devel
         stack   = [root]
         depth   = 0
 
@@ -391,12 +412,20 @@ class NLHTree(NLHNode):
                     leaf = NLHLeaf(name, bHash)
                     stack[depth].insert(leaf)
                 else:
+<<<<<<< HEAD
+                    subtree = NLHTree(name)
+=======
                     subtree = NLHTree(name, usingSHA1)
+>>>>>>> devel
                     stack.append(subtree)
                     depth += 1
             elif indent == depth+1:
                 if hash == None:
+<<<<<<< HEAD
+                    subtree = NLHTree(name)
+=======
                     subtree = NLHTree(name, usingSHA1)
+>>>>>>> devel
                     stack[depth].insert(subtree)
                     stack.append(subtree)
                     depth += 1
@@ -409,7 +438,11 @@ class NLHTree(NLHNode):
                     stack.pop()
                     depth -= 1
                 if hash == None:
+<<<<<<< HEAD
+                    subtree = NLHTree(name)
+=======
                     subtree = NLHTree(name, usingSHA1)
+>>>>>>> devel
                     stack[depth].insert(subtree)
                     stack.append(subtree)
                     depth += 1
@@ -420,6 +453,15 @@ class NLHTree(NLHNode):
         return root
     
     @staticmethod
+<<<<<<< HEAD
+    def parse(s):
+        if not s or s == '':
+            raise NLHParseError('cannot parse an empty string')
+        ss = s.split('\n')
+        if ss[-1] == '':
+            ss = ss[:-1]
+        return NLHTree.createFromStringArray(ss)
+=======
     def parse(s, usingSHA1):
         if not s or s == '':
             raise NLHParseError('cannot parse an empty string')
@@ -427,4 +469,8 @@ class NLHTree(NLHNode):
         if ss[-1] == '':
             ss = ss[:-1]
         return NLHTree.createFromStringArray(ss, usingSHA1)
+<<<<<<< HEAD
+>>>>>>> devel
+=======
 
+>>>>>>> devel

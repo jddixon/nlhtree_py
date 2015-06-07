@@ -140,7 +140,7 @@ class TestNLHTree3 (unittest.TestCase):
         tree2   = NT.createFromStringArray(ss, usingSHA1)
         self.assertEqual(tree, tree2)
 
-        s       = '\r\n'.join(ss) + '\r\n'
+        s       = '\n'.join(ss) + '\n'
         tree3   = NT.parse(s, usingSHA1)
         s3      = tree3.__str__()
 

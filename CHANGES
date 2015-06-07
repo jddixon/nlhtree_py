@@ -1,23 +1,28 @@
 py/nlhtree_py/CHANGES
 
+v0.3.1
+    2015-06-07
+        * correct 'strip' for 'split' bug in NHLBase.curTree setter SLOC  739
+        * return to simple LF line termination
 v0.3.0
     2015-05-25
-        * NLHTree gets usingSHA1 attribute                          * SLOC  758
-        * dropped unused code                                       * SLOC  740
-        * use CRLF as line termination                              * SLOC  740
+        * NLHTree gets usingSHA1 attribute                          SLOC  758
+        * dropped unused code                                       SLOC  740
+        * use CRLF as line termination                              SLOC  740
 v0.2.2
     2015-05-25
-        * NLHTree parse and __str__                                 * SLOC  765
+        * NLHTree parse and __str__                                 SLOC  765
 v0.2.1
     2015-05-23
-        * add testNLHTree3.py for pattern matching                  * SLOC  679
+        * add testNLHTree3.py for pattern matching                  SLOC  679
 v0.2.0
     2015-05-22
-        * testNLHTree.py and *2.py succeed                          * SLOC  533
+        * testNLHTree.py and *2.py succeed                          SLOC  533
 v0.1.0
     2015-05-21
-        * testNLHLeaf.py succeeds                                   * SLOC  217
+        * testNLHLeaf.py succeeds                                   SLOC  217
 v0.0.0
     2015-05-20
-        * initial import                                            * SLOC   47
+        * initial import                                            SLOC   47
+
 

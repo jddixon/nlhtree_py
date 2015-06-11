@@ -1,15 +1,8 @@
 py/nlhtree_py/CHANGES
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-v0.3.0
-    2015-05-25
-        * NLHTree gets usingSHA1 attribute                          * SLOC  758
-        * dropped unused code                                       * SLOC  740
-        * use CRLF as line termination                              * SLOC  740
->>>>>>> devel
-=======
+v0.3.2
+    2015-06-10
+        * move __SPACES__, getSpaces() to xlattice.crypto           SLOC 726
 v0.3.1
     2015-06-07
         * correct 'strip' for 'split' bug in NHLBase.curTree setter SLOC  739
@@ -19,7 +12,6 @@ v0.3.0
         * NLHTree gets usingSHA1 attribute                          SLOC  758
         * dropped unused code                                       SLOC  740
         * use CRLF as line termination                              SLOC  740
->>>>>>> devel
 v0.2.2
     2015-05-25
         * NLHTree parse and __str__                                 SLOC  765
@@ -35,5 +27,6 @@ v0.1.0
 v0.0.0
     2015-05-20
         * initial import                                            SLOC   47
+
 
 

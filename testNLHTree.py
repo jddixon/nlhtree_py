@@ -3,8 +3,8 @@
 # testNLHTree.py
 import hashlib, time, unittest
 
-from rnglib     import SimpleRNG
-from nlhtree    import *
+from rnglib             import SimpleRNG
+from nlhtree            import *
 
 class TestNLHTree (unittest.TestCase):
 

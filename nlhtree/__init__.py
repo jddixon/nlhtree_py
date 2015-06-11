@@ -3,6 +3,7 @@
 import binascii, fnmatch, os, re
 from stat       import *
 from xlattice.u import fileSHA1, fileSHA2
+from xlattice.crypto    import SP   # for getSpaces()
 
 from xlattice   import (
         SHA1_BIN_LEN, SHA2_BIN_LEN, 
@@ -13,17 +14,8 @@ __all__ = [ '__version__',      '__version_date__',
             'NLHBase',  'NLHNode',  'NLHLeaf',  'NLHTree',
         ]
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-__version__         = '0.2.2'
-=======
-__version__         = '0.3.0'
->>>>>>> devel
-__version_date__    = '2015-05-25'
-=======
-__version__      = '0.3.1'
-__version_date__ = '2015-06-07'
->>>>>>> devel
+__version__      = '0.3.2'
+__version_date__ = '2015-06-10'
 
 
 class NLHError(RuntimeError):
@@ -107,16 +99,6 @@ class NLHNode(object):
         else:
             raise RuntimeError('not a valid SHA hash length')
 
-    __SPACES__ = ['']
-    @staticmethod
-    def getSpaces(n):
-        """ cache strings of N spaces """
-        k = len(NLHNode.__SPACES__) - 1
-        while k < n:
-            k = k + 1
-            NLHNode.__SPACES__.append( ' ' * k) 
-        return NLHNode.__SPACES__[n] 
-
 class NLHLeaf(NLHNode):
 
     def __init__(self, name, hash):
@@ -145,7 +127,7 @@ class NLHLeaf(NLHNode):
 
     def _toString(self, indent):
         return "%s%s %s" % (
-                NLHNode.getSpaces(indent), 
+                SP.getSpaces(indent), 
                 self.name, 
                 self.hexHash)
 
@@ -279,19 +261,11 @@ class NLHTree(NLHNode):
     def __str__(self):
         ss = []
         self.toStrings(ss, 0)
-<<<<<<< HEAD
-<<<<<<< HEAD
         s = '\n'.join(ss) + '\n'
-=======
-        s = '\r\n'.join(ss) + '\r\n'
->>>>>>> devel
-=======
-        s = '\n'.join(ss) + '\n'
->>>>>>> devel
         return s
 
     def toStrings(self, ss, indent):
-        ss.append( "%s%s" % (NLHNode.getSpaces(indent), self.name))
+        ss.append( "%s%s" % (SP.getSpaces(indent), self.name))
         for node in self._nodes:
             if node.isLeaf:
                 ss.append( node._toString(indent+1))
@@ -390,11 +364,7 @@ class NLHTree(NLHNode):
             return None
         
         name    = NLHTree.parseFirstLine(ss[0])
-<<<<<<< HEAD
-        root    = curLevel = NLHTree(name)     # our first push
-=======
         root    = curLevel = NLHTree(name, usingSHA1)     # our first push
->>>>>>> devel
         stack   = [root]
         depth   = 0
 
@@ -412,20 +382,12 @@ class NLHTree(NLHNode):
                     leaf = NLHLeaf(name, bHash)
                     stack[depth].insert(leaf)
                 else:
-<<<<<<< HEAD
-                    subtree = NLHTree(name)
-=======
                     subtree = NLHTree(name, usingSHA1)
->>>>>>> devel
                     stack.append(subtree)
                     depth += 1
             elif indent == depth+1:
                 if hash == None:
-<<<<<<< HEAD
-                    subtree = NLHTree(name)
-=======
                     subtree = NLHTree(name, usingSHA1)
->>>>>>> devel
                     stack[depth].insert(subtree)
                     stack.append(subtree)
                     depth += 1
@@ -438,11 +400,7 @@ class NLHTree(NLHNode):
                     stack.pop()
                     depth -= 1
                 if hash == None:
-<<<<<<< HEAD
-                    subtree = NLHTree(name)
-=======
                     subtree = NLHTree(name, usingSHA1)
->>>>>>> devel
                     stack[depth].insert(subtree)
                     stack.append(subtree)
                     depth += 1
@@ -453,15 +411,6 @@ class NLHTree(NLHNode):
         return root
     
     @staticmethod
-<<<<<<< HEAD
-    def parse(s):
-        if not s or s == '':
-            raise NLHParseError('cannot parse an empty string')
-        ss = s.split('\n')
-        if ss[-1] == '':
-            ss = ss[:-1]
-        return NLHTree.createFromStringArray(ss)
-=======
     def parse(s, usingSHA1):
         if not s or s == '':
             raise NLHParseError('cannot parse an empty string')
@@ -469,8 +418,5 @@ class NLHTree(NLHNode):
         if ss[-1] == '':
             ss = ss[:-1]
         return NLHTree.createFromStringArray(ss, usingSHA1)
-<<<<<<< HEAD
->>>>>>> devel
-=======
 
->>>>>>> devel
+

@@ -1,8 +1,12 @@
 py/nlhtree_py/CHANGES
 
+v0.4.0
+    2015-07-13
+        * move binHash, hexHash into NLHNode
+        * move NLHBase into a separate package (base.py)            SLOC  757
 v0.3.2
     2015-06-10
-        * move __SPACES__, getSpaces() to xlattice.crypto           SLOC 726
+        * move __SPACES__, getSpaces() to xlattice.crypto           SLOC  726
 v0.3.1
     2015-06-07
         * correct 'strip' for 'split' bug in NHLBase.curTree setter SLOC  739

@@ -1,8 +1,8 @@
 # nlhtree_py/nlhtree/__init__.py
 
 import binascii, fnmatch, os, re
-from stat       import *
-from xlattice.u import fileSHA1, fileSHA2
+from stat               import *
+from xlattice.u         import fileSHA1, fileSHA2
 from xlattice.crypto    import SP   # for getSpaces()
 
 from xlattice   import (
@@ -11,11 +11,11 @@ from xlattice   import (
         SHA1_BIN_NONE, SHA2_BIN_NONE)
 
 __all__ = [ '__version__',      '__version_date__',
-            'NLHBase',  'NLHNode',  'NLHLeaf',  'NLHTree',
+            'NLHNode',  'NLHLeaf',  'NLHTree',
         ]
 
-__version__      = '0.3.2'
-__version_date__ = '2015-06-10'
+__version__      = '0.4.0'
+__version_date__ = '2015-07-13'
 
 
 class NLHError(RuntimeError):
@@ -23,56 +23,13 @@ class NLHError(RuntimeError):
 class NLHParseError(NLHError):
     pass
 
-class NLHBase(object):
-
-    def __init__(self, name, usingSHA1):
-        self._root = NLHTree(name, usingSHA1)   # immutable ref to a NLHTree
-        self._curTree = self._root              # the current tree; mutable
-        self._usingSHA1 = usingSHA1
-
-    @property
-    def name(self):
-        return self._root.name
-
-    @property
-    def usingSHA1(self):
-        return self._root.usingSHA1
-
-    @property
-    def root(self):
-        return self._root
-
-    @property
-    def curTree(self):
-        return self._curTree
-    @curTree.setter
-    def curTree(self, path):
-        if not path or path == '':
-            raise RuntimeError('path may not be None or empty')
-
-        # needs to handle more complex cases
-        path = path.strip()
-        parts = path.split('/')             # many possible problems ignored
-        if len(parts) == 0:
-            # find a node with this name
-
-            # if it's a leaf, error
-
-            # otherwise set curTree to point to this node
-            pass
-        else:
-            raise NotImplemented("can't handle multi-part paths yet")
-
-            # XXX if the path begins with a forward slash ('/'), then
-            # tentatively set the current tree to the root and then
-            # apply the normal relpath logic from there
-
 class NLHNode(object):
 
     def __init__(self, name, usingSHA1):
         # XXX needs checks
         self._name = name
         self._usingSHA1 = usingSHA1
+        self._binHash   = None
 
     @property
     def name(self):
@@ -86,6 +43,29 @@ class NLHNode(object):
     def isLeaf(self):
         raise NotImplemented()
 
+    @property
+    def hexHash(self):
+        if self._binHash == None:
+            if self._usingSHA1:
+                return SHA1_HEX_NONE;
+            else:
+                return SHA2_HEX_NONE;
+        else:
+            return str(binascii.b2a_hex(self._binHash), 'ascii');
+    @hexHash.setter
+    def hexHash(self, value):
+        if self._binHash:
+            raise RuntimeError('attempt to set non-null hash')
+        self._binHash = bytes(binascii.a2b_hex(value))
+  
+    @property
+    def binHash(self):
+        return self._binHash
+    @binHash.setter
+    def binHash(self, value):
+        if self._binHash:
+            raise RuntimeError('attempt to set non-null hash')
+        self._binHash = value
     @staticmethod
     def checkHash(hash):
         """ return True if SHA1, False if SHA2, otherwise raise """
@@ -104,15 +84,12 @@ class NLHLeaf(NLHNode):
     def __init__(self, name, hash):
         usingSHA1 = NLHNode.checkHash(hash)   # exception if check fails
         super().__init__(name, usingSHA1)
-        self._hash = hash
-
-    @property
-    def hexHash(self):
-        return binascii.b2a_hex(self._hash).decode('utf-8')
-
-    @property
-    def binHash(self):
-        return self._hash
+        
+        # XXX VERIFY HASH IS WELL-FORMED
+        if hash:
+            self._binHash = hash
+        else:
+            self._binHash = None
 
     @property
     def isLeaf(self):
@@ -123,7 +100,7 @@ class NLHLeaf(NLHNode):
             return False
         if not isinstance(other, NLHLeaf):
             return False
-        return (self.name == other.name) and (self._hash == other._hash)
+        return (self.name == other.name) and (self._binHash == other._binHash)
 
     def _toString(self, indent):
         return "%s%s %s" % (

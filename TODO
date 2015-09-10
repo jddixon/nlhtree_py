@@ -1,5 +1,10 @@
 py/nlhtree_py/TODO
 
+2015-09-09
+    * testNLHTree3.py succeeded even though two file names (data11
+        and data12) were missing; FIX THIS (that is, make sure that
+        it fails if the NLHTree is ill-formed)
+       
 2015-06-10
     * move __SPACES__ and getSpaces() to xlattice/crypto to avoid
         import loops

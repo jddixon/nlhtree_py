@@ -1,5 +1,8 @@
 py/nlhtree_py/CHANGES
 
+v0.4.2
+    2015-11-17
+        * minor edits to *.md                                       SLOC  757
 v0.4.1
     2015-09-09
         * improve {README,index}.md

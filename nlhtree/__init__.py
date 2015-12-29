@@ -14,8 +14,8 @@ __all__ = [ '__version__',      '__version_date__',
             'NLHNode',  'NLHLeaf',  'NLHTree',
         ]
 
-__version__      = '0.4.1'
-__version_date__ = '2015-09-09'
+__version__      = '0.4.2'
+__version_date__ = '2015-12-29'
 
 
 class NLHError(RuntimeError):
@@ -395,5 +395,6 @@ class NLHTree(NLHNode):
         if ss[-1] == '':
             ss = ss[:-1]
         return NLHTree.createFromStringArray(ss, usingSHA1)
+
 
 

@@ -86,4 +86,4 @@ A good beta.  All tests succeed.
 ## On-line Documentation
 
 More information on the **nlhtree_py** project can be found
-[here](://jddixon.github.io/nlhtree_py)
+[here](https://jddixon.github.io/nlhtree_py)

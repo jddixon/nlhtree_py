@@ -1,5 +1,8 @@
 py/nlhtree_py/CHANGES
 
+v0.4.4
+    2016-02-25
+        * update LICENSE                                            SLOC  757
 v0.4.3
     2016-02-01
         * minor edits                                               SLOC  757
@@ -43,6 +46,7 @@ v0.1.0
 v0.0.0
     2015-05-20
         * initial import                                            SLOC   47
+
 
 
 

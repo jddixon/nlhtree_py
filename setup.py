@@ -5,13 +5,13 @@
 import re
 from distutils.core import setup
 __version__ = re.search("__version__\s*=\s*'(.*)'",
-                    open('nlhtree/__init__.py').read()).group(1)
+                        open('nlhtree/__init__.py').read()).group(1)
 
-setup ( name         = 'nlhtree', 
-        version      = __version__,
-        author       = 'Jim Dixon',
-        author_email = 'jddixon@gmail.com',
-        py_modules   = [],
-        packages     = ['nlhtree', ],
-        scripts      = []
-        )
+setup(name='nlhtree',
+      version=__version__,
+      author='Jim Dixon',
+      author_email='jddixon@gmail.com',
+      py_modules=[],
+      packages=['nlhtree', ],
+      scripts=[]
+      )

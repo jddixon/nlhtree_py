@@ -1,14 +1,18 @@
 #!/usr/bin/python3
 
 # testNLHTree3.py
-import hashlib, re, time, unittest
+import hashlib
+import re
+import time
+import unittest
 
-from rnglib     import SimpleRNG
-from nlhtree    import NLHTree as NT
-from xlattice   import (
-        SHA1_BIN_LEN, SHA2_BIN_LEN,
-        SHA1_HEX_LEN, SHA2_HEX_LEN)
-from xlattice.crypto    import SP
+from rnglib import SimpleRNG
+from nlhtree import NLHTree as NT
+from xlattice import (
+    SHA1_BIN_LEN, SHA2_BIN_LEN,
+    SHA1_HEX_LEN, SHA2_HEX_LEN)
+from xlattice.crypto import SP
+
 
 class TestNLHTree3 (unittest.TestCase):
 
@@ -28,7 +32,7 @@ class TestNLHTree3 (unittest.TestCase):
         '   subDir411',
         '    data41 31c16def9fc4a4b6415b0b133e156a919cf41cc8',
         ' zData 31c16def9fc4a4b6415b0b133e156a919cf41cc8',
-        ]
+    ]
     # this is just a hack but ...
     EXAMPLE2 = [
         'dataDir',
@@ -45,9 +49,11 @@ class TestNLHTree3 (unittest.TestCase):
         '   subDir411',
         '    data41 01234567890123456789012331c16def9fc4a4b6415b0b133e156a919cf41cc8',
         ' zData 01234567890123456789012331c16def9fc4a4b6415b0b133e156a919cf41cc8',
-        ]
+    ]
+
     def setUp(self):
-        self.rng = SimpleRNG( time.time() )
+        self.rng = SimpleRNG(time.time())
+
     def tearDown(self):
         pass
 
@@ -56,7 +62,7 @@ class TestNLHTree3 (unittest.TestCase):
             ss = self.EXAMPLE1
         else:
             ss = self.EXAMPLE2
-       
+
         # first line --------------------------------------
         m = NT.DIR_LINE_RE.match(ss[0])
         self.assertTrue(m)
@@ -66,7 +72,7 @@ class TestNLHTree3 (unittest.TestCase):
         # simpler approach ----------------------
         name = NT.parseFirstLine(ss[0])
         self.assertEqual(name, 'dataDir')
-       
+
         # file with indent of 1 ---------------------------
         if usingSHA1:
             m = NT.FILE_LINE_RE_1.match(ss[1])
@@ -90,7 +96,7 @@ class TestNLHTree3 (unittest.TestCase):
         self.assertTrue(m)
         self.assertEqual(len(m.group(1)), 1)
         self.assertEqual(m.group(2), 'subDir1')
-      
+
         # that simpler approach -----------------
         indent, name, hash = NT.parseOtherLine(ss[3])
         self.assertEqual(indent, 1)
@@ -121,20 +127,20 @@ class TestNLHTree3 (unittest.TestCase):
 
     def doTestSerialization(self, usingSHA1):
         if usingSHA1:
-            tree    = NT.createFromStringArray(self.EXAMPLE1, usingSHA1)
+            tree = NT.createFromStringArray(self.EXAMPLE1, usingSHA1)
         else:
-            tree    = NT.createFromStringArray(self.EXAMPLE2, usingSHA1)
+            tree = NT.createFromStringArray(self.EXAMPLE2, usingSHA1)
         self.assertEqual(tree.usingSHA1, usingSHA1)
 
-        ss      = []
+        ss = []
         tree.toStrings(ss, 0)
 
-        tree2   = NT.createFromStringArray(ss, usingSHA1)
+        tree2 = NT.createFromStringArray(ss, usingSHA1)
         self.assertEqual(tree, tree2)
 
-        s       = '\n'.join(ss) + '\n'
-        tree3   = NT.parse(s, usingSHA1)
-        s3      = tree3.__str__()
+        s = '\n'.join(ss) + '\n'
+        tree3 = NT.parse(s, usingSHA1)
+        s3 = tree3.__str__()
 
         self.assertEqual(s3, s)
         self.assertEqual(tree3, tree)
@@ -143,6 +149,6 @@ class TestNLHTree3 (unittest.TestCase):
         self.doTestSerialization(usingSHA1=True)
         self.doTestSerialization(usingSHA1=False)
 
-    
+
 if __name__ == '__main__':
     unittest.main()

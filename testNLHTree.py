@@ -1,15 +1,19 @@
 #!/usr/bin/python3
 
 # testNLHTree.py
-import hashlib, time, unittest
+import hashlib
+import time
+import unittest
 
-from rnglib             import SimpleRNG
-from nlhtree            import *
+from rnglib import SimpleRNG
+from nlhtree import *
+
 
 class TestNLHTree (unittest.TestCase):
 
     def setUp(self):
-        self.rng = SimpleRNG( time.time() )
+        self.rng = SimpleRNG(time.time())
+
     def tearDown(self):
         pass
 
@@ -20,19 +24,19 @@ class TestNLHTree (unittest.TestCase):
             if name not in namesSoFar:
                 namesSoFar.add(name)
                 break
-        n    = self.rng.someBytes(8)        # 8 quasi-random bytes
+        n = self.rng.someBytes(8)        # 8 quasi-random bytes
         if usingSHA1:
             sha = hashlib.sha1()
         else:
             sha = hashlib.sha256()
         sha.update(n)
         return NLHLeaf(name, sha.digest())
-    
+
     # actual unit tests #############################################
     def testSimpleConstructor(self):
         self.doTestSimpleConstructor(usingSHA1=True)
         self.doTestSimpleConstructor(usingSHA1=False)
-    
+
     def doTestSimpleConstructor(self, usingSHA1):
         name = self.rng.nextFileName(8)
         tree = NLHTree(name, usingSHA1)
@@ -67,7 +71,7 @@ class TestNLHTree (unittest.TestCase):
         self.assertEqual(len(tree.nodes), 4)
         # we expect the nodes to be sorted
         for i in range(3):
-            self.assertTrue( tree.nodes[i].name < tree.nodes[i+1].name)
+            self.assertTrue(tree.nodes[i].name < tree.nodes[i + 1].name)
 
         matches = tree.list('*')
         for ndx, q in enumerate(tree.nodes):
@@ -75,10 +79,10 @@ class TestNLHTree (unittest.TestCase):
 
         self.assertEqual(tree, tree)
 
-    def testInsert4Leafs (self):
-        self.doTestInsert4Leafs(usingSHA1=True)   
+    def testInsert4Leafs(self):
+        self.doTestInsert4Leafs(usingSHA1=True)
         self.doTestInsert4Leafs(usingSHA1=False)
 
-    
+
 if __name__ == '__main__':
     unittest.main()

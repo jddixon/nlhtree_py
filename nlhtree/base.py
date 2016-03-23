@@ -1,18 +1,22 @@
 # nlhtree_py/nlhtree/base.py
 
-import binascii, fnmatch, os, re
-from stat       import *
+import binascii
+import fnmatch
+import os
+import re
+from stat import *
 from xlattice.u import fileSHA1, fileSHA2
-from xlattice.crypto    import SP   # for getSpaces()
-from nlhtree    import NLHTree
-from xlattice   import (
-        SHA1_BIN_LEN, SHA2_BIN_LEN, 
-        SHA1_HEX_LEN, SHA2_HEX_LEN, 
-        SHA1_BIN_NONE, SHA2_BIN_NONE)
+from xlattice.crypto import SP   # for getSpaces()
+from nlhtree import NLHTree
+from xlattice import (
+    SHA1_BIN_LEN, SHA2_BIN_LEN,
+    SHA1_HEX_LEN, SHA2_HEX_LEN,
+    SHA1_BIN_NONE, SHA2_BIN_NONE)
 
-__all__ = [ 
-            'NLHBase',  
-        ]
+__all__ = [
+    'NLHBase',
+]
+
 
 class NLHBase(object):
 
@@ -36,6 +40,7 @@ class NLHBase(object):
     @property
     def curTree(self):
         return self._curTree
+
     @curTree.setter
     def curTree(self, path):
         if not path or path == '':
@@ -57,4 +62,3 @@ class NLHBase(object):
             # XXX if the path begins with a forward slash ('/'), then
             # tentatively set the current tree to the root and then
             # apply the normal relpath logic from there
-

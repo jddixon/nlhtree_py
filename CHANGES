@@ -1,5 +1,8 @@
 py/nlhtree_py/CHANGES
 
+v0.4.5
+    2016-03-23
+        * add auto8it and execute                                   SLOC  777
 v0.4.4
     2016-02-25
         * update LICENSE                                            SLOC  757
@@ -46,6 +49,7 @@ v0.1.0
 v0.0.0
     2015-05-20
         * initial import                                            SLOC   47
+
 
 
 

@@ -1,27 +1,33 @@
 # nlhtree_py/nlhtree/__init__.py
 
-import binascii, fnmatch, os, re
-from stat               import *
-from xlattice.u         import fileSHA1, fileSHA2
-from xlattice.crypto    import SP   # for getSpaces()
+import binascii
+import fnmatch
+import os
+import re
+from stat import *
+from xlattice.u import fileSHA1, fileSHA2
+from xlattice.crypto import SP   # for getSpaces()
 
-from xlattice   import (
-        SHA1_BIN_LEN, SHA2_BIN_LEN, 
-        SHA1_HEX_LEN, SHA2_HEX_LEN, 
-        SHA1_BIN_NONE, SHA2_BIN_NONE)
+from xlattice import (
+    SHA1_BIN_LEN, SHA2_BIN_LEN,
+    SHA1_HEX_LEN, SHA2_HEX_LEN,
+    SHA1_BIN_NONE, SHA2_BIN_NONE)
 
-__all__ = [ '__version__',      '__version_date__',
-            'NLHNode',  'NLHLeaf',  'NLHTree',
-        ]
+__all__ = ['__version__', '__version_date__',
+           'NLHNode', 'NLHLeaf', 'NLHTree',
+           ]
 
-__version__      = '0.4.4'
-__version_date__ = '2016-02-25'
+__version__      = '0.4.5'
+__version_date__ = '2016-03-23'
 
 
 class NLHError(RuntimeError):
     pass
+
+
 class NLHParseError(NLHError):
     pass
+
 
 class NLHNode(object):
 
@@ -29,7 +35,7 @@ class NLHNode(object):
         # XXX needs checks
         self._name = name
         self._usingSHA1 = usingSHA1
-        self._binHash   = None
+        self._binHash = None
 
     @property
     def name(self):
@@ -45,31 +51,34 @@ class NLHNode(object):
 
     @property
     def hexHash(self):
-        if self._binHash == None:
+        if self._binHash is None:
             if self._usingSHA1:
-                return SHA1_HEX_NONE;
+                return SHA1_HEX_NONE
             else:
-                return SHA2_HEX_NONE;
+                return SHA2_HEX_NONE
         else:
-            return str(binascii.b2a_hex(self._binHash), 'ascii');
+            return str(binascii.b2a_hex(self._binHash), 'ascii')
+
     @hexHash.setter
     def hexHash(self, value):
         if self._binHash:
             raise RuntimeError('attempt to set non-null hash')
         self._binHash = bytes(binascii.a2b_hex(value))
-  
+
     @property
     def binHash(self):
         return self._binHash
+
     @binHash.setter
     def binHash(self, value):
         if self._binHash:
             raise RuntimeError('attempt to set non-null hash')
         self._binHash = value
+
     @staticmethod
     def checkHash(hash):
         """ return True if SHA1, False if SHA2, otherwise raise """
-        if hash == None:
+        if hash is None:
             raise RuntimeError('hash cannot be None')
         hashLen = len(hash)
         if hashLen == SHA1_BIN_LEN:
@@ -79,12 +88,13 @@ class NLHNode(object):
         else:
             raise RuntimeError('not a valid SHA hash length')
 
+
 class NLHLeaf(NLHNode):
 
     def __init__(self, name, hash):
         usingSHA1 = NLHNode.checkHash(hash)   # exception if check fails
         super().__init__(name, usingSHA1)
-        
+
         # XXX VERIFY HASH IS WELL-FORMED
         if hash:
             self._binHash = hash
@@ -96,7 +106,7 @@ class NLHLeaf(NLHNode):
         return True
 
     def __eq__(self, other):
-        if other == None:
+        if other is None:
             return False
         if not isinstance(other, NLHLeaf):
             return False
@@ -104,9 +114,9 @@ class NLHLeaf(NLHNode):
 
     def _toString(self, indent):
         return "%s%s %s" % (
-                SP.getSpaces(indent), 
-                self.name, 
-                self.hexHash)
+            SP.getSpaces(indent),
+            self.name,
+            self.hexHash)
 
     @staticmethod
     def createFromFileSystem(path, name, usingSHA1=False):
@@ -125,16 +135,18 @@ class NLHLeaf(NLHNode):
         else:
             return None
 
+
 class NLHTree(NLHNode):
-    
+
     # notice the terminating forward slash and lack of newlines or CR-LF
-    DIR_LINE_RE    = re.compile(r'^( *)([a-z0-9_\$\+\-\.~]+/?)$',
+    DIR_LINE_RE = re.compile(r'^( *)([a-z0-9_\$\+\-\.~]+/?)$',
+                             re.IGNORECASE)
+    FILE_LINE_RE_1 = re.compile(r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{40})$',
                                 re.IGNORECASE)
-    FILE_LINE_RE_1=re.compile(r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{40})$',
+
+    FILE_LINE_RE_2 = re.compile(r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{64})$',
                                 re.IGNORECASE)
-    
-    FILE_LINE_RE_2=re.compile(r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{64})$',
-                                re.IGNORECASE)
+
     def __init__(self, name, usingSHA1):
         super().__init__(name, usingSHA1)
         self._nodes = []
@@ -148,7 +160,7 @@ class NLHTree(NLHNode):
         return self._nodes
 
     def __eq__(self, other):
-        if other == None:
+        if other is None:
             return False
         if not isinstance(other, NLHTree):
             return False
@@ -172,7 +184,7 @@ class NLHTree(NLHNode):
         remainder = []
         for node in self.nodes:
             if not fnmatch.fnmatch(node.name, pat):
-                remainder.append(node) 
+                remainder.append(node)
         if len(remainder) != len(self._nodes):
             self._nodes = remainder
 
@@ -189,7 +201,7 @@ class NLHTree(NLHNode):
         return matches
 
     def insert(self, node):
-        """ 
+        """
         Insert an NLHNode into the tree's list of nodes, maintaining
         sort order.  If a node with the same name already exists, an
         exception will be raised.
@@ -210,8 +222,8 @@ class NLHTree(NLHNode):
                     break
                 else:
                     before = self._nodes[0:i]
-                    after  = self._nodes[i:]
-                    self._nodes  = before + [node] + after
+                    after = self._nodes[i:]
+                    self._nodes = before + [node] + after
                     done = True
                     break
             elif name == iName:
@@ -223,7 +235,7 @@ class NLHTree(NLHNode):
     def list(self, pat):
         """
         Return a sorted list of node names.  If the node is a tree,
-        its name is preceded by '* ', a an asterisk followed by a 
+        its name is preceded by '* ', a an asterisk followed by a
         space.  Otherwise the node's name is preceded by two spaces.
         """
         el = []
@@ -242,16 +254,16 @@ class NLHTree(NLHNode):
         return s
 
     def toStrings(self, ss, indent):
-        ss.append( "%s%s" % (SP.getSpaces(indent), self.name))
+        ss.append("%s%s" % (SP.getSpaces(indent), self.name))
         for node in self._nodes:
             if node.isLeaf:
-                ss.append( node._toString(indent+1))
+                ss.append(node._toString(indent + 1))
             else:
-                node.toStrings(ss, indent+1)
+                node.toStrings(ss, indent + 1)
 
     @staticmethod
-    def createFromFileSystem(pathToDir, usingSHA1 = False, 
-                                        exRE = None, matchRE = None):
+    def createFromFileSystem(pathToDir, usingSHA1=False,
+                             exRE=None, matchRE=None):
         """
         Create an NLHTree based on the information in the directory
         at pathToDir.  The name of the directory will be the last component
@@ -270,8 +282,8 @@ class NLHTree(NLHNode):
 
         # Create data structures for constituent files and subdirectories
         # These are sorted by the bare name
-        files = os.listdir(pathToDir)  # empty if you just append .sort()
-        files.sort()                    # sorts in place
+        # empty if you just append .sort()
+        files = sorted(os.listdir(pathToDir))
         if files:
             for file in files:
                 # exclusions take priority over matches
@@ -286,12 +298,12 @@ class NLHTree(NLHNode):
                 # os.path.isdir(path) follows symbolic links
                 if S_ISDIR(mode):
                     node = NLHTree.createFromFileSystem(
-                            pathToFile, usingSHA1,exRE, matchRE)
+                        pathToFile, usingSHA1, exRE, matchRE)
                 # S_ISLNK(mode) is true if symbolic link
                 # isfile(path) follows symbolic links
                 elif os.path.isfile(pathToFile):        # S_ISREG(mode):
                     node = NLHLeaf.createFromFileSystem(
-                                pathToFile, file, usingSHA1)
+                        pathToFile, file, usingSHA1)
                 # otherwise, just ignore it ;-)
 
                 if node:
@@ -317,7 +329,7 @@ class NLHTree(NLHNode):
         Return the indent (the number of spaces), the name on the line,
         and other None or the hash found.
         """
-        
+
         m = NLHTree.DIR_LINE_RE.match(s)
         if m:
             return len(m.group(1)), m.group(2), None
@@ -339,19 +351,19 @@ class NLHTree(NLHNode):
 
         if len(ss) == 0:
             return None
-        
-        name    = NLHTree.parseFirstLine(ss[0])
-        root    = curLevel = NLHTree(name, usingSHA1)     # our first push
-        stack   = [root]
-        depth   = 0
+
+        name = NLHTree.parseFirstLine(ss[0])
+        root = curLevel = NLHTree(name, usingSHA1)     # our first push
+        stack = [root]
+        depth = 0
 
         ss = ss[1:]
         for line in ss:
             indent, name, hash = NLHTree.parseOtherLine(line)
-            if hash != None:
+            if hash is not None:
                 bHash = binascii.a2b_hex(hash)
 
-            if indent > depth+1:
+            if indent > depth + 1:
                 # DEBUG
                 print("IMPOSSIBLE: indent %d, depth %d" % (indent, depth))
                 # END
@@ -362,8 +374,8 @@ class NLHTree(NLHNode):
                     subtree = NLHTree(name, usingSHA1)
                     stack.append(subtree)
                     depth += 1
-            elif indent == depth+1:
-                if hash == None:
+            elif indent == depth + 1:
+                if hash is None:
                     subtree = NLHTree(name, usingSHA1)
                     stack[depth].insert(subtree)
                     stack.append(subtree)
@@ -373,10 +385,10 @@ class NLHTree(NLHNode):
                     stack[depth].insert(leaf)
 
             else:
-                while indent < depth+1:
+                while indent < depth + 1:
                     stack.pop()
                     depth -= 1
-                if hash == None:
+                if hash is None:
                     subtree = NLHTree(name, usingSHA1)
                     stack[depth].insert(subtree)
                     stack.append(subtree)
@@ -386,7 +398,7 @@ class NLHTree(NLHNode):
                     stack[depth].insert(leaf)
 
         return root
-    
+
     @staticmethod
     def parse(s, usingSHA1):
         if not s or s == '':
@@ -395,8 +407,4 @@ class NLHTree(NLHNode):
         if ss[-1] == '':
             ss = ss[:-1]
         return NLHTree.createFromStringArray(ss, usingSHA1)
-
-
-
-
 

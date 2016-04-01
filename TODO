@@ -1,27 +1,28 @@
 py/nlhtree_py/TODO
 
 2015-09-09
-    * testNLHTree3.py succeeded even though two file names (data11
-        and data12) were missing; FIX THIS (that is, make sure that
-        it fails if the NLHTree is ill-formed)
+    * testNLHTree3.py succeeded even though two file names (data11      * DONE
+        and data12) were missing; FIX THIS (that is, make sure that     * DONE
+        it fails if the NLHTree is ill-formed)                          * DONE
+        - 2016-03-31 could not find any error                           * YEP
        
 2015-06-10
-    * move __SPACES__ and getSpaces() to xlattice/crypto to avoid
-        import loops
+    * move __SPACES__ and getSpaces() to xlattice/crypto to avoid       * DONE
+        import loops                                                    * DONE
 
 2015-06-08
-    * search for \r\n, CRLF sequences; certainly in NLHTree code
+    * search for \r\n, CRLF sequences; certainly in NLHTree code        * DONE
 
 2015-06-06
     * BUG: typo in curTree setter path.strip('/') should be SPLIT       * FIXED
-    * rest of code in that function is ropey and obviously never
-        tested 
+    * rest of code in that function is ropey and obviously never        * ???
+        tested                                                          * ??? 
         - need to be able to insert path (string containing forward
             slashes
 
 2015-06-02
-    * G: add sample serialization 
-    * G: add explicit link to MerkleTree project
+    * G: add sample serialization                                       * DONE
+    * G: add explicit link to MerkleTree project                        * DONE
     * G: add a link to MagicSack, which uses NLHTrees
 
 2015-05-31
@@ -34,13 +35,6 @@ py/nlhtree_py/TODO
             * should create any necessary subtrees 
             * should overwrite hash if leaf node
         
-2015-05-25
-    * NLHTree needs a usingSHA1 attribute                               * DONE
-
-2015-05-24
-    * swap fields in serialization so that the name is at the           * DONE
-        beginning of the line                                           * DONE
-
 2015-05-21
     * testNLHTree2.py hacked from testMerkleTree.py, needs to
         be reviewed

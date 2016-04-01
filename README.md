@@ -7,17 +7,21 @@ a name and either a list of such pairs or a hash.  The NLHTree is serialized
 as an indented list, with each immediate child indented one space more than
 the parent
 
+An NLHTree is a simplification of a Merkle tree; see
+[here](https://jddixon.github.io/merkletree)
+for more information on that data structure.
+
 ## Hash
 
 All of the hashes
-in the tree have the same number of bits, either 160 (for an SHA1 hash)
+in the NLHTree have the same number of bits, either 160 (for an SHA1 hash)
 or 256 (for an SHA2 hash).
 
 ## Node Names
 
 All names in the tree must be valid file names.  For the moment, this
-will be understood to include letters, both upper and lower case,
-digits, the dash ('-'), and the underscore ('_').  Node names may not
+will be understood to include letters, both upper and lower case;
+digits; the dash ('-'); and the underscore ('_').  Node names may **not**
 include either spaces or line breaks (CR=13 and LF=10).
 
 ## Top
@@ -65,7 +69,7 @@ subdirectories (`subDir1`, `subDir2` (which is empty), `subDir3`, and
 content hash.  In this case these are SHA1 hashes, which are 20 bytes long,
 and so written as 40 hex digits.
 
-## Utility
+## Usefulness
 
 NLHTrees are useful as concise descriptions of file systems.  In particular
 they are used in building and editing

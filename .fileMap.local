@@ -1,0 +1,13 @@
+# nlhtree_py/.fileMap.local
+
+dir:pkg:nlhtree
+dir:tmp:build
+dir:tmp:tmp
+
+py:test:testNLHBase.py
+py:test:testNLHLeaf.py
+py:test:testNLHTree.py
+py:test:testNLHTree2.py
+py:test:testNLHTree3.py
+
+py:std:setup.py

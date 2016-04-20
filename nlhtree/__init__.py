@@ -17,8 +17,8 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__      = '0.4.7'
-__version_date__ = '2016-04-13'
+__version__      = '0.4.8'
+__version_date__ = '2016-04-20'
 
 
 class NLHError(RuntimeError):
@@ -287,7 +287,7 @@ class NLHTree(NLHNode):
         if files:
             for file in files:
                 # exclusions take priority over matches
-                if exRE and exRE.search(file):
+                if exRE and exRE.match(file):
                     continue
                 if matchRE and not matchRE.search(file):
                     continue
@@ -407,4 +407,5 @@ class NLHTree(NLHNode):
         if ss[-1] == '':
             ss = ss[:-1]
         return NLHTree.createFromStringArray(ss, usingSHA1)
+
 

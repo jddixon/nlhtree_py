@@ -4,4 +4,4 @@ cd ~/dev/py/nlhtree_py
 
 rm -rf build/* tmp/* 
 
-pySloc -X '^build$|^tmp$' -v $@
+pySloc -X 'build|tmp' -v $@ 

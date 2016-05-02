@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 # testNLHLeaf.py
 import hashlib
@@ -50,6 +50,12 @@ class TestNLHLeaf (unittest.TestCase):
         self.assertEqual(leaf0, leaf0)
         self.assertEqual(leaf1, leaf1)
         self.assertFalse(leaf0 == leaf1)
+
+        leaf0c = leaf0.clone()
+        self.assertEqual(leaf0c, leaf0)
+
+        leaf1c = leaf1.clone()
+        self.assertEqual(leaf1c, leaf1)
 
     def testSimplestConstructor(self):
         self.doTestSimpleConstructor(usingSHA1=True)

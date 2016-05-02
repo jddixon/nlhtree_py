@@ -1,6 +1,7 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 # testNLHTree3.py
+
 import hashlib
 import re
 import time
@@ -144,6 +145,9 @@ class TestNLHTree3 (unittest.TestCase):
 
         self.assertEqual(s3, s)
         self.assertEqual(tree3, tree)
+
+        dupe3 = tree3.clone()
+        self.assertEqual(dupe3, tree3)
 
     def testSerialization(self):
         self.doTestSerialization(usingSHA1=True)

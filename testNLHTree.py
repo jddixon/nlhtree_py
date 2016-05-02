@@ -1,6 +1,7 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 # testNLHTree.py
+
 import hashlib
 import time
 import unittest
@@ -78,6 +79,8 @@ class TestNLHTree (unittest.TestCase):
             self.assertEqual(matches[ndx], '  ' + q.name)
 
         self.assertEqual(tree, tree)
+        tree2 = tree.clone()
+        self.assertEqual(tree2, tree)
 
     def testInsert4Leafs(self):
         self.doTestInsert4Leafs(usingSHA1=True)

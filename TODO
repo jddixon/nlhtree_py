@@ -1,5 +1,9 @@
 py/nlhtree_py/TODO
 
+2016-05-02
+    * add clone() functions
+        - and tests
+
 2015-09-09
     * testNLHTree3.py succeeded even though two file names (data11      * DONE
         and data12) were missing; FIX THIS (that is, make sure that     * DONE

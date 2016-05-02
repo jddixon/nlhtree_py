@@ -17,8 +17,8 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__      = '0.4.9'
-__version_date__ = '2016-04-28'
+__version__      = '0.4.10'
+__version_date__ = '2016-05-02'
 
 
 class NLHError(RuntimeError):
@@ -88,6 +88,12 @@ class NLHNode(object):
         else:
             raise RuntimeError('not a valid SHA hash length')
 
+    def __eq__(self):
+        raise NotImplementedError
+
+    def clone(self):
+        raise NotImplementedError
+
 
 class NLHLeaf(NLHNode):
 
@@ -117,6 +123,10 @@ class NLHLeaf(NLHNode):
             SP.getSpaces(indent),
             self.name,
             self.hexHash)
+
+    def clone(self):
+        """ make a deep copy """
+        return NLHLeaf(self.name, self.binHash)
 
     @staticmethod
     def createFromFileSystem(path, name, usingSHA1=False):
@@ -174,6 +184,13 @@ class NLHTree(NLHNode):
             if not self._nodes[i] == other._nodes[i]:
                 return False
         return True
+
+    def clone(self):
+        """ return a deep copy of the tree """
+        tree = NLHTree(self.name, self.usingSHA1)
+        for node in self._nodes:
+            tree.insert(node)
+        return tree
 
     def delete(self, pat):
         """

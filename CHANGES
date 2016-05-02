@@ -1,5 +1,8 @@
 py/nlhtree_py/CHANGES
 
+v0.4.10
+    2016-05-02
+        * add clone() for tree and leaf                             SLOC  851
 v0.4.9
     2016-04-28
         * corrected countem, projCfg{,.local}                       SLOC  824
@@ -61,6 +64,7 @@ v0.1.0
 v0.0.0
     2015-05-20
         * initial import                                            SLOC   47
+
 
 
 

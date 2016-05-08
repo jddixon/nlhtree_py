@@ -17,8 +17,8 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__      = '0.4.10'
-__version_date__ = '2016-05-02'
+__version__      = '0.4.11'
+__version_date__ = '2016-05-07'
 
 
 class NLHError(RuntimeError):
@@ -165,6 +165,16 @@ class NLHTree(NLHNode):
     def isLeaf(self):
         return False
 
+    @staticmethod
+    def walkFile(pathToFile):
+        if not os.path.exists(pathToFile):
+            raise RuntimeError('file not found: ' + pathToFile)
+        depth = 0
+
+        # XXX WORKING HERE XXX
+        with open(pathToFile, 'r') as f:
+            pass
+            
     @property
     def nodes(self):
         return self._nodes
@@ -424,4 +434,5 @@ class NLHTree(NLHNode):
         if ss[-1] == '':
             ss = ss[:-1]
         return NLHTree.createFromStringArray(ss, usingSHA1)
+
 

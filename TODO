@@ -7,8 +7,8 @@ py/nlhtree_py/TODO
         BuildList.walkFile(pathToFile)
 
 2016-05-02
-    * add clone() functions
-        - and tests
+    * add clone() functions                                             * DONE
+        - and tests                                                     * DONE
 
 2015-09-09
     * testNLHTree3.py succeeded even though two file names (data11      * DONE

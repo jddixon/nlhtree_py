@@ -31,7 +31,7 @@ class TestWalker (unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testWalker(self):
+    def testWalkers(self):
         REL_PATH_TO_DATA = 'example/dataDir'
         REL_PATH_TO_NLH = 'example/example.nlh'
 
@@ -103,7 +103,22 @@ class TestWalker (unittest.TestCase):
 
         # -- walk NLHTree object ------------------------------------
 
-        # XXX NOT IMPLEMENTED XXX
+        # DEBUG
+        print("\nWALK OBJECT")
+        sys.stdout.flush()
+        hasattr(tree, '__iter__')
+        hasattr(tree, '__next__')
+        # END
+
+        for couple in tree:
+            if len(couple) == 1:
+                # print("    DIR: %s" % couple[0])
+                fromStr.append(couple)
+            elif len(couple) == 2:
+                # print('    FILE: %s %s' % (couple[0], couple[1]))
+                fromStr.append(couple)
+            else:
+                print('    unexpected couple of length %d' % len(couple))
 
         # -- verify the lists are identical -------------------------
 

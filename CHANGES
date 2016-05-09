@@ -1,5 +1,8 @@
 py/nlhtree_py/CHANGES
 
+v0.4.13
+    2016-05-09
+        * incomplete testIters.py succeeds                          SLOC 1158
 v0.4.12
     2016-05-08
         * implement walk{File,String,Strings} and tests             SLOC 1030
@@ -72,19 +75,3 @@ v0.0.0
         * initial import                                            SLOC   47
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-<<<<<<< HEAD
-=======
-
->>>>>>> devel

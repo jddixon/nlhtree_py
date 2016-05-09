@@ -2,6 +2,7 @@
 
 import binascii
 import fnmatch
+import itertools
 import os
 import re
 from stat import *
@@ -17,8 +18,8 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__ = '0.4.12'
-__version_date__ = '2016-05-08'
+__version__ = '0.4.13'
+__version_date__ = '2016-05-09'
 
 class NLHError(RuntimeError):
     pass
@@ -93,6 +94,12 @@ class NLHNode(object):
     def clone(self):
         raise NotImplementedError
 
+    def __iter__(self):
+        raise NotImplementedError
+
+    def __next__(self):
+        raise NotImplementedError
+
 
 class NLHLeaf(NLHNode):
 
@@ -101,10 +108,13 @@ class NLHLeaf(NLHNode):
         super().__init__(name, usingSHA1)
 
         # XXX VERIFY HASH IS WELL-FORMED
+
         if hash:
             self._binHash = hash
         else:
             self._binHash = None
+
+        self.iterUsed = False
 
     @property
     def isLeaf(self):
@@ -115,17 +125,41 @@ class NLHLeaf(NLHNode):
             return False
         if not isinstance(other, NLHLeaf):
             return False
-        return (self.name == other.name) and (self._binHash == other._binHash)
+        return (self._name == other._name) and (
+            self._binHash == other._binHash)
 
     def _toString(self, indent):
         return "%s%s %s" % (
             SP.getSpaces(indent),
-            self.name,
+            self._name,
             self.hexHash)
 
     def clone(self):
         """ make a deep copy """
-        return NLHLeaf(self.name, self.binHash)
+        return NLHLeaf(self._name, self._binHash)
+
+    # ITERABLE ############################################
+
+    def __iter__(self):
+        # DEBUG
+        print('entering NLHLeaf.__iter__()')
+        # END
+        return self
+
+    def __next__(self):
+        # DEBUG
+        print("entering NLHLeaf.__next__()")
+        # END
+        if self.iterUsed:
+            raise StopIteration
+        else:
+            self.iterUsed = True
+            # DEBUG
+            print("__next__() returning (%s, %s)" % (self._name, self.hexHash))
+            # END
+            return (self._name, self.hexHash)
+
+    # END ITERABLE ########################################
 
     @staticmethod
     def createFromFileSystem(path, name, usingSHA1=False):
@@ -159,6 +193,7 @@ class NLHTree(NLHNode):
     def __init__(self, name, usingSHA1):
         super().__init__(name, usingSHA1)
         self._nodes = []
+        self._n = -1        # for iterator
 
     @property
     def isLeaf(self):
@@ -183,7 +218,7 @@ class NLHTree(NLHNode):
             return False
         if not isinstance(other, NLHTree):
             return False
-        if self.name != other.name:
+        if self._name != other._name:
             return False
         if self.usingSHA1 != other.usingSHA1:
             return False
@@ -196,7 +231,7 @@ class NLHTree(NLHNode):
 
     def clone(self):
         """ return a deep copy of the tree """
-        tree = NLHTree(self.name, self.usingSHA1)
+        tree = NLHTree(self._name, self.usingSHA1)
         for node in self._nodes:
             tree.insert(node)
         return tree
@@ -209,7 +244,7 @@ class NLHTree(NLHNode):
 
         remainder = []
         for node in self.nodes:
-            if not fnmatch.fnmatch(node.name, pat):
+            if notfnmatch.fnmatch(node._name, pat):
                 remainder.append(node)
         if len(remainder) != len(self._nodes):
             self._nodes = remainder
@@ -222,7 +257,7 @@ class NLHTree(NLHNode):
         """
         matches = []
         for node in self.nodes:
-            if fnmatch.fnmatch(node.name, pat):
+            if fnmatch.fnmatch(node._name, pat):
                 matches.append(node)
         return matches
 
@@ -236,10 +271,10 @@ class NLHTree(NLHNode):
             raise NLHError("incompatible SHA types")
         # XXX need checks
         lenNodes = len(self._nodes)
-        name = node.name
+        name = node._name
         done = False
         for i in range(lenNodes):
-            iName = self._nodes[i].name
+            iName = self._nodes[i]._name
             if name < iName:
                 # insert before
                 if i == 0:
@@ -266,11 +301,11 @@ class NLHTree(NLHNode):
         """
         el = []
         for q in self._nodes:
-            if fnmatch.fnmatch(q.name, pat):
+            if fnmatch.fnmatch(q._name, pat):
                 if q.isLeaf:
-                    el.append('  ' + q.name)
+                    el.append('  ' + q._name)
                 else:
-                    el.append('* ' + q.name)
+                    el.append('* ' + q._name)
         return el
 
     def __str__(self):
@@ -280,7 +315,7 @@ class NLHTree(NLHNode):
         return s
 
     def toStrings(self, ss, indent):
-        ss.append("%s%s" % (SP.getSpaces(indent), self.name))
+        ss.append("%s%s" % (SP.getSpaces(indent), self._name))
         for node in self._nodes:
             if node.isLeaf:
                 ss.append(node._toString(indent + 1))
@@ -582,3 +617,41 @@ class NLHTree(NLHNode):
             if not done:
                 yield ("DUNNO WHAT THIS IS: %s" % line, )
                 done = True
+
+    # ITERABLE ############################################
+
+    def __iter__(self):
+        # DEBUG
+        print("entering NLHTree.__iter__()")
+        for n in self._nodes:
+            print("%-10s, a %s, has iter = %s, has next = %s" % (
+                n.name, type(n),
+                hasattr(n, '__iter__'),
+                hasattr(n, '__next__')))
+        # END
+
+        return self
+
+    def __next__(self):
+
+        # DEBUG
+        print("entering NLHTree.__next__()")
+        # END
+
+        # For the first call:
+        if self._n < 0:
+            self._n += 1
+            return (self._name, )
+        else:
+            if self._n > len(self._nodes):
+                raise StopIteration
+            else:
+                nextNode = self._nodes[self._n]
+                if nextNode.isLeaf:
+                    self._n += 1
+                    return (nextNode._name, nextNode.hexHash)
+                else:
+                    # nextNode is a directory
+                    pass        # <------------------
+
+    # END ITERABLE ########################################

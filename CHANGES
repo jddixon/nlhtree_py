@@ -1,5 +1,8 @@
 py/nlhtree_py/CHANGES
 
+v0.4.12
+    2016-05-08
+        * implement walk{File,String,Strings} and tests             SLOC 1030
 v0.4.11
     2016-05-07
         * add testWalker                                            SLOC  892
@@ -81,3 +84,7 @@ v0.0.0
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> devel

@@ -17,9 +17,8 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__      = '0.4.11'
-__version_date__ = '2016-05-07'
-
+__version__ = '0.4.12'
+__version_date__ = '2016-05-08'
 
 class NLHError(RuntimeError):
     pass
@@ -435,4 +434,151 @@ class NLHTree(NLHNode):
             ss = ss[:-1]
         return NLHTree.createFromStringArray(ss, usingSHA1)
 
+    @staticmethod
+    def walkFile(pathToFile):
+        """
+        For each line in the NLHTree listing, return either the
+        relative path to a directory (including the directory name)
+        or the relative path to a file plus its SHA1 hex hash.
+        Each of these is a tuple: the former is a singleton, and the
+        latter is a 2-tuple.
 
+        The path to the listing file is NOT included in these relative
+        paths.
+        """
+        if not os.path.exists(pathToFile):
+            raise RuntimeError('file not found: ' + pathToFile)
+        curDepth = 0
+        path = ''
+        parts = []
+        hashLen = -1
+        usingSHA1 = False
+
+        with open(pathToFile, 'r') as f:
+            line = f.readline()
+            lineNbr = 0
+            while line:
+                done = False
+
+                # DEBUG
+                # dropping newline
+                # print("LINE %3d: '%s'" % (lineNbr, line[:-1]))
+                # END
+
+                # -- dir --------------------------------------------
+                m = NLHTree.DIR_LINE_RE.match(line)
+                if m:
+                    depth = len(m.group(1))
+                    dirName = m.group(2)
+                    if depth == curDepth:
+                        parts.append(dirName)
+                        curDepth += 1
+                    elif depth < curDepth:
+                        parts[depth] = dirName
+                        parts = parts[:depth + 1]
+                    else:
+                        raise RuntimeError("corrupt nlhTree listing")
+                    path = '/'.join(parts)
+
+                    # DEBUG
+                    # print("  D %3d %s" % (curDepth, dirName))
+                    # END
+                    yield (path, )
+                    done = True
+
+                # -- file -------------------------------------------
+                if not done:
+                    m = NLHTree.FILE_LINE_RE_1.match(line)
+                    if m:
+                        curDepth = len(m.group(1))
+                        fileName = m.group(2)
+                        hash = m.group(3)
+                        # DEBUG
+                        #print("  F %3d %s %s" % (curDepth, fileName, hash))
+                        # END
+                        yield (os.path.join(path, fileName), hash)
+                        done = True
+                # -- error ------------------------------------------
+                if not done:
+                    yield ("DUNNO WHAT THIS IS: %s" % line, )
+                    done = True
+                line = f.readline()
+                lineNbr += 1
+
+    @staticmethod
+    def walkString(s):
+        """
+        s is an NLHTree listing in the form of a single string with
+        lines ending with newlines.  There is a newline at the end of
+        the listing.
+        """
+        lines = s.split('\n')
+        if lines[-1] == '':
+            lines = lines[:-1]          # drop the last line if empty
+        return NLHTree.walkStrings(lines)
+
+    @staticmethod
+    def walkStrings(ss):
+        """
+        For each line in the NLHTree listing, return either the
+        relative path to a directory (including the directory name)
+        or the relative path to a file plus its SHA1 hex hash.
+        Each of these is a tuple: the former is a singleton, and the
+        latter is a 2-tuple.
+
+        The NLHTree listing is in the form of a list of lines.
+
+        COMMENTS AND BLANK LINES ARE NOT YET SUPPORTED.
+        """
+
+        curDepth = 0
+        path = ''
+        parts = []
+        hashLen = -1
+        usingSHA1 = False
+
+        for lineNbr, line in enumerate(ss):
+            done = False
+
+            # DEBUG
+            # dropping newline
+            # print("LINE %3d: '%s'" % (lineNbr, line[:-1]))
+            # END
+
+            # -- dir --------------------------------------------
+            m = NLHTree.DIR_LINE_RE.match(line)
+            if m:
+                depth = len(m.group(1))
+                dirName = m.group(2)
+                if depth == curDepth:
+                    parts.append(dirName)
+                    curDepth += 1
+                elif depth < curDepth:
+                    parts[depth] = dirName
+                    parts = parts[:depth + 1]
+                else:
+                    raise RuntimeError("corrupt nlhTree listing")
+                path = '/'.join(parts)
+
+                # DEBUG
+                # print("  D %3d %s" % (curDepth, dirName))
+                # END
+                yield (path, )
+                done = True
+
+            # -- file -------------------------------------------
+            if not done:
+                m = NLHTree.FILE_LINE_RE_1.match(line)
+                if m:
+                    curDepth = len(m.group(1))
+                    fileName = m.group(2)
+                    hash = m.group(3)
+                    # DEBUG
+                    #print("  F %3d %s %s" % (curDepth, fileName, hash))
+                    # END
+                    yield (os.path.join(path, fileName), hash)
+                    done = True
+            # -- error ------------------------------------------
+            if not done:
+                yield ("DUNNO WHAT THIS IS: %s" % line, )
+                done = True

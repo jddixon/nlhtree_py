@@ -1,5 +1,7 @@
+./testIters.py
 ./testNLHBase.py
 ./testNLHLeaf.py
 ./testNLHTree.py
 ./testNLHTree2.py
 ./testNLHTree3.py
+./testWalker.py

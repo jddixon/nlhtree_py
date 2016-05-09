@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 # testNLHTree.py
 import hashlib
@@ -77,6 +77,9 @@ class TestNLHTree2 (unittest.TestCase):
         self.assertFalse(tree1 == tree2)
         self.assertFalse(tree1 is None)
 
+        tree1c = tree1.clone()
+        self.assertEqual(tree1c, tree1)
+
     def testBoundFlatDirs(self):
         self.doTestBoundFlatDirs(usingSHA1=True)
         self.doTestBoundFlatDirs(usingSHA1=False)
@@ -101,6 +104,9 @@ class TestNLHTree2 (unittest.TestCase):
         self.assertFalse(tree1 == tree2)
         self.assertFalse(tree1 is None)
 
+        tree1c = tree1.clone()
+        self.assertEqual(tree1c, tree1)
+
     def testBoundNeedleDirs1(self):
         self.doTestBoundNeedleDirs(usingSHA1=True)
         self.doTestBoundNeedleDirs(usingSHA1=False)
@@ -124,6 +130,9 @@ class TestNLHTree2 (unittest.TestCase):
 
         self.assertTrue(tree1 == tree1)
         self.assertFalse(tree1 == tree2)
+
+        tree1c = tree1.clone()
+        self.assertEqual(tree1c, tree1)
 
 if __name__ == '__main__':
     unittest.main()

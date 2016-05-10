@@ -18,8 +18,8 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__ = '0.4.13'
-__version_date__ = '2016-05-09'
+__version__ = '0.4.14'
+__version_date__ = '2016-05-10'
 
 
 class NLHError(RuntimeError):
@@ -305,7 +305,7 @@ class NLHTree(NLHNode):
         s = '\n'.join(ss) + '\n'
         return s
 
-    def toStrings(self, ss, indent):
+    def toStrings(self, ss, indent=0):
         ss.append("%s%s" % (SP.getSpaces(indent), self._name))
         for node in self._nodes:
             if node.isLeaf:
@@ -459,6 +459,77 @@ class NLHTree(NLHNode):
         if ss[-1] == '':
             ss = ss[:-1]
         return NLHTree.createFromStringArray(ss, usingSHA1)
+
+    # DATA_DIR/U_DIR INTERACTION ------------------------------------
+
+    def checkInUDir(self, dataDir, uDir):
+        """
+        Walk the tree, verifying that all leafs files) can be found in uDir
+        by content key.  We assume that the tree is congruent with dataDir
+        and that uDir is well-formed.
+        """
+        def kWalk(node, path):
+            ok = True
+            if isinstance(node, NLHTree):
+                for n in node.nodes:
+                    pathToNode = os.path.join(path, n.name)
+                    ok = kWalk(n, pathToNode)
+                    if not ok:
+                        break
+            elif isinstance(node, NLHLeaf):
+                if self.usingSHA1:
+                    leafHash = u.fileSHA1(path)
+                else:
+                    leafHash = u.fileSHA2(path)
+                ok = leafHash == node.hexHash
+            else:
+                print("INTERNAL ERROR: node is neither Doc nor Tree nor Leaf")
+                ok = False
+            return ok
+
+        return kWalk(self.tree, dataDir)
+
+    def saveToUDir(self, dataDir, uDir):
+        """
+        Walk the tree, copying all files listed into uDir by content key.
+        We assume that the tree is congruent with dataDir and that uDir
+        is well-formed.
+        """
+        def cWalk(node, path):
+            if isinstance(node, NLHTree):
+                # DEBUG
+                print("  NODE: %s" % node.name)
+                # END
+                for n in node.nodes:
+                    pathToNode = os.path.join(path, n.name)
+                    cWalk(n, pathToNode)
+            elif isinstance(node, NLHLeaf):
+                # DEBUG
+                print("  LEAF %s %s" % (node.name, node.hexHash))
+                # END
+                u.copyAndPut1(path, uDir, node.hexHash)
+            else:
+                print("INTERNAL ERROR: node is neither Doc nor Tree nor Leaf")
+                print("  skipping")
+
+        # DEBUG
+        print("saveToUDir %s ==> %s" % (dataDir, uDir))
+
+        # XXX Seems unnecessary.
+        if not os.path.exists(uDir):
+            print("  %s doesn't exist; creating" % uDir)
+            os.makedirs(uDir, 0o711, exist_ok=True)
+        # END
+
+        # XXX This seems to be necessary, which means that xlattice.u
+        # needs some fixing
+        uTmp = os.path.join(uDir, 'tmp')
+        if not os.path.exists(uTmp):
+            print("  %s doesn't exist; creating" % uTmp)
+            os.makedirs(uTmp, 0o711, exist_ok=True)
+        cWalk(self.tree, dataDir)
+
+    # ITERATORS #####################################################
 
     @staticmethod
     def walkFile(pathToFile):

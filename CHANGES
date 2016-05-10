@@ -1,5 +1,8 @@
 py/nlhtree_py/CHANGES
 
+v0.4.14
+    2016-05-10
+        * move copyWalk, checkWalk here from BuildList              SLOC 1212
 v0.4.13
     2016-05-09
         * incomplete testIters.py succeeds                          SLOC 1158
@@ -73,5 +76,3 @@ v0.1.0
 v0.0.0
     2015-05-20
         * initial import                                            SLOC   47
-
-

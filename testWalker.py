@@ -32,6 +32,48 @@ class TestWalker (unittest.TestCase):
     def tearDown(self):
         pass
 
+    def testSpotCheckTree(self):
+        # DEBUG
+        #print("\nSPOT CHECKS")
+        # END
+        REL_PATH_TO_DATA = 'example/dataDir'
+        tree = NLHTree.createFromFileSystem(REL_PATH_TO_DATA, usingSHA1=True)
+        self.assertIsNotNone(tree)
+        self.assertEqual(len(tree.nodes), 6)
+        self.assertEqual(tree.name, 'dataDir')
+
+        node0 = tree.nodes[0]
+        self.assertTrue(node0.isLeaf)
+        self.assertEqual(node0.name, 'data1')
+
+        node1 = tree.nodes[1]
+        self.assertTrue(node1.isLeaf)
+        self.assertEqual(node1.name, 'data2')
+
+        node2 = tree.nodes[2]
+        self.assertFalse(node2.isLeaf)
+        self.assertEqual(node2.name, 'subDir1')
+        self.assertEqual(len(node2.nodes), 2)
+
+        node5 = tree.nodes[5]
+        self.assertFalse(node5.isLeaf)
+        self.assertEqual(node5.name, 'subDir4')
+        self.assertEqual(len(node5.nodes), 1)
+
+        node50 = node5.nodes[0]
+        self.assertFalse(node50.isLeaf)
+        self.assertEqual(node50.name, 'subDir41')
+        self.assertEqual(len(node50.nodes), 1)
+
+        node500 = node50.nodes[0]
+        self.assertFalse(node500.isLeaf)
+        self.assertEqual(node500.name, 'subDir411')
+        self.assertEqual(len(node500.nodes), 1)
+
+        node5000 = node500.nodes[0]
+        self.assertTrue(node5000.isLeaf)
+        self.assertEqual(node5000.name, 'data31')
+
     def testWalkers(self):
         REL_PATH_TO_DATA = 'example/dataDir'
         REL_PATH_TO_NLH = 'example/example.nlh'
@@ -53,13 +95,18 @@ class TestWalker (unittest.TestCase):
 
         # -- walk on-disk representation ----------------------------
 
+        # DEBUG
+        #print("\nWALK FILE ON DISK")
+        sys.stdout.flush()
+        # END
+
         # a couple is a 2-tuple
         for couple in NLHTree.walkFile(REL_PATH_TO_NLH):
             if len(couple) == 1:
-                # print("    DIR: %s" % couple[0])
+                #print("    DIR:  %s" % couple[0])
                 fromDisk.append(couple)
             elif len(couple) == 2:
-                # print('    FILE: %s %s' % (couple[0], couple[1]))
+                #print('    FILE: %s %s' % (couple[0], couple[1]))
                 fromDisk.append(couple)
             else:
                 print('    unexpected couple of length %d' % len(couple))
@@ -67,7 +114,7 @@ class TestWalker (unittest.TestCase):
         # -- walk list-of-strings representation -------------------
 
         # DEBUG
-        print("\nWALK LIST OF STRINGS")
+        #print("\nWALK LIST OF STRINGS")
         sys.stdout.flush()
         # END
 
@@ -77,10 +124,10 @@ class TestWalker (unittest.TestCase):
 
         for couple in NLHTree.walkStrings(lines):
             if len(couple) == 1:
-                # print("    DIR: %s" % couple[0])
+                #print("    DIR:  %s" % couple[0])
                 fromSS.append(couple)
             elif len(couple) == 2:
-                # print('    FILE: %s %s' % (couple[0], couple[1]))
+                #print('    FILE: %s %s' % (couple[0], couple[1]))
                 fromSS.append(couple)
             else:
                 print('    unexpected couple of length %d' % len(couple))
@@ -88,16 +135,16 @@ class TestWalker (unittest.TestCase):
         # -- walk string representation -----------------------------
 
         # DEBUG
-        print("\nWALK STRING")
+        #print("\nWALK STRING")
         sys.stdout.flush()
         # END
 
         for couple in NLHTree.walkString(EXAMPLE):
             if len(couple) == 1:
-                # print("    DIR: %s" % couple[0])
+                #print("    DIR:  %s" % couple[0])
                 fromStr.append(couple)
             elif len(couple) == 2:
-                # print('    FILE: %s %s' % (couple[0], couple[1]))
+                #print('    FILE: %s %s' % (couple[0], couple[1]))
                 fromStr.append(couple)
             else:
                 print('    unexpected couple of length %d' % len(couple))
@@ -105,7 +152,7 @@ class TestWalker (unittest.TestCase):
         # -- walk NLHTree object ------------------------------------
 
         # DEBUG
-        print("\nWALK OBJECT")
+        #print("\nWALK OBJECT")
         sys.stdout.flush()
         hasattr(tree, '__iter__')
         hasattr(tree, '__next__')
@@ -113,18 +160,18 @@ class TestWalker (unittest.TestCase):
 
         for couple in tree:
             if len(couple) == 1:
-                # print("    DIR: %s" % couple[0])
-                fromStr.append(couple)
+                #print("        DIR:  %s" % couple[0])
+                fromObj.append(couple)
             elif len(couple) == 2:
-                # print('    FILE: %s %s' % (couple[0], couple[1]))
-                fromStr.append(couple)
+                #print('        FILE: %s %s' % (couple[0], couple[1]))
+                fromObj.append(couple)
             else:
-                print('    unexpected couple of length %d' % len(couple))
+                print('        unexpected couple of length %d' % len(couple))
 
         # -- verify the lists are identical -------------------------
 
         # DEBUG
-        print("\nIDENTIFY CHECKS")
+        #print("\nIDENTITY CHECKS")
         sys.stdout.flush()
         # END
 
@@ -134,9 +181,20 @@ class TestWalker (unittest.TestCase):
             for n in range(len(a)):
                 self.assertEqual(a[n], b[n])
 
+        # DEBUG
+        #print("\ncomparing fromDisk, fromSS")
+        # END
         check(fromDisk, fromSS)
-        check(fromDisk, fromStr)
-        # check(fromDisk, fromObj)
+
+        # DEBUG
+        #print("\ncomparing fromDisk, fromStr")
+        # END
+        #check(fromDisk, fromStr)
+
+        # DEBUG
+        #print("\ncomparing fromDisk, fromObj")
+        # END
+        check(fromDisk, fromObj)
 
         # -- verify that the operations are reversible, that you can
         # recover the dataDir from the listings ---------------------

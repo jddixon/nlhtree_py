@@ -18,8 +18,8 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__ = '0.4.16'
-__version_date__ = '2016-05-11'
+__version__ = '0.4.17'
+__version_date__ = '2016-05-12'
 
 class NLHError(RuntimeError):
     pass
@@ -193,7 +193,11 @@ class NLHTree(NLHNode):
     def __init__(self, name, usingSHA1):
         super().__init__(name, usingSHA1)
         self._nodes = []
-        self._n = -1        # for iterator
+
+        # for iterator
+        self._n = -1
+        self._subTree = None
+        self._prefix = ''
 
     @property
     def isLeaf(self):
@@ -243,7 +247,7 @@ class NLHTree(NLHNode):
         """
 
         remainder = []
-        for node in self.nodes:
+        for node in self._nodes:
             if notfnmatch.fnmatch(node._name, pat):
                 remainder.append(node)
         if len(remainder) != len(self._nodes):
@@ -256,7 +260,7 @@ class NLHTree(NLHNode):
         is guaranteed to be sorted by node name.
         """
         matches = []
-        for node in self.nodes:
+        for node in self._nodes:
             if fnmatch.fnmatch(node._name, pat):
                 matches.append(node)
         return matches
@@ -432,14 +436,14 @@ class NLHTree(NLHNode):
                     leaf = NLHLeaf(name, bHash)
                     stack[depth].insert(leaf)
                 else:
-                    subtree = NLHTree(name, usingSHA1)
-                    stack.append(subtree)
+                    subTree = NLHTree(name, usingSHA1)
+                    stack.append(subTree)
                     depth += 1
             elif indent == depth + 1:
                 if hash is None:
-                    subtree = NLHTree(name, usingSHA1)
-                    stack[depth].insert(subtree)
-                    stack.append(subtree)
+                    subTree = NLHTree(name, usingSHA1)
+                    stack[depth].insert(subTree)
+                    stack.append(subTree)
                     depth += 1
                 else:
                     leaf = NLHLeaf(name, bHash)
@@ -450,9 +454,9 @@ class NLHTree(NLHNode):
                     stack.pop()
                     depth -= 1
                 if hash is None:
-                    subtree = NLHTree(name, usingSHA1)
-                    stack[depth].insert(subtree)
-                    stack.append(subtree)
+                    subTree = NLHTree(name, usingSHA1)
+                    stack[depth].insert(subTree)
+                    stack.append(subTree)
                     depth += 1
                 else:
                     leaf = NLHLeaf(name, bHash)
@@ -700,37 +704,62 @@ class NLHTree(NLHNode):
     # ITERABLE ############################################
 
     def __iter__(self):
-        # DEBUG
-        print("entering NLHTree.__iter__()")
-        for n in self._nodes:
-            print("%-10s, a %s, has iter = %s, has next = %s" % (
-                n.name, type(n),
-                hasattr(n, '__iter__'),
-                hasattr(n, '__next__')))
-        # END
+        #       # DEBUG
+        #       print("      %-10s.__iter__(); n = %2d/%d" % (
+        #               self._name, self._n, len(self._nodes)))
+        #       for n in self._nodes:
+        #           if n.isLeaf:
+        #               print('        LEAF %s' % n.name)
+        #           else:
+        #               print('        TREE %s with %d children' % (
+        #                   n.name, len(n.nodes)))
+        #       # END
 
         return self
 
     def __next__(self):
 
         # DEBUG
-        print("entering NLHTree.__next__()")
+        # print("      %-10s.__next__(): n = %2d/%d; recursing = %s, path=%s" % (
+        #             self._name,
+        #             self._n,
+        #             len(self._nodes),
+        #             self._subTree is not None,
+        #             self._prefix))
         # END
 
         # For the first call:
         if self._n < 0:
             self._n += 1
-            return (self._name, )
+            return (os.path.join(self._prefix, self._name), )
+
+        if self._n >= len(self._nodes):
+            raise StopIteration
+
+        if self._subTree:
+            try:
+                couple = self._subTree.__next__()
+                return couple
+            except StopIteration:
+                # DEBUG
+                #print("        rcvd StopIteration from %s" % self._subTree.name)
+                # END
+                self._subTree = None
+                self._n += 1
+                if self._n >= len(self._nodes):
+                    raise StopIteration
+
+        nextNode = self._nodes[self._n]
+        if nextNode.isLeaf:
+            self._n += 1
+            return (os.path.join(self._prefix,
+                                 os.path.join(self._name, nextNode._name)),
+                    nextNode.hexHash,)
         else:
-            if self._n > len(self._nodes):
-                raise StopIteration
-            else:
-                nextNode = self._nodes[self._n]
-                if nextNode.isLeaf:
-                    self._n += 1
-                    return (nextNode._name, nextNode.hexHash)
-                else:
-                    # nextNode is a directory
-                    pass        # <------------------
+            self._subTree = nextNode.__iter__()
+
+            self._subTree._prefix = os.path.join(self._prefix, self._name)
+
+            return self._subTree.__next__()
 
     # END ITERABLE ########################################

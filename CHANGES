@@ -1,6 +1,9 @@
 py/nlhtree_py/CHANGES
 
 
+v0.4.17
+    2016-05-12
+        * working NLHTree iterator                                  SLOC 1565
 v0.4.16
     2016-05-11
         * add saveToUDir,checkIn{U,Data}Dir,populateDataDir         SLOC 1516

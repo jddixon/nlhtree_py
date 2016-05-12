@@ -1,3 +1,6 @@
 cd /home/jdd/dev/py/nlhtree_py
 
-autopep8 -air nlhtree setup.py test*.py 
+autopep8 -air nlhtree setup.py test*.py \
+    nlhSaveToUDir nlhCheckInUDir nlhCheckInDataDir   nlhPopulateDataDir \
+
+

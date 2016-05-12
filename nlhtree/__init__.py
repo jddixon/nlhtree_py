@@ -6,7 +6,7 @@ import itertools
 import os
 import re
 from stat import *
-from xlattice.u import fileSHA1, fileSHA2
+from xlattice.u import fileSHA1Hex, fileSHA2Hex
 from xlattice.crypto import SP   # for getSpaces()
 
 from xlattice import (
@@ -18,8 +18,8 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__ = '0.4.14'
-__version_date__ = '2016-05-10'
+__version__ = '0.4.16'
+__version_date__ = '2016-05-11'
 
 
 class NLHError(RuntimeError):
@@ -171,9 +171,9 @@ class NLHLeaf(NLHNode):
         """
         if os.path.exists(path):
             if usingSHA1:
-                hash = fileSHA1(path)
+                hash = fileSHA1Hex(path)
             else:
-                hash = fileSHA2(path)
+                hash = fileSHA2Hex(path)
             bHash = binascii.a2b_hex(hash)
             return NLHLeaf(name, bHash)
         else:
@@ -478,9 +478,9 @@ class NLHTree(NLHNode):
                         break
             elif isinstance(node, NLHLeaf):
                 if self.usingSHA1:
-                    leafHash = u.fileSHA1(path)
+                    leafHash = u.fileSHA1Hex(path)
                 else:
-                    leafHash = u.fileSHA2(path)
+                    leafHash = u.fileSHA2Hex(path)
                 ok = leafHash == node.hexHash
             else:
                 print("INTERNAL ERROR: node is neither Doc nor Tree nor Leaf")
@@ -489,12 +489,20 @@ class NLHTree(NLHNode):
 
         return kWalk(self.tree, dataDir)
 
-    def saveToUDir(self, dataDir, uDir):
+    def saveToUDir(self, dataDir, uDir, listFile):
         """
         Walk the tree, copying all files listed into uDir by content key.
         We assume that the tree is congruent with dataDir and that uDir
         is well-formed.
         """
+
+        # DEBUG
+        print("would be saving %s to %s and writing a buildList to %s") % (
+            dataDir, uDir, listFile)
+        print('exiting')
+        sys.exit(0)
+        # END
+
         def cWalk(node, path):
             if isinstance(node, NLHTree):
                 # DEBUG

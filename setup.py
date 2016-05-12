@@ -13,5 +13,10 @@ setup(name='nlhtree_py',
       author_email='jddixon@gmail.com',
       py_modules=[],
       packages=['nlhtree', ],
-      scripts=[]
+      scripts=[
+          'nlhCheckInDataDir',
+          'nlhCheckInUDir',
+          'nlhPopulateDataDir',
+          'nlhSaveToUDir',
+      ]
       )

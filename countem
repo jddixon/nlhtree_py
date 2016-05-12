@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
-cd $DEV_BASE/py/nlhtree_py
-
-rm -rf build/* 
-
-pySloc  -X dist -X build -X tmp -v $@
+if [ ! -z "${DEV_BASE// }" ]
+then
+  cd $DEV_BASE/py/nlhtree_py
+  
+  rm -rf build/* 
+  
+  pySloc  -X dist -X build -X tmp -v $@
+else
+  echo "DEV_BASE is not defined"
+fi

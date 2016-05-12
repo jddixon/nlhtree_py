@@ -21,3 +21,7 @@ py:test:testNLHTree2.py
 py:test:testNLHTree3.py
 
 py:std:setup.py
+py:global:nlhCheckInDataDir
+py:global:nlhCheckInUDir
+py:global:nlhPopulateDataDir
+py:global:nlhSaveToUDir

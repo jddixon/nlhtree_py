@@ -1,5 +1,13 @@
 py/nlhtree_py/CHANGES
 
+
+v0.4.16
+    2016-05-11
+        * add saveToUDir,checkIn{U,Data}Dir,populateDataDir         SLOC 1516
+v0.4.15
+    2016-05-10
+        * copyWalk becomes saveToUDir
+        * checkWalk becomes checkInUDir
 v0.4.14
     2016-05-10
         * move copyWalk, checkWalk here from BuildList              SLOC 1212

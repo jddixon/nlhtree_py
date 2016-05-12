@@ -1,5 +1,27 @@
 py/nlhtree_py/TODO
 
+
+2016-05-11
+    * write python3 utilities that wrap the functions (
+        checkInDataDir, checkInUDir, populateUDir, saveToUDir)
+        - nlhCheckInDataDir         NEEDS FIXING
+        - nlhCheckInUDir            NEEDS FIXING
+        - nlhPopulateDataDir        NEEDS FIXING
+        - nlhSaveToUDir             NEEDS FIXING
+    * if the testing option is specified (-T), then output appears
+        under tmp
+        - add random prefix that is not already in use, so that the
+            output is under tmp/PREFIX/
+        - document this in the help message
+        - when a test is run, the name of the test subdirectory must
+            be clearly displayed, not lost in a a sea of messages
+
+    * need populateDataDir and tests
+    * need checkInDataDir  and tests 
+2016-05-10
+    * need tests of saveToUDir
+    * need tests of checkInUDir
+    
 2016-05-06
     * need an iterator over the NLHTree which returns a sequence of 
         <hash, relative path> 2-tuples: BuildList.walk()

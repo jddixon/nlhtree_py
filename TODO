@@ -1,15 +1,25 @@
 py/nlhtree_py/TODO
 
 
+2016-05-12
+    * nlhSaveToUDir works, using NLHTree.saveToUDir in a clumsy way, 
+        with saveToUDir a class method.  Possibly want to wrap this 
+        around a class instance.  Possibly the tree should be 
+        created in the called, nlhSaveToUDir
+    * NLH serialization to U currently limited to U256; this should
+        be selectable from the command line, defaulting to U256
+    
+    * need to determine which of the tests is writing trash into tmp/
+
 2016-05-11
     * write python3 utilities that wrap the functions (
         checkInDataDir, checkInUDir, populateUDir, saveToUDir)
         - nlhCheckInDataDir         NEEDS FIXING
         - nlhCheckInUDir            NEEDS FIXING
         - nlhPopulateDataDir        NEEDS FIXING
-        - nlhSaveToUDir             NEEDS FIXING
-    * if the testing option is specified (-T), then output appears
-        under tmp
+        - nlhSaveToUDir             NEEDS FIXING                        * WORKS
+    * if the testing option is specified (-T), then output must 
+        appear under tmp
         - add random prefix that is not already in use, so that the
             output is under tmp/PREFIX/
         - document this in the help message

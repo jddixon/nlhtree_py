@@ -5,7 +5,9 @@ import fnmatch
 import itertools
 import os
 import re
+import sys
 from stat import *
+
 from xlattice.u import fileSHA1Hex, fileSHA2Hex
 from xlattice.crypto import SP   # for getSpaces()
 
@@ -14,12 +16,15 @@ from xlattice import (
     SHA1_HEX_LEN, SHA2_HEX_LEN,
     SHA1_BIN_NONE, SHA2_BIN_NONE)
 
+# XXX THIS IS EXTREMELY LIMITING XXX The strategy should be selectable
+from xlattice import u256 as u
+
 __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__ = '0.4.17'
-__version_date__ = '2016-05-12'
+__version__ = '0.4.18'
+__version_date__ = '2016-05-13'
 
 
 class NLHError(RuntimeError):
@@ -143,20 +148,20 @@ class NLHLeaf(NLHNode):
 
     def __iter__(self):
         # DEBUG
-        print('entering NLHLeaf.__iter__()')
+        #print('entering NLHLeaf.__iter__()')
         # END
         return self
 
     def __next__(self):
         # DEBUG
-        print("entering NLHLeaf.__next__()")
+        #print("entering NLHLeaf.__next__()")
         # END
         if self.iterUsed:
             raise StopIteration
         else:
             self.iterUsed = True
             # DEBUG
-            print("__next__() returning (%s, %s)" % (self._name, self.hexHash))
+            #print("__next__() returning (%s, %s)" % (self._name, self.hexHash))
             # END
             return (self._name, self.hexHash)
 
@@ -466,58 +471,78 @@ class NLHTree(NLHNode):
 
     # DATA_DIR/U_DIR INTERACTION ------------------------------------
 
-    def checkInUDir(self, dataDir, uDir):
+    def checkInDataDir(self, dataDir):
         """
-        Walk the tree, verifying that all leafs files) can be found in uDir
-        by content key.  We assume that the tree is congruent with dataDir
-        and that uDir is well-formed.
+        Walk the tree, verifying that all leafs (files) can be found in
+        dataDir by relative path and that the content key is correct.  This
+        does NOT verify that all files have corresponding leaf nodes.
+
+        dataDir is a path, the last component of which is the name of
+        the data directory and so also the name of the NLHTree.
         """
-        def kWalk(node, path):
-            ok = True
-            if isinstance(node, NLHTree):
-                for n in node.nodes:
-                    pathToNode = os.path.join(path, n.name)
-                    ok = kWalk(n, pathToNode)
-                    if not ok:
-                        break
-            elif isinstance(node, NLHLeaf):
-                if self.usingSHA1:
-                    leafHash = u.fileSHA1Hex(path)
-                else:
-                    leafHash = u.fileSHA2Hex(path)
-                ok = leafHash == node.hexHash
+
+        # if / not found, holder, the holding directory, is an empty string.
+        # Return a list of leaf nodes which are not matched.  If everything
+        # is OK this will be empty.
+
+        holder, delim, dirName = dataDir.rpartition('/')
+        if delim == '':
+            holder = ''
+        unmatched = []
+        for couple in self:
+            if len(couple) == 1:
+                # it's a directory
+                pass
             else:
-                print("INTERNAL ERROR: node is neither Doc nor Tree nor Leaf")
-                ok = False
-            return ok
+                relPath = couple[0]
+                hash = couple[1]
+                path = os.path.join(holder, relPath)
+                if not os.path.exists(path):
+                    unmatched.append(path)
+        return unmatched
 
-        return kWalk(self.tree, dataDir)
-
-    def saveToUDir(self, dataDir, uDir, listFile):
+    def checkInUDir(self, uDir):
         """
-        Walk the tree, copying all files listed into uDir by content key.
-        We assume that the tree is congruent with dataDir and that uDir
+        Walk the tree, verifying that all leaf nodes have corresponding
+        files in uDir, files with the same content key.
+        """
+
+        unmatched = []
+        for couple in self:
+            if len(couple) == 1:
+                # it's a directory
+                pass
+            else:
+                relPath = couple[0]
+                hash = couple[1]
+                if not u.exists(uDir, hash):
+                    unmatched.append((relPath, hash,))
+        return unmatched
+
+    @classmethod
+    def saveToUDir(cls, dataDir, uDir, listFile, usingSHA1=False):
+        """
+        Build an NLHTree for the data directory and walk the tree, copying
+        all files present into uDir by content key.  We assume that uDir
         is well-formed.
         """
 
         # DEBUG
-        print("would be saving %s to %s and writing a buildList to %s") % (
-            dataDir, uDir, listFile)
-        print('exiting')
-        sys.exit(0)
+        # print("saving %s to %s and writing a listing to %s" % (
+        #    dataDir, uDir, listFile))
         # END
 
         def cWalk(node, path):
             if isinstance(node, NLHTree):
                 # DEBUG
-                print("  NODE: %s" % node.name)
+                # print("  NODE: %s" % node.name)
                 # END
                 for n in node.nodes:
                     pathToNode = os.path.join(path, n.name)
                     cWalk(n, pathToNode)
             elif isinstance(node, NLHLeaf):
                 # DEBUG
-                print("  LEAF %s %s" % (node.name, node.hexHash))
+                #print("  LEAF %s %s" % (node.name, node.hexHash))
                 # END
                 u.copyAndPut1(path, uDir, node.hexHash)
             else:
@@ -525,9 +550,11 @@ class NLHTree(NLHNode):
                 print("  skipping")
 
         # DEBUG
-        print("saveToUDir %s ==> %s" % (dataDir, uDir))
+        #print("saveToUDir %s ==> %s" % (dataDir, uDir))
 
-        # XXX Seems unnecessary.
+        # exRE and matchRE default to None : WE NEED exRE
+        tree = cls.createFromFileSystem(dataDir, usingSHA1)
+
         if not os.path.exists(uDir):
             print("  %s doesn't exist; creating" % uDir)
             os.makedirs(uDir, 0o711, exist_ok=True)
@@ -539,7 +566,9 @@ class NLHTree(NLHNode):
         if not os.path.exists(uTmp):
             print("  %s doesn't exist; creating" % uTmp)
             os.makedirs(uTmp, 0o711, exist_ok=True)
-        cWalk(self.tree, dataDir)
+        cWalk(tree, dataDir)
+        with open(listFile, 'w+') as f:
+            f.write(tree.__str__())
 
     # ITERATORS #####################################################
 

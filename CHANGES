@@ -1,6 +1,8 @@
 py/nlhtree_py/CHANGES
 
-
+v0.4.18
+    2016-05-13
+        * testCrossFunctions succeeds                               SLOC 1608
 v0.4.17
     2016-05-12
         * working NLHTree iterator                                  SLOC 1565
@@ -87,6 +89,7 @@ v0.1.0
 v0.0.0
     2015-05-20
         * initial import                                            SLOC   47
+
 
 
 

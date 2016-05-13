@@ -1,3 +1,4 @@
+./testCrossFunctions.py
 ./testIters.py
 ./testNLHBase.py
 ./testNLHLeaf.py

@@ -70,7 +70,7 @@ def main():
         # XXX this should be fixed to interpose # a random directory name
         #   that is not already in use
         # XXX This behavior needs to be clearly documented.
-        listFile = os.path.join('tmp', listFile)
+        args.listFile = os.path.join('tmp', args.listFile)
         if args.uDir[0] == '/':
             args.uDir = args.uDir[1:]
         args.uDir = os.path.join('tmp', args.uDir)
@@ -107,7 +107,8 @@ def main():
             print("would be saving %s to %s and writing a listing to %s" % (
                 args.dataDir, args.uDir, args.listFile))
         else:
-            NLHTree.saveToUDir(args.dataDir, args.uDir, args.listFile)
+            NLHTree.saveToUDir(
+                args.dataDir, args.uDir, args.listFile, args.usingSHA1)
 
 if __name__ == '__main__':
     main()

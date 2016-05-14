@@ -42,35 +42,35 @@ class TestWalker (unittest.TestCase):
         self.assertEqual(tree.name, 'dataDir')
 
         node0 = tree.nodes[0]
-        self.assertTrue(node0.isLeaf)
+        self.assertTrue(isinstance(node0, NLHLeaf))
         self.assertEqual(node0.name, 'data1')
 
         node1 = tree.nodes[1]
-        self.assertTrue(node1.isLeaf)
+        self.assertTrue(isinstance(node1, NLHLeaf))
         self.assertEqual(node1.name, 'data2')
 
         node2 = tree.nodes[2]
-        self.assertFalse(node2.isLeaf)
+        self.assertFalse(isinstance(node2, NLHLeaf))
         self.assertEqual(node2.name, 'subDir1')
         self.assertEqual(len(node2.nodes), 2)
 
         node5 = tree.nodes[5]
-        self.assertFalse(node5.isLeaf)
+        self.assertFalse(isinstance(node5, NLHLeaf))
         self.assertEqual(node5.name, 'subDir4')
         self.assertEqual(len(node5.nodes), 1)
 
         node50 = node5.nodes[0]
-        self.assertFalse(node50.isLeaf)
+        self.assertFalse(isinstance(node50, NLHLeaf))
         self.assertEqual(node50.name, 'subDir41')
         self.assertEqual(len(node50.nodes), 1)
 
         node500 = node50.nodes[0]
-        self.assertFalse(node500.isLeaf)
+        self.assertFalse(isinstance(node500, NLHLeaf))
         self.assertEqual(node500.name, 'subDir411')
         self.assertEqual(len(node500.nodes), 1)
 
         node5000 = node500.nodes[0]
-        self.assertTrue(node5000.isLeaf)
+        self.assertTrue(isinstance(node5000, NLHLeaf))
         self.assertEqual(node5000.name, 'data31')
 
     def testWalkers(self):

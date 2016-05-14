@@ -19,9 +19,6 @@ class TestCrossFunctions (unittest.TestCase):
     def tearDown(self):
         pass
 
-    # utility functions #############################################
-
-    # actual unit tests #############################################
     def doTestCrossFunctions(self, usingSHA1):
         # we assume that there is valid data in
         #   example/{example.nlh,dataDir,uDir}
@@ -52,29 +49,43 @@ class TestCrossFunctions (unittest.TestCase):
         # listing file tmp/list.nlh as a side effect
         NLHTree.saveToUDir(GOLD_DATA, TARGET_UDIR, TARGET_LIST_FILE, usingSHA1)
 
-        self.assertTrue(os.path.exists, GOLD_LIST_FILE)
+        self.assertTrue(os.path.exists(GOLD_LIST_FILE))
         with open(GOLD_LIST_FILE, 'r') as f:
             goldListing = f.read()
 
-        self.assertTrue(os.path.exists, TARGET_LIST_FILE)
+        self.assertTrue(os.path.exists(TARGET_LIST_FILE))
         with open(TARGET_LIST_FILE, 'r') as f:
             outputListing = f.read()
 
         self.assertEqual(goldListing, outputListing)
 
         tree = NLHTree.createFromFileSystem(GOLD_DATA, usingSHA1)
+        self.assertIsNotNone(tree)
 
-        # THIS IS THE WRONG TEST - argument should be TARGET_DATA_DIR XXX
+        # first iteration over tree
         unmatched = tree.checkInDataDir(GOLD_DATA)
         self.assertEqual(len(unmatched), 0)
 
+        # second iteration over tree
         unmatched = tree.checkInUDir(TARGET_UDIR)
         self.assertEqual(len(unmatched), 0)
+
+        # third iteration over tree - this should create the data directory
+        unmatched = tree.populateDataDir(TARGET_UDIR, 'tmp')
+        self.assertEqual(len(unmatched), 0)
+
+        self.assertTrue(os.path.exists(TARGET_DATA_DIR),
+                        'data directory created')
+
+        unmatched = tree.checkInDataDir(TARGET_DATA_DIR)
+        self.assertEqual(len(unmatched), 0)
+
+        tree2 = NLHTree.createFromFileSystem(TARGET_DATA_DIR, usingSHA1)
+        self.assertEqual(tree, tree2)
 
     def testSimplestConstructor(self):
         self.doTestCrossFunctions(usingSHA1=True)
         # self.doTestCrossFunctions(usingSHA1=False)
-
 
 if __name__ == '__main__':
     unittest.main()

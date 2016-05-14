@@ -1,5 +1,8 @@
 py/nlhtree_py/CHANGES
 
+v0.4.19
+    2016-05-14
+        * populateDataDir works, passes tests                       SLOC 1648
 v0.4.18
     2016-05-13
         * testCrossFunctions succeeds                               SLOC 1608

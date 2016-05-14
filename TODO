@@ -10,6 +10,7 @@ py/nlhtree_py/TODO
         be selectable from the command line, defaulting to U256
     
     * need to determine which of the tests is writing trash into tmp/
+    * get rid of isLeaf attribute
 
 2016-05-11
     * write python3 utilities that wrap the functions (

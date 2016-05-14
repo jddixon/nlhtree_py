@@ -14,7 +14,8 @@ from xlattice.crypto import SP   # for getSpaces()
 from xlattice import (
     SHA1_BIN_LEN, SHA2_BIN_LEN,
     SHA1_HEX_LEN, SHA2_HEX_LEN,
-    SHA1_BIN_NONE, SHA2_BIN_NONE)
+    SHA1_BIN_NONE, SHA2_BIN_NONE,
+    SHA1_HEX_NONE, SHA2_HEX_NONE)
 
 # XXX THIS IS EXTREMELY LIMITING XXX The strategy should be selectable
 from xlattice import u256 as u
@@ -23,8 +24,8 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__ = '0.4.18'
-__version_date__ = '2016-05-13'
+__version__ = '0.4.19'
+__version_date__ = '2016-05-14'
 
 
 class NLHError(RuntimeError):
@@ -50,10 +51,6 @@ class NLHNode(object):
     @property
     def usingSHA1(self):
         return self._usingSHA1
-
-    @property
-    def isLeaf(self):
-        raise NotImplemented()
 
     @property
     def hexHash(self):
@@ -122,10 +119,6 @@ class NLHLeaf(NLHNode):
 
         self.iterUsed = False
 
-    @property
-    def isLeaf(self):
-        return True
-
     def __eq__(self, other):
         if other is None:
             return False
@@ -147,22 +140,13 @@ class NLHLeaf(NLHNode):
     # ITERABLE ############################################
 
     def __iter__(self):
-        # DEBUG
-        #print('entering NLHLeaf.__iter__()')
-        # END
         return self
 
     def __next__(self):
-        # DEBUG
-        #print("entering NLHLeaf.__next__()")
-        # END
         if self.iterUsed:
             raise StopIteration
         else:
             self.iterUsed = True
-            # DEBUG
-            #print("__next__() returning (%s, %s)" % (self._name, self.hexHash))
-            # END
             return (self._name, self.hexHash)
 
     # END ITERABLE ########################################
@@ -199,21 +183,15 @@ class NLHTree(NLHNode):
     def __init__(self, name, usingSHA1):
         super().__init__(name, usingSHA1)
         self._nodes = []
-
-        # for iterator
-        self._n = -1
-        self._subTree = None
-        self._prefix = ''
-
-    @property
-    def isLeaf(self):
-        return False
+        self._n = -1            # duplication seems necessary
+        self._prefix = ''       # ditto
 
     @property
     def nodes(self):
         return self._nodes
 
     def __eq__(self, other):
+
         if other is None:
             return False
         if not isinstance(other, NLHTree):
@@ -302,7 +280,7 @@ class NLHTree(NLHNode):
         el = []
         for q in self._nodes:
             if fnmatch.fnmatch(q._name, pat):
-                if q.isLeaf:
+                if isinstance(q, NLHLeaf):
                     el.append('  ' + q._name)
                 else:
                     el.append('* ' + q._name)
@@ -317,7 +295,7 @@ class NLHTree(NLHNode):
     def toStrings(self, ss, indent=0):
         ss.append("%s%s" % (SP.getSpaces(indent), self._name))
         for node in self._nodes:
-            if node.isLeaf:
+            if isinstance(node, NLHLeaf):
                 ss.append(node._toString(indent + 1))
             else:
                 node.toStrings(ss, indent + 1)
@@ -334,7 +312,7 @@ class NLHTree(NLHNode):
             raise RuntimeError("cannot create a NLHTree, no path set")
         if not os.path.exists(pathToDir):
             raise RuntimeError(
-                "NLHTree: directory '%s' does not exist" % pathToDir)
+                "NLHTree.createFromFileSystem: directory '%s' does not exist" % pathToDir)
         (path, junk, name) = pathToDir.rpartition('/')
         if path == '':
             raise RuntimeError("cannot parse path " + pathToDir)
@@ -519,6 +497,36 @@ class NLHTree(NLHNode):
                     unmatched.append((relPath, hash,))
         return unmatched
 
+    def populateDataDir(self, uDir, path):
+
+        if not os.path.exists(uDir):
+            raise RuntimeError(
+                "populateDataDir: uDir '%s' does not exist" % uDir)
+
+        unmatched = []
+        for couple in self:
+            if len(couple) == 1:
+                # it's a directory
+                dir = os.path.join(path, couple[0])
+                os.makedirs(dir, mode=0o755, exist_ok=True)
+            elif len(couple) == 2:
+                hash = couple[1]
+                if not u.exists(uDir, hash):
+                    unmatched.append(hash)
+                else:
+                    if self.usingSHA1:
+                        data = u.getData1(uDir, hash)
+                    else:
+                        data = u.getData2(uDir, hash)
+
+                    pathToFile = os.path.join(path, couple[0])
+                    with open(pathToFile, 'wb') as f:
+                        f.write(data)
+            else:
+                print("degenerate/malformed tuple of length %d" % len(couple))
+
+        return unmatched
+
     @classmethod
     def saveToUDir(cls, dataDir, uDir, listFile, usingSHA1=False):
         """
@@ -526,11 +534,6 @@ class NLHTree(NLHNode):
         all files present into uDir by content key.  We assume that uDir
         is well-formed.
         """
-
-        # DEBUG
-        # print("saving %s to %s and writing a listing to %s" % (
-        #    dataDir, uDir, listFile))
-        # END
 
         def cWalk(node, path):
             if isinstance(node, NLHTree):
@@ -598,11 +601,6 @@ class NLHTree(NLHNode):
             while line:
                 done = False
 
-                # DEBUG
-                # dropping newline
-                # print("LINE %3d: '%s'" % (lineNbr, line[:-1]))
-                # END
-
                 # -- dir --------------------------------------------
                 m = NLHTree.DIR_LINE_RE.match(line)
                 if m:
@@ -618,9 +616,6 @@ class NLHTree(NLHNode):
                         raise RuntimeError("corrupt nlhTree listing")
                     path = '/'.join(parts)
 
-                    # DEBUG
-                    # print("  D %3d %s" % (curDepth, dirName))
-                    # END
                     yield (path, )
                     done = True
 
@@ -631,9 +626,6 @@ class NLHTree(NLHNode):
                         curDepth = len(m.group(1))
                         fileName = m.group(2)
                         hash = m.group(3)
-                        # DEBUG
-                        #print("  F %3d %s %s" % (curDepth, fileName, hash))
-                        # END
                         yield (os.path.join(path, fileName), hash)
                         done = True
                 # -- error ------------------------------------------
@@ -678,11 +670,6 @@ class NLHTree(NLHNode):
         for lineNbr, line in enumerate(ss):
             done = False
 
-            # DEBUG
-            # dropping newline
-            # print("LINE %3d: '%s'" % (lineNbr, line[:-1]))
-            # END
-
             # -- dir --------------------------------------------
             m = NLHTree.DIR_LINE_RE.match(line)
             if m:
@@ -698,9 +685,6 @@ class NLHTree(NLHNode):
                     raise RuntimeError("corrupt nlhTree listing")
                 path = '/'.join(parts)
 
-                # DEBUG
-                # print("  D %3d %s" % (curDepth, dirName))
-                # END
                 yield (path, )
                 done = True
 
@@ -711,9 +695,6 @@ class NLHTree(NLHNode):
                     curDepth = len(m.group(1))
                     fileName = m.group(2)
                     hash = m.group(3)
-                    # DEBUG
-                    #print("  F %3d %s %s" % (curDepth, fileName, hash))
-                    # END
                     yield (os.path.join(path, fileName), hash)
                     done = True
             # -- error ------------------------------------------
@@ -724,29 +705,13 @@ class NLHTree(NLHNode):
     # ITERABLE ############################################
 
     def __iter__(self):
-        #       # DEBUG
-        #       print("      %-10s.__iter__(); n = %2d/%d" % (
-        #               self._name, self._n, len(self._nodes)))
-        #       for n in self._nodes:
-        #           if n.isLeaf:
-        #               print('        LEAF %s' % n.name)
-        #           else:
-        #               print('        TREE %s with %d children' % (
-        #                   n.name, len(n.nodes)))
-        #       # END
 
+        self._n = -1
+        self._subTree = None
+        self._prefix = ''
         return self
 
     def __next__(self):
-
-        # DEBUG
-        # print("      %-10s.__next__(): n = %2d/%d; recursing = %s, path=%s" % (
-        #             self._name,
-        #             self._n,
-        #             len(self._nodes),
-        #             self._subTree is not None,
-        #             self._prefix))
-        # END
 
         # For the first call:
         if self._n < 0:
@@ -761,16 +726,13 @@ class NLHTree(NLHNode):
                 couple = self._subTree.__next__()
                 return couple
             except StopIteration:
-                # DEBUG
-                #print("        rcvd StopIteration from %s" % self._subTree.name)
-                # END
                 self._subTree = None
                 self._n += 1
                 if self._n >= len(self._nodes):
                     raise StopIteration
 
         nextNode = self._nodes[self._n]
-        if nextNode.isLeaf:
+        if isinstance(nextNode, NLHLeaf):
             self._n += 1
             return (os.path.join(self._prefix,
                                  os.path.join(self._name, nextNode._name)),

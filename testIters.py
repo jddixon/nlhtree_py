@@ -49,7 +49,7 @@ class TestIters (unittest.TestCase):
         self.assertIsNotNone(nodes)
 
         root = tree
-        self.assertFalse(root.isLeaf)
+        self.assertFalse(isinstance(root, NLHLeaf))
         self.assertTrue(hasattr(root, '__iter__'))
         self.assertTrue(hasattr(root, '__next__'))
 
@@ -58,7 +58,7 @@ class TestIters (unittest.TestCase):
 
         # -- leaf node ----------------------------------------------
         node0 = nodes[0]
-        self.assertTrue(node0.isLeaf)
+        self.assertTrue(isinstance(node0, NLHLeaf))
         self.assertTrue(hasattr(node0, '__iter__'))
         self.assertTrue(hasattr(node0, '__next__'))
 
@@ -75,7 +75,7 @@ class TestIters (unittest.TestCase):
 
         # -- leaf node ----------------------------------------------
         node1 = nodes[1]
-        self.assertTrue(node1.isLeaf)
+        self.assertTrue(isinstance(node1, NLHLeaf))
         self.assertTrue(hasattr(node1, '__iter__'))
         self.assertTrue(hasattr(node1, '__next__'))
 
@@ -92,7 +92,7 @@ class TestIters (unittest.TestCase):
 
         # -- dir node -----------------------------------------------
         node2 = nodes[2]
-        self.assertFalse(node2.isLeaf)
+        self.assertFalse(isinstance(node2, NLHLeaf))
         self.assertTrue(hasattr(node2, '__iter__'))
         self.assertTrue(hasattr(node2, '__next__'))
 

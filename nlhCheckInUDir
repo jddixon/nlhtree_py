@@ -36,9 +36,6 @@ def main():
     parser.add_argument('-b', '--listFile', default='list.nlh',
                         help='where to write listing (default = list.nlh)')
 
-    parser.add_argument('-d', '--dataDir', default='.',
-                        help='path to data directory')
-
     parser.add_argument('-j', '--justShow', action='store_true',
                         help='show options and exit')
 
@@ -53,9 +50,6 @@ def main():
 
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='be chatty')
-
-    parser.add_argument('-z', '--dontDoIt', action='store_true',
-                        help="don't actually do anything, just say what you would do")
 
     args = parser.parse_args()
 
@@ -77,10 +71,6 @@ def main():
 
     # sanity checks -------------------------------------------------
 
-    if not (args.testing or args.justShow):
-        if not os.path.exists(args.dataDir):
-            print("%s does not exist; cannot continue" % args.dataDir)
-            sys.exit(1)
     if not args.justShow:
         os.makedirs(os.path.join(args.uDir, 'in'), mode=0o755, exist_ok=True)
         os.makedirs(os.path.join(args.uDir, 'tmp'), mode=0o755, exist_ok=True)
@@ -91,8 +81,6 @@ def main():
         print("%s %s" % (appName, __version_date__))
 
     if args.verbose or args.justShow:
-        print('dataDir          = ' + str(args.dataDir))
-        print('dontDoIt         = ' + str(args.dontDoIt))
         print('justShow         = ' + str(args.justShow))
         print('listFile         = ' + str(args.listFile))
         print('showVersion      = ' + str(args.showVersion))
@@ -103,11 +91,8 @@ def main():
 
     # do what's required --------------------------------------------
     if not args.justShow:
-        if args.dontDoIt:
-            print("would be saving %s to %s and writing a listing to %s" % (
-                args.dataDir, args.uDir, args.listFile))
-        else:
-            NLHTree.checkInUDir(args.dataDir, args.uDir, args.listFile)
+        tree = NLHTree.parseFile(args.listFile, args.usingSHA1)
+        tree.checkInUDir(args.uDir)
 
 if __name__ == '__main__':
     main()

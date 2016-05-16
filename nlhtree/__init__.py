@@ -24,8 +24,8 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__ = '0.4.19'
-__version_date__ = '2016-05-14'
+__version__ = '0.4.20'
+__version_date__ = '2016-05-15'
 
 
 class NLHError(RuntimeError):
@@ -437,6 +437,12 @@ class NLHTree(NLHNode):
                     stack[depth].insert(leaf)
 
         return root
+
+    @staticmethod
+    def parseFile(pathToFile, usingSHA1):
+        with open(pathToFile, 'r') as f:
+            s = f.read()
+        return NLHTree.parse(s, usingSHA1)
 
     @staticmethod
     def parse(s, usingSHA1):

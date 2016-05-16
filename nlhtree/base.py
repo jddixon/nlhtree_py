@@ -5,7 +5,6 @@ import fnmatch
 import os
 import re
 from stat import *
-from xlattice.u import fileSHA1, fileSHA2
 from xlattice.crypto import SP   # for getSpaces()
 from nlhtree import NLHTree
 from xlattice import (

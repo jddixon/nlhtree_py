@@ -31,16 +31,16 @@ def main():
     parser = ArgumentParser(description=DESC)
 
     parser.add_argument('-1', '--usingSHA1', action='store_true',
-                        help='using the 160-bit SHA1 hash')
+                        help='using the SHA1 hash')
 
     parser.add_argument('-b', '--listFile', default='list.nlh',
                         help='where to write listing (default = list.nlh)')
 
-    parser.add_argument('-d', '--dataDir', default='.',
-                        help='path to data directory')
-
     parser.add_argument('-j', '--justShow', action='store_true',
                         help='show options and exit')
+
+    parser.add_argument('-p', '--path', default='.',
+                        help='path to data directory')
 
     parser.add_argument('-T', '--testing', action='store_true',
                         help='this is a test run')
@@ -78,9 +78,8 @@ def main():
     # sanity checks -------------------------------------------------
 
     if not (args.testing or args.justShow):
-        if not os.path.exists(args.dataDir):
-            print("%s does not exist; cannot continue" % args.dataDir)
-            sys.exit(1)
+        if not os.path.exists(args.path):
+            os.makedirs(args.path, mode=0o755)
     if not args.justShow:
         os.makedirs(os.path.join(args.uDir, 'in'), mode=0o755, exist_ok=True)
         os.makedirs(os.path.join(args.uDir, 'tmp'), mode=0o755, exist_ok=True)
@@ -91,10 +90,10 @@ def main():
         print("%s %s" % (appName, __version_date__))
 
     if args.verbose or args.justShow:
-        print('dataDir          = ' + str(args.dataDir))
         print('dontDoIt         = ' + str(args.dontDoIt))
         print('justShow         = ' + str(args.justShow))
         print('listFile         = ' + str(args.listFile))
+        print('path             = ' + str(args.path))
         print('showVersion      = ' + str(args.showVersion))
         print('testing          = ' + str(args.testing))
         print('uDir             = ' + str(args.uDir))
@@ -105,9 +104,10 @@ def main():
     if not args.justShow:
         if args.dontDoIt:
             print("would be saving %s to %s and writing a listing to %s" % (
-                args.dataDir, args.uDir, args.listFile))
+                args.path, args.uDir, args.listFile))
         else:
-            NLHTree.populateDataDir(args.dataDir, args.uDir, args.listFile)
+            tree = NLHTree.parseFile(args.listFile, args.usingSHA1)
+            tree.populateDataDir(args.uDir, args.path)
 
 if __name__ == '__main__':
     main()

@@ -1,5 +1,9 @@
 py/nlhtree_py/CHANGES
 
+v0.4.20
+    2016-05-15
+        * minor fixes                                               SLOC 1647
+        * nlh{CheckIn{DataDir,UDir},PopulateDataDir} fixed          SLOC 1624
 v0.4.19
     2016-05-14
         * populateDataDir works, passes tests                       SLOC 1648

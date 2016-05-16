@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# ~/dev/py/nlhtree_py/nlhSaveToUDir
+# ~/dev/py/nlhtree_py/nlhCheckInDataDir
 
 import os
 import re
@@ -26,7 +26,7 @@ def main():
 
     # parse the command line ----------------------------------------
     DESC   = \
-        'given a project directory, write an NLHTree while backing the project up to U'
+        'given an NLHTree listing and a data directory, list any files in the list not present in the directory, '
 
     parser = ArgumentParser(description=DESC)
 
@@ -45,17 +45,11 @@ def main():
     parser.add_argument('-T', '--testing', action='store_true',
                         help='this is a test run')
 
-    parser.add_argument('-u', '--uDir', default=UDIR,
-                        help='path to uDir')
-
     parser.add_argument('-V', '--showVersion', action='store_true',
                         help='print the version number and exit')
 
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='be chatty')
-
-    parser.add_argument('-z', '--dontDoIt', action='store_true',
-                        help="don't actually do anything, just say what you would do")
 
     args = parser.parse_args()
 
@@ -71,9 +65,6 @@ def main():
         #   that is not already in use
         # XXX This behavior needs to be clearly documented.
         listFile = os.path.join('tmp', listFile)
-        if args.uDir[0] == '/':
-            args.uDir = args.uDir[1:]
-        args.uDir = os.path.join('tmp', args.uDir)
 
     # sanity checks -------------------------------------------------
 
@@ -81,9 +72,6 @@ def main():
         if not os.path.exists(args.dataDir):
             print("%s does not exist; cannot continue" % args.dataDir)
             sys.exit(1)
-    if not args.justShow:
-        os.makedirs(os.path.join(args.uDir, 'in'), mode=0o755, exist_ok=True)
-        os.makedirs(os.path.join(args.uDir, 'tmp'), mode=0o755, exist_ok=True)
 
     # complete setup ------------------------------------------------
 
@@ -92,22 +80,17 @@ def main():
 
     if args.verbose or args.justShow:
         print('dataDir          = ' + str(args.dataDir))
-        print('dontDoIt         = ' + str(args.dontDoIt))
         print('justShow         = ' + str(args.justShow))
         print('listFile         = ' + str(args.listFile))
         print('showVersion      = ' + str(args.showVersion))
         print('testing          = ' + str(args.testing))
-        print('uDir             = ' + str(args.uDir))
         print('usingSHA1        = ' + str(args.usingSHA1))
         print('verbose          = ' + str(args.verbose))
 
     # do what's required --------------------------------------------
     if not args.justShow:
-        if args.dontDoIt:
-            print("would be saving %s to %s and writing a listing to %s" % (
-                args.dataDir, args.uDir, args.listFile))
-        else:
-            NLHTree.checkInDataDir(args.dataDir, args.uDir, args.listFile)
+        tree = NLHTree.parseFile(args.listFile, args.usingSHA1)
+        tree.checkInDataDir(args.dataDir)
 
 if __name__ == '__main__':
     main()

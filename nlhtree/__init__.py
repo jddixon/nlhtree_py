@@ -24,8 +24,8 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__ = '0.4.20'
-__version_date__ = '2016-05-15'
+__version__ = '0.4.21'
+__version_date__ = '2016-05-16'
 
 
 class NLHError(RuntimeError):
@@ -534,7 +534,9 @@ class NLHTree(NLHNode):
         return unmatched
 
     @classmethod
-    def saveToUDir(cls, dataDir, uDir, listFile, usingSHA1=False):
+    def saveToUDir(cls, listFile, dataDir,
+                   uDir=os.environ['DVCZ_UDIR'],
+                   usingSHA1=False, exRE=None, matchRE=None):
         """
         Build an NLHTree for the data directory and walk the tree, copying
         all files present into uDir by content key.  We assume that uDir
@@ -559,15 +561,14 @@ class NLHTree(NLHNode):
                 print("  skipping")
 
         # DEBUG
-        #print("saveToUDir %s ==> %s" % (dataDir, uDir))
+        # print("saveToUDir %s ==> %s" % (dataDir, uDir))
+        # END
 
-        # exRE and matchRE default to None : WE NEED exRE
-        tree = cls.createFromFileSystem(dataDir, usingSHA1)
+        tree = cls.createFromFileSystem(dataDir, usingSHA1, exRE, matchRE)
 
         if not os.path.exists(uDir):
             print("  %s doesn't exist; creating" % uDir)
             os.makedirs(uDir, 0o711, exist_ok=True)
-        # END
 
         # XXX This seems to be necessary, which means that xlattice.u
         # needs some fixing

@@ -9,6 +9,7 @@ import unittest
 
 from rnglib import SimpleRNG
 from nlhtree import NLHTree
+from xlattice.util import makeExRE
 
 
 class TestCrossFunctions (unittest.TestCase):
@@ -45,9 +46,13 @@ class TestCrossFunctions (unittest.TestCase):
             exist_ok=True)
         self.assertTrue(os.path.exists(os.path.join(TARGET_UDIR, 'in')))
 
+        exclusions = ['build']
+        exRE = makeExRE(exclusions)
+
         # copy the standard data directory into tmp/uDir, creating a
         # listing file tmp/list.nlh as a side effect
-        NLHTree.saveToUDir(GOLD_DATA, TARGET_UDIR, TARGET_LIST_FILE, usingSHA1)
+        NLHTree.saveToUDir(TARGET_LIST_FILE, GOLD_DATA, TARGET_UDIR, usingSHA1,
+                           exRE, None)
 
         self.assertTrue(os.path.exists(GOLD_LIST_FILE))
         with open(GOLD_LIST_FILE, 'r') as f:

@@ -24,8 +24,9 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__ = '0.4.21'
-__version_date__ = '2016-05-16'
+__version__ = '0.4.22'
+__version_date__ = '2016-05-17'
+
 
 class NLHError(RuntimeError):
     pass
@@ -185,16 +186,6 @@ class NLHTree(NLHNode):
         self._n = -1            # duplication seems necessary
         self._prefix = ''       # ditto
 
-    @staticmethod
-    def walkFile(pathToFile):
-        if not os.path.exists(pathToFile):
-            raise RuntimeError('file not found: ' + pathToFile)
-        depth = 0
-
-        # XXX WORKING HERE XXX
-        with open(pathToFile, 'r') as f:
-            pass
-            
     @property
     def nodes(self):
         return self._nodes
@@ -542,52 +533,63 @@ class NLHTree(NLHNode):
 
         return unmatched
 
-    @classmethod
-    def saveToUDir(cls, listFile, dataDir,
-                   uDir=os.environ['DVCZ_UDIR'],
-                   usingSHA1=False, exRE=None, matchRE=None):
+    def saveToUDir(self, dataDir,
+                   uDir=os.environ['DVCZ_UDIR'], usingSHA1=False):
         """
-        Build an NLHTree for the data directory and walk the tree, copying
-        all files present into uDir by content key.  We assume that uDir
-        is well-formed.
+        Given an NLHTree for the data directory, walk the tree, copying
+        all files present in dataDir into uDir by content key.  We assume
+        that uDir is well-formed.
         """
 
-        def cWalk(node, path):
-            if isinstance(node, NLHTree):
-                # DEBUG
-                # print("  NODE: %s" % node.name)
-                # END
-                for n in node.nodes:
-                    pathToNode = os.path.join(path, n.name)
-                    cWalk(n, pathToNode)
-            elif isinstance(node, NLHLeaf):
-                # DEBUG
-                #print("  LEAF %s %s" % (node.name, node.hexHash))
-                # END
-                u.copyAndPut1(path, uDir, node.hexHash)
-            else:
-                print("INTERNAL ERROR: node is neither Doc nor Tree nor Leaf")
-                print("  skipping")
+        # the last part of dataDir is the name of the tree
+        (path, junk, name) = dataDir.rpartition('/')
+        if name != self.name:
+            raise "name of directory (%s) does not match name of tree (%s)"
 
         # DEBUG
-        # print("saveToUDir %s ==> %s" % (dataDir, uDir))
+        #print("saveToUDir %s ==> %s" % (dataDir, uDir))
+        #print("  path => '%s'" % path)
         # END
-
-        tree = cls.createFromFileSystem(dataDir, usingSHA1, exRE, matchRE)
 
         if not os.path.exists(uDir):
             print("  %s doesn't exist; creating" % uDir)
             os.makedirs(uDir, 0o711, exist_ok=True)
 
-        # XXX This seems to be necessary, which means that xlattice.u
-        # needs some fixing
-        uTmp = os.path.join(uDir, 'tmp')
-        if not os.path.exists(uTmp):
-            print("  %s doesn't exist; creating" % uTmp)
-            os.makedirs(uTmp, 0o711, exist_ok=True)
-        cWalk(tree, dataDir)
-        with open(listFile, 'w+') as f:
-            f.write(tree.__str__())
+        unmatched = []
+        for couple in self:
+            if len(couple) == 1:
+                # DEBUG
+                #print("  DIR:  %s" % couple[0])
+                # END
+                continue                   # it's a directory
+
+            elif len(couple) == 2:
+                relPath = couple[0]
+                hash = couple[1]
+                pathToFile = os.path.join(path, relPath)
+                # DEBUG
+                #print("  FILE: %s" % pathToFile)
+                # END
+                if not os.path.exists(pathToFile):
+                    # DEBUG
+                    #print("path does not exist: %s" % pathToFile)
+                    # END
+                    unmatched.append(path)
+                else:
+                    if self.usingSHA1:
+                        u.copyAndPut1(pathToFile, uDir, hash)
+                    else:
+                        u.copyAndPut2(pathToFile, uDir, hash)
+            else:
+                s = []
+                for part in couple:
+                    s.append(part.__str__())
+                unmatched.append(':'.join(s))
+                print(
+                    "INTERNAL ERROR: node is neither Tree nor Leaf\n  %s" %
+                    s)
+
+        return unmatched
 
     # ITERATORS #####################################################
 

@@ -4,9 +4,9 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/nlhtree_py
   
-  rm -rf build/* 
+  rm -rf 
   
-  pySloc  -X dist -X build -X tmp -v $@
+  pySloc -L py  -X dist -X tmp -v $@
 else
   echo "DEV_BASE is not defined"
 fi

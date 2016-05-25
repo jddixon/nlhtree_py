@@ -49,19 +49,14 @@ class TestCrossFunctions (unittest.TestCase):
         exclusions = ['build']
         exRE = makeExRE(exclusions)
 
-        # copy the standard data directory into tmp/uDir, creating a
-        # listing file tmp/list.nlh as a side effect
-        NLHTree.saveToUDir(TARGET_LIST_FILE, GOLD_DATA, TARGET_UDIR, usingSHA1,
-                           exRE, None)
+        tree = NLHTree.createFromFileSystem(GOLD_DATA, usingSHA1, exRE, None)
+        tree.saveToUDir(GOLD_DATA, TARGET_UDIR, usingSHA1)
 
         self.assertTrue(os.path.exists(GOLD_LIST_FILE))
         with open(GOLD_LIST_FILE, 'r') as f:
             goldListing = f.read()
 
-        self.assertTrue(os.path.exists(TARGET_LIST_FILE))
-        with open(TARGET_LIST_FILE, 'r') as f:
-            outputListing = f.read()
-
+        outputListing = tree.__str__()
         self.assertEqual(goldListing, outputListing)
 
         tree = NLHTree.createFromFileSystem(GOLD_DATA, usingSHA1)
@@ -73,6 +68,12 @@ class TestCrossFunctions (unittest.TestCase):
 
         # second iteration over tree
         unmatched = tree.checkInUDir(TARGET_UDIR)
+        if len(unmatched) > 0:
+            for u in unmatched:
+                # DEBUG
+                print(u)
+                # END
+                print("not matched: ", u)
         self.assertEqual(len(unmatched), 0)
 
         # third iteration over tree - this should create the data directory

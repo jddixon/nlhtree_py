@@ -1,5 +1,8 @@
 py/nlhtree_py/CHANGES
 
+v0.4.23
+    2016-05-25
+        * add bkp2U, other bash scripts; .dvcz etc                  SLOC 1663
 v0.4.22
     2016-05-17
         * changed saveToUDir sig again                              SLOC 1638
@@ -102,5 +105,3 @@ v0.1.0
 v0.0.0
     2015-05-20
         * initial import                                            SLOC   47
-
-

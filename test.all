@@ -1,8 +1,19 @@
-./testCrossFunctions.py
-./testIters.py
-./testNLHBase.py
-./testNLHLeaf.py
-./testNLHTree.py
-./testNLHTree2.py
-./testNLHTree3.py
-./testWalker.py
+#!/usr/bin/env bash
+
+if [ ! -z "${DEV_BASE// }" ]
+then
+  cd $DEV_BASE/py/nlhtree_py
+  
+  ./testCrossFunctions.py
+  ./testIters.py
+  ./testNLHBase.py
+  ./testNLHLeaf.py
+  ./testNLHTree.py
+  ./testNLHTree2.py
+  ./testNLHTree3.py
+  ./testWalker.py
+  echo "CONGRATULATIONS: YOU HAVE OVERWRITTEN test.all"
+  
+else
+  echo "DEV_BASE is not defined"
+fi

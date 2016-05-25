@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+if [ ! -z "${DEV_BASE// }" ]
+then
+  cd $DEV_BASE/py/nlhtree_py
+  
+  autopep8 -ai -r nlhtree nlhCheckInDataDir nlhCheckInUDir nlhPopulateDataDir nlhSaveToUDir *.py
+  echo "not styling example/ subdir"
+  echo "not styling test/ subdir"
+  
+else
+  echo "DEV_BASE is not defined"
+fi

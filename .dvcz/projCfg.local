@@ -5,22 +5,10 @@ code:std:.dvcz/projCfg.local
 code:std:.gitignore
 code:std:MANIFEST.in
 
-bash:std:auto8it
-bash:std:countem
-bash:std:installit
-bash:std:test.all
-
 dir:pkg:nlhtree
 dir:tmp:build
 dir:tmp:tmp
 
-py:test:testNLHBase.py
-py:test:testNLHLeaf.py
-py:test:testNLHTree.py
-py:test:testNLHTree2.py
-py:test:testNLHTree3.py
-
-py:std:setup.py
 py:global:nlhCheckInDataDir
 py:global:nlhCheckInUDir
 py:global:nlhPopulateDataDir

@@ -1,5 +1,8 @@
 py/nlhtree_py/CHANGES
 
+v0.4.24
+    2016-06-13
+        * revised to match xlattice.u API changes                   SLOC 1792
 v0.4.23
     2016-05-25
         * add bkp2U, other bash scripts; .dvcz etc                  SLOC 1663
@@ -105,6 +108,7 @@ v0.1.0
 v0.0.0
     2015-05-20
         * initial import                                            SLOC   47
+
 
 
 

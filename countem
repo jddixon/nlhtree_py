@@ -4,7 +4,7 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/nlhtree_py
   
-  rm -rf 
+  rm -rf build/* 
   
   pySloc -L py  -X dist -X tmp -v $@
 else

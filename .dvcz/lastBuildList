@@ -7,23 +7,25 @@ zPjEShF9rvcNa9XEy1dKpcDz9Szbm2SlxOgM83fDDGtOq4SSCSqndtxrOvXXPB57
 H1mJV/FmerbXRPm5ERJVNIxtLk7Gr2Ce45FVlWyJGMhpfVlKkkk+bRQ02OFfazJI
 GQIDAQAB
 -----END RSA PUBLIC KEY-----
-nlhtree_py v0.4.23
-2016-05-25 22:18:05
+nlhtree_py v0.4.24
+2016-06-13 18:47:51
 # START CONTENT #
 nlhtree_py
  .copyright 304c14d702dff7c6c2c39729ff62aed7203b3427
  .dvcz
-  projCfg 1e69b2d7c11fadceb6775bc6783e46182427a199
+  builds 6f248581174bbedcad3900dc64dbcf041af8aab8
+  lastBuildList 02acb9e1b9dc5230acbbda45b56c9d20d969c36e
+  projCfg 0d2ee37f37c2fbc5f8c2a6394d466e47397cbeb9
   projCfg.local ed5b79980cfe40f60d8a48d3098b2b88ada4eaa9
-  version 89c3991b6fc52a26a9384096c3ee054761cdd8da
- .gitignore 274228c81d7b75ce1888567cdfb763aacfcd74db
- CHANGES c5616c5cacc513efca19ea5f3a415f070e3a10e2
+  version a00a7b1099bf3fb94ec8eaab3df1545a50c33251
+ .gitignore 5f1a04317952b671c5828218c6efe88c2594f8fb
+ CHANGES a634296a1d7021e4b30b6d43ea7d9e85bc39b310
  LICENSE.md ef87ef0aafe2bb3dc3b3ab29651c52e8add097b4
  MANIFEST.in 49f3fa12c06539c2c9e09f4ead7f121c41b6586c
  README.md 79c8c416c0b84068afe6b34ea276640352ce3d73
- TODO 45f5a77c001dae91f4dc56271f551c6ff42f53b6
+ TODO a86ac4449df68f288c26ac86e968c8cf28309048
  bkp2U c68ccfbce377795646501504616b9bbfc55aa6cb
- countem e42ab2d14a2302732f02ccfa6c882ab1f3b8bc8f
+ countem 6417661ed9ea7962487c2b757f8d2c6baf01361d
  dist
   nlhtree-0.0.0.tar.gz d331a6187aa530fbd600f2fd0f120bbff84dea35
   nlhtree-0.1.0.tar.gz aa390036b8392badfdfdfc84ce75e4d25c45ddfe
@@ -53,6 +55,7 @@ nlhtree_py
   nlhtree_py-0.4.21.tar.gz 8819f0f1f0dc80299fbc2ca9947bbf49512ed81a
   nlhtree_py-0.4.22.tar.gz 84973f14838d73f3d778909ed8edf33ae4a49a27
   nlhtree_py-0.4.23.tar.gz b8b09ad0b2ff5d5b13df35de6fb3a51719e36150
+  nlhtree_py-0.4.24.tar.gz ff4a44cd625a25f6e687407d02185222683ed450
   nlhtree_py-0.4.7.tar.gz 208dcb2b192edcd2bc6bf55bbdd83a826e0e3c50
   nlhtree_py-0.4.8.tar.gz fb86bd17bf8c0001ee904fd203baeb35e5e483f4
   nlhtree_py-0.4.9.tar.gz 80634510bae8abaf2825fd2c13c3ceb3ce088c77
@@ -99,12 +102,12 @@ nlhtree_py
  nlhPopulateDataDir f096d9c575dd54be0f03fd5ff7698d3b079a000d
  nlhSaveToUDir dbd3a160b5bae504f480536cdaf337ab52984640
  nlhtree
-  __init__.py 84dc4471bc3737622802b23c2a722009bdf473da
+  __init__.py 1fe9b0756944da799d003f0779019ae6562be0ca
   base.py 837b57165a12deeabb98743e76a9c7e314333cc6
  setup.py 2bd8c3da3705adbc52339ed2451b6f524a887fa1
  styleit 1a8195d694bef2a0dfc0ea259e5b77f05eaca8db
  test
- test.all 65263e722172d3c68a3a73cdf247d0515724e5c9
+ test.all 9c3bbf2ec7eeb794e5e8d9914e64887fd63b28cf
  testCrossFunctions.py 7d54c6f27754e2675100954bc2ae81a03b4490b5
  testIters.py 9c0a47de8959b8f279bfba6c24b7713b5f98da95
  testNLHBase.py 82a4d1459331a20b637869fdc754570a23d5039b
@@ -115,4 +118,4 @@ nlhtree_py
  testWalker.py 4ad843ced60acf632d9292af58b420c073e9b53c
 # END CONTENT #
 
-iZzgmq1ygndzUS9Ld7oLoju6oXwv317YNHW7HzTNdgHYU106C3BombTcZEyxvN5+76fRBRx6xJEZhdJZY4QbCBl8VXlDnvZhGTTf8qJNWiuKwHxFtHgVrXDaGHbLOegv7ZPhYPuc22XsBEUrQxrwHt8OepStu6IDeE+4wtypn1MspFLcUPjp33log0OHOc1Gumf3gpZhpFRokyMjnZKnrZnq3OYnTMEIfm17GK+5mm5y+x07rivaBBYM8AYKXrsub7Un/Deu5LTnpSTVsP8XlH4hFn6XSAzJjvNBcaaC7C9iFzj2ph20ZU191PsefCl5kksKQeJQNfbiH1r1pvUDIw==
+k0idb6yHeHmKI2fwtG8M2SJaG3qerGMWDywSiv9RrvmQ7xdOYFcBzPbwJHZifM5qIpx673+5t8RheQTFydKcsU+3cK2dD99KxOZz9FOfjRn1h1/Jv5FLWCr9drjvQnGh61d/rAYyqZgt9/I3W6fsTZQZR+LQ+bI6G1IbiHGHowrI+DR6kjgdKnl0TSuk8mAnR6ifxzRFUwJVa1GHEFT13vapPlgb5X7Xw1oG82gTS1pyxdXu7/RtDTShlwLKtvrng3K5y/W7Kuoo+7lKcodhCCZHR7KG9tDwBmFrwLeajKTix88USHXQCufEvBBpO5rs+EC0yjVVgTQjQu4RbB8AUw==

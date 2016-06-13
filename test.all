@@ -12,7 +12,6 @@ then
   ./testNLHTree2.py
   ./testNLHTree3.py
   ./testWalker.py
-  echo "CONGRATULATIONS: YOU HAVE OVERWRITTEN test.all"
   
 else
   echo "DEV_BASE is not defined"

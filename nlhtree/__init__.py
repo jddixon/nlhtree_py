@@ -8,8 +8,10 @@ import re
 import sys
 from stat import *
 
-from xlattice.u import fileSHA1Hex, fileSHA2Hex
 from xlattice.crypto import SP   # for getSpaces()
+from xlattice.u import (fileSHA1Hex, fileSHA2Hex,
+                        DIR_FLAT, DIR16x16, DIR256x256,
+                        UDir)
 
 from xlattice import (
     SHA1_BIN_LEN, SHA2_BIN_LEN,
@@ -17,15 +19,12 @@ from xlattice import (
     SHA1_BIN_NONE, SHA2_BIN_NONE,
     SHA1_HEX_NONE, SHA2_HEX_NONE)
 
-# XXX THIS IS EXTREMELY LIMITING XXX The strategy should be selectable
-from xlattice import u256 as u
-
 __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__ = '0.4.23'
-__version_date__ = '2016-05-25'
+__version__ = '0.4.24'
+__version_date__ = '2016-06-13'
 
 class NLHError(RuntimeError):
     pass
@@ -37,7 +36,7 @@ class NLHParseError(NLHError):
 
 class NLHNode(object):
 
-    def __init__(self, name, usingSHA1):
+    def __init__(self, name, usingSHA1=False):
         # XXX needs checks
         self._name = name
         self._usingSHA1 = usingSHA1
@@ -179,7 +178,7 @@ class NLHTree(NLHNode):
     FILE_LINE_RE_2 = re.compile(r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{64})$',
                                 re.IGNORECASE)
 
-    def __init__(self, name, usingSHA1):
+    def __init__(self, name, usingSHA1=False):
         super().__init__(name, usingSHA1)
         self._nodes = []
         self._n = -1            # duplication seems necessary
@@ -484,11 +483,13 @@ class NLHTree(NLHNode):
                     unmatched.append(path)
         return unmatched
 
-    def checkInUDir(self, uDir):
+    def checkInUDir(self, uPath):
         """
         Walk the tree, verifying that all leaf nodes have corresponding
         files in uDir, files with the same content key.
         """
+
+        uDir = UDir.discover(uPath)
 
         unmatched = []
         for couple in self:
@@ -498,15 +499,17 @@ class NLHTree(NLHNode):
             else:
                 relPath = couple[0]
                 hash = couple[1]
-                if not u.exists(uDir, hash):
+                if not uDir.exists(hash):
                     unmatched.append((relPath, hash,))
         return unmatched
 
-    def populateDataDir(self, uDir, path):
+    def populateDataDir(self, uPath, path):
 
-        if not os.path.exists(uDir):
+        if not os.path.exists(uPath):
             raise RuntimeError(
-                "populateDataDir: uDir '%s' does not exist" % uDir)
+                "populateDataDir: uPath '%s' does not exist" % uPath)
+
+        uDir = UDir.discover(uPath)
 
         unmatched = []
         for couple in self:
@@ -516,13 +519,10 @@ class NLHTree(NLHNode):
                 os.makedirs(dir, mode=0o755, exist_ok=True)
             elif len(couple) == 2:
                 hash = couple[1]
-                if not u.exists(uDir, hash):
+                if not uDir.exists(hash):
                     unmatched.append(hash)
                 else:
-                    if self.usingSHA1:
-                        data = u.getData1(uDir, hash)
-                    else:
-                        data = u.getData2(uDir, hash)
+                    data = uDir.getData(hash)
 
                     pathToFile = os.path.join(path, couple[0])
                     with open(pathToFile, 'wb') as f:
@@ -533,11 +533,11 @@ class NLHTree(NLHNode):
         return unmatched
 
     def saveToUDir(self, dataDir,
-                   uDir=os.environ['DVCZ_UDIR'], usingSHA1=False):
+                   uPath=os.environ['DVCZ_UDIR'], usingSHA1=False):
         """
         Given an NLHTree for the data directory, walk the tree, copying
-        all files present in dataDir into uDir by content key.  We assume
-        that uDir is well-formed.
+        all files present in dataDir into uPath by content key.  We assume
+        that uPath is well-formed.
         """
 
         # the last part of dataDir is the name of the tree
@@ -546,13 +546,11 @@ class NLHTree(NLHNode):
             raise "name of directory (%s) does not match name of tree (%s)"
 
         # DEBUG
-        #print("saveToUDir %s ==> %s" % (dataDir, uDir))
+        #print("saveToUDir %s ==> %s" % (dataDir, uPath))
         #print("  path => '%s'" % path)
         # END
 
-        if not os.path.exists(uDir):
-            print("  %s doesn't exist; creating" % uDir)
-            os.makedirs(uDir, 0o711, exist_ok=True)
+        u = UDir.discover(uPath)
 
         unmatched = []
         for couple in self:
@@ -575,10 +573,7 @@ class NLHTree(NLHNode):
                     # END
                     unmatched.append(path)
                 else:
-                    if self.usingSHA1:
-                        u.copyAndPut1(pathToFile, uDir, hash)
-                    else:
-                        u.copyAndPut2(pathToFile, uDir, hash)
+                    u.copyAndPut(pathToFile, hash)
             else:
                 s = []
                 for part in couple:

@@ -23,8 +23,9 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__ = '0.4.24'
-__version_date__ = '2016-06-13'
+__version__ = '0.4.25'
+__version_date__ = '2016-06-22'
+
 
 class NLHError(RuntimeError):
     pass
@@ -489,7 +490,7 @@ class NLHTree(NLHNode):
         files in uDir, files with the same content key.
         """
 
-        uDir = UDir.discover(uPath)
+        uDir = UDir.discover(uPath, usingSHA1=self.usingSHA1)
 
         unmatched = []
         for couple in self:
@@ -504,12 +505,15 @@ class NLHTree(NLHNode):
         return unmatched
 
     def populateDataDir(self, uPath, path):
-
+        """
+        path is the path to the data directory, excluding the name
+        of the directory itself, which will be the name of the tree
+        """
         if not os.path.exists(uPath):
             raise RuntimeError(
                 "populateDataDir: uPath '%s' does not exist" % uPath)
 
-        uDir = UDir.discover(uPath)
+        uDir = UDir.discover(uPath, usingSHA1=self.usingSHA1)
 
         unmatched = []
         for couple in self:
@@ -550,7 +554,7 @@ class NLHTree(NLHNode):
         #print("  path => '%s'" % path)
         # END
 
-        u = UDir.discover(uPath)
+        u = UDir.discover(uPath, usingSHA1=self.usingSHA1)
 
         unmatched = []
         for couple in self:

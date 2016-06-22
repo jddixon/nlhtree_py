@@ -1,5 +1,9 @@
 py/nlhtree_py/CHANGES
 
+v0.4.25
+    2016-06-22
+        * add ghpDoc/{css,img}/
+        * corrected several cases of improper use of defaults       SLOC 2242
 v0.4.24
     2016-06-13
         * revised to match xlattice.u API changes                   SLOC 1792
@@ -108,3 +112,8 @@ v0.1.0
 v0.0.0
     2015-05-20
         * initial import                                            SLOC   47
+
+
+
+
+

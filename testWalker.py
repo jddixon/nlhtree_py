@@ -9,7 +9,6 @@ import unittest
 from nlhtree import *
 
 EXAMPLE = """dataDir
->>>>>>> devel
  data1 34463aa26c4d7214a96e6e42c3a9e8f55727c695
  data2 14193743b265973e5824ca5257eef488094e19e9
  subDir1
@@ -24,10 +23,12 @@ EXAMPLE = """dataDir
     data31 0b57d3ab229a69ce5f7fad62f9fe654fe96c51bb
 """
 
+
 class TestWalker (unittest.TestCase):
 
     def setUp(self):
         pass
+
     def tearDown(self):
         pass
 

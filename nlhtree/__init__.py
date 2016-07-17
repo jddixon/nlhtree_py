@@ -23,8 +23,8 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__ = '0.4.25'
-__version_date__ = '2016-06-22'
+__version__ = '0.4.26'
+__version_date__ = '2016-07-16'
 
 
 class NLHError(RuntimeError):
@@ -64,7 +64,7 @@ class NLHNode(object):
     @hexHash.setter
     def hexHash(self, value):
         if self._binHash:
-            raise RuntimeError('attempt to set non-null hash')
+            raise NLHError('attempt to set non-null hash')
         self._binHash = bytes(binascii.a2b_hex(value))
 
     @property
@@ -74,21 +74,21 @@ class NLHNode(object):
     @binHash.setter
     def binHash(self, value):
         if self._binHash:
-            raise RuntimeError('attempt to set non-null hash')
+            raise NLHError('attempt to set non-null hash')
         self._binHash = value
 
     @staticmethod
     def checkHash(hash):
         """ return True if SHA1, False if SHA2, otherwise raise """
         if hash is None:
-            raise RuntimeError('hash cannot be None')
+            raise NLHError('hash cannot be None')
         hashLen = len(hash)
         if hashLen == SHA1_BIN_LEN:
             return True
         elif hashLen == SHA2_BIN_LEN:
             return False
         else:
-            raise RuntimeError('not a valid SHA hash length')
+            raise NLHError('not a valid SHA hash length')
 
     def __eq__(self):
         raise NotImplementedError
@@ -265,7 +265,7 @@ class NLHTree(NLHNode):
                     done = True
                     break
             elif name == iName:
-                raise RuntimeException(
+                raise NLHError(
                     "attempt to add two nodes with the same name: '%s'" % name)
         if not done:
             self._nodes.append(node)
@@ -308,13 +308,13 @@ class NLHTree(NLHNode):
         of pathToDir.  Return the NLHTree.
         """
         if not pathToDir:
-            raise RuntimeError("cannot create a NLHTree, no path set")
+            raise NLHError("cannot create a NLHTree, no path set")
         if not os.path.exists(pathToDir):
-            raise RuntimeError(
+            raise NLHError(
                 "NLHTree.createFromFileSystem: directory '%s' does not exist" % pathToDir)
         (path, junk, name) = pathToDir.rpartition('/')
         if path == '':
-            raise RuntimeError("cannot parse path " + pathToDir)
+            raise NLHError("cannot parse path " + pathToDir)
 
         tree = NLHTree(name, usingSHA1)
 
@@ -510,7 +510,7 @@ class NLHTree(NLHNode):
         of the directory itself, which will be the name of the tree
         """
         if not os.path.exists(uPath):
-            raise RuntimeError(
+            raise NLHError(
                 "populateDataDir: uPath '%s' does not exist" % uPath)
 
         uDir = UDir.discover(uPath, usingSHA1=self.usingSHA1)
@@ -604,7 +604,7 @@ class NLHTree(NLHNode):
         paths.
         """
         if not os.path.exists(pathToFile):
-            raise RuntimeError('file not found: ' + pathToFile)
+            raise NLHError('file not found: ' + pathToFile)
         curDepth = 0
         path = ''
         parts = []
@@ -629,7 +629,7 @@ class NLHTree(NLHNode):
                         parts[depth] = dirName
                         parts = parts[:depth + 1]
                     else:
-                        raise RuntimeError("corrupt nlhTree listing")
+                        raise NLHError("corrupt nlhTree listing")
                     path = '/'.join(parts)
 
                     yield (path, )
@@ -698,7 +698,7 @@ class NLHTree(NLHNode):
                     parts[depth] = dirName
                     parts = parts[:depth + 1]
                 else:
-                    raise RuntimeError("corrupt nlhTree listing")
+                    raise NLHError("corrupt nlhTree listing")
                 path = '/'.join(parts)
 
                 yield (path, )

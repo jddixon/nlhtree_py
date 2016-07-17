@@ -1,5 +1,8 @@
 py/nlhtree_py/CHANGES
 
+v0.4.26
+    2016-07-16
+        * skeletal testRmFromU                                      SLOC 2323
 v0.4.25
     2016-06-22
         * add ghpDoc/{css,img}/

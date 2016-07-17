@@ -11,6 +11,7 @@ then
   ./testNLHTree.py
   ./testNLHTree2.py
   ./testNLHTree3.py
+  ./testRmFromU.py
   ./testWalker.py
   
 else

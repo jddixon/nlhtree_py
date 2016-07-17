@@ -18,5 +18,10 @@ setup(name='nlhtree_py',
           'nlhCheckInUDir',
           'nlhPopulateDataDir',
           'nlhSaveToUDir',
-      ]
+      ],
+      # MISSING description
+      classifiers=[
+          'License :: OSI Approved :: MIT License',
+          'Programming Language :: Python :: 3',
+      ],
       )

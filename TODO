@@ -1,7 +1,19 @@
 py/nlhtree_py/TODO
 
+2016-06-16
+    * testNLHBase.py contains stubs; implement them
+
+    * add a function to remove (elements in ) an NLHTree from uDir
+        - NLHTree.rmFromU(pathToUDir)
+        - no effect if NLHTree is empty or or uDir is empty or 
+            no members of NLHTree are in uDir
+        - organization of uDir discovered at run time
+        - rmFromU must be tested !
+
 2016-06-13
-    * testCrossFunctions.py fails, u undefined at L 571 in __init__py
+    * testCrossFunctions.py fails, u undefined at L 571 in __init__py   * FIXED
+    * xlattice/u touches NONE files, which therefore MUST BE R/W
+        - u/__init__.py L 268 in discover()
 
 2016-06-03
     * modify to use xlattice.u.UDir

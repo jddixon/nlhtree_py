@@ -5,13 +5,13 @@ then
   cd $DEV_BASE/py/nlhtree_py
   
   ./testCrossFunctions.py
+  ./testDropFromU.py
   ./testIters.py
   ./testNLHBase.py
   ./testNLHLeaf.py
   ./testNLHTree.py
   ./testNLHTree2.py
   ./testNLHTree3.py
-  ./testRmFromU.py
   ./testWalker.py
   
 else

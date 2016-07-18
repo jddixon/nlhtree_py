@@ -23,8 +23,8 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__ = '0.4.26'
-__version_date__ = '2016-07-16'
+__version__ = '0.4.27'
+__version_date__ = '2016-07-17'
 
 
 class NLHError(RuntimeError):
@@ -221,7 +221,7 @@ class NLHTree(NLHNode):
 
         remainder = []
         for node in self._nodes:
-            if notfnmatch.fnmatch(node._name, pat):
+            if not fnmatch.fnmatch(node._name, pat):
                 remainder.append(node)
         if len(remainder) != len(self._nodes):
             self._nodes = remainder
@@ -501,6 +501,24 @@ class NLHTree(NLHNode):
                 relPath = couple[0]
                 hash = couple[1]
                 if not uDir.exists(hash):
+                    unmatched.append((relPath, hash,))
+        return unmatched
+
+    def dropFromUDir(self, uPath):
+        """ Remove all leaf nodes in this NLHTree from uDir """
+
+        uDir = UDir.discover(uPath, usingSHA1=self.usingSHA1)
+
+        unmatched = []
+        for couple in self:
+            if len(couple) == 1:
+                # it's a directory
+                pass
+            else:
+                hash = couple[1]
+                ok = uDir.delete(hash)
+                if not ok:
+                    relPath = couple[0]
                     unmatched.append((relPath, hash,))
         return unmatched
 

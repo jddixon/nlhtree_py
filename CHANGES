@@ -1,5 +1,8 @@
 py/nlhtree_py/CHANGES
 
+v0.4.28
+    2016-07-22
+        * DIR_FLAT etc now attributes of UDir                       SLOC 2391
 v0.4.27
     2016-07-17
         * add NLHTree.dropFromUDir(pathToU) and tests               SLCO 2386
@@ -118,6 +121,7 @@ v0.1.0
 v0.0.0
     2015-05-20
         * initial import                                            SLOC   47
+
 
 
 

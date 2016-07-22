@@ -9,9 +9,7 @@ import sys
 from stat import *
 
 from xlattice.crypto import SP   # for getSpaces()
-from xlattice.u import (fileSHA1Hex, fileSHA2Hex,
-                        DIR_FLAT, DIR16x16, DIR256x256,
-                        UDir)
+from xlattice.u import (fileSHA1Hex, fileSHA2Hex, UDir)
 
 from xlattice import (
     SHA1_BIN_LEN, SHA2_BIN_LEN,
@@ -23,8 +21,8 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__ = '0.4.27'
-__version_date__ = '2016-07-17'
+__version__ = '0.4.28'
+__version_date__ = '2016-07-22'
 
 
 class NLHError(RuntimeError):

@@ -10,7 +10,7 @@ from binascii import hexlify
 
 from rnglib import SimpleRNG
 from nlhtree import *
-from xlattice.u import (UDir, DIR_FLAT, DIR16x16, DIR256x256)
+from xlattice.u import UDir
 
 
 class TestDropFromU (unittest.TestCase):
@@ -179,7 +179,7 @@ class TestDropFromU (unittest.TestCase):
             self.assertFalse(uDir.exists(hexHash))
 
     def testWithEphemeralTree(self):
-        for struc in [DIR_FLAT, DIR16x16, DIR256x256, ]:
+        for struc in [UDir.DIR_FLAT, UDir.DIR16x16, UDir.DIR256x256, ]:
             self.doTestWithEphemeralTree(struc, True)
             self.doTestWithEphemeralTree(struc, False)
 

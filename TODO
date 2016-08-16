@@ -1,6 +1,10 @@
 py/nlhtree_py/TODO
 
-2016-06-16
+2016-07-17
+    * split off code building random-ish dataDir, uDir, NLHTree
+        as a separate function
+        
+2016-07-16
     * testNLHBase.py contains stubs; implement them
 
     * add a function to remove (elements in ) an NLHTree from uDir

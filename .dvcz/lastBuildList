@@ -7,23 +7,23 @@ zPjEShF9rvcNa9XEy1dKpcDz9Szbm2SlxOgM83fDDGtOq4SSCSqndtxrOvXXPB57
 H1mJV/FmerbXRPm5ERJVNIxtLk7Gr2Ce45FVlWyJGMhpfVlKkkk+bRQ02OFfazJI
 GQIDAQAB
 -----END RSA PUBLIC KEY-----
-nlhtree_py v0.4.26
-2016-07-17 03:56:59
-# START CONTENT #
+nlhtree_py v0.4.29
+2016-08-16 00:27:59
+# BEGIN CONTENT #
 nlhtree_py
  .copyright 304c14d702dff7c6c2c39729ff62aed7203b3427
  .dvcz
-  builds 0360f89d9a58562c6ba5551ddd8038df5e7edb22
-  lastBuildList da53427570709b6183a7fb7749ac4bb9abfa803b
+  builds 64c1a12e7588e90ed34411170f84930c70493027
+  lastBuildList 7b999dff91aa9fcdac1d0dd51c49d6a4ce7130bc
   projCfg 1aee48529c4ce2f22945b133fbbc628e634b5a45
   projCfg.local ed5b79980cfe40f60d8a48d3098b2b88ada4eaa9
-  version 7d92563bf0fcc120bad9a71599c6fefc455658c5
+  version 50638831692ba9217102b9834a4b5f04333d43fc
  .gitignore 5f1a04317952b671c5828218c6efe88c2594f8fb
- CHANGES 8e6d6934f56e1b28e30dbbbbe30d9bd60f6c7cac
+ CHANGES f4b476732cc76450348ff4648fcec1a28f54f4a2
  LICENSE.md ef87ef0aafe2bb3dc3b3ab29651c52e8add097b4
  MANIFEST.in 49f3fa12c06539c2c9e09f4ead7f121c41b6586c
- README.md 79c8c416c0b84068afe6b34ea276640352ce3d73
- TODO 74909a6fd104206bcff55a5188c6f01381cb5575
+ README.md a374962f56bd28d573d47b1f3ccc0f49ac7a78ae
+ TODO c52b74ab4f5c5e52d292424d72b01ad1784b5b5b
  bkp2U c68ccfbce377795646501504616b9bbfc55aa6cb
  countem 6417661ed9ea7962487c2b757f8d2c6baf01361d
  dist
@@ -58,6 +58,9 @@ nlhtree_py
   nlhtree_py-0.4.24.tar.gz ff4a44cd625a25f6e687407d02185222683ed450
   nlhtree_py-0.4.25.tar.gz 7dc7bb607bba1c6217cdc01b86322b27fc1bcc97
   nlhtree_py-0.4.26.tar.gz 434fd05b55258217608587ef88b342585c6fa840
+  nlhtree_py-0.4.27.tar.gz 7c25a339ff6b5219d8732911209314f3ecef2bf9
+  nlhtree_py-0.4.28.tar.gz 266c05118da5948481f3b0c3493f113a8959e5b5
+  nlhtree_py-0.4.29.tar.gz 067c8a92a3d3cc593a21c94d8a6b77f9794a40a5
   nlhtree_py-0.4.7.tar.gz 208dcb2b192edcd2bc6bf55bbdd83a826e0e3c50
   nlhtree_py-0.4.8.tar.gz fb86bd17bf8c0001ee904fd203baeb35e5e483f4
   nlhtree_py-0.4.9.tar.gz 80634510bae8abaf2825fd2c13c3ceb3ce088c77
@@ -110,28 +113,28 @@ nlhtree_py
    simple-cluster.jpg 6b223ddd25937c1ef75ef328f36fc3436f10bd62
    xl-registration.jpg 15cbf951f9db173a45428b32dcec87aca83bbdf0
    xlattice-2014.jpg f185aaad06db71acd9454f31054c62c56d36f37f
-  index.md 5dbb20618c555420302b355e69760149c6726f78
+  index.md 40faf27423c12774a45b4554da2adb8285d90f83
  installit fabcb17eafffd9bf015bdda55306ddb39968f43a
  nlhCheckInDataDir 706eeedcc125fcc679b54d5f7a6828380916ce70
  nlhCheckInUDir c3521a1d956b6b3af0ce52e59ac26709f2ba6116
  nlhPopulateDataDir f096d9c575dd54be0f03fd5ff7698d3b079a000d
  nlhSaveToUDir dbd3a160b5bae504f480536cdaf337ab52984640
  nlhtree
-  __init__.py 30cb63f6f400b2ed5c0b4d68b227699039573802
+  __init__.py a9013ada28222f64d1052f1f938273fe3ea5b3ff
   base.py 837b57165a12deeabb98743e76a9c7e314333cc6
  setup.py a12c36dad10650661ca927e1029d46944a87103b
  styleit 1a8195d694bef2a0dfc0ea259e5b77f05eaca8db
  test
- test.all 504f68d8c370c18f0fb791909de22faeadb84245
+ test.all 6aa41d772d09f8a65c3fa10235e48aadb123b994
  testCrossFunctions.py 7d54c6f27754e2675100954bc2ae81a03b4490b5
+ testDropFromU.py a3c7f14bf52805bdf15fece1933c5d3fc6c4a075
  testIters.py 9c0a47de8959b8f279bfba6c24b7713b5f98da95
  testNLHBase.py 82a4d1459331a20b637869fdc754570a23d5039b
  testNLHLeaf.py 020ddd45fcd499265db0bb33f8f5516f4dfbe59b
  testNLHTree.py f538094b5b487f162f3b064be2a1a8b70832d103
  testNLHTree2.py 9c22a4bb62f17b05c3c010ff089fccfc2ead1935
  testNLHTree3.py 6be9ff7b0c5df9cae29505008355800d1162754a
- testRmFromU.py 7f6efac735cd3d4ffa378dbcf15cd7116998f543
  testWalker.py 4ad843ced60acf632d9292af58b420c073e9b53c
 # END CONTENT #
 
-Q+KRYXBSaEhLXt6HWkgCVkVvTkvBkRcTzUTTOncKgMFr2+OQ4CJQvufGfc2ugNYe4Sv7v6ztTWs2XIKn2Mq9aKYPW5HqH2Lsd94TVF7xUqRFrTORqtPPQsqGSXtR2i8KYd0xqREZlHEMOUoKi7+/wT2ptTrSbilA/g7+W7YCxNc+SrR8Vz5CDxVKO3lbPUaCIEUSqqTsweUbpOhnh3Iv+8KWnQsDqHY2KIFICU2PgfBhr/DVf25Yban3nXlnA3+YyoNQwlpc8UvoqxRmYX+Y+tZXwbuaS3d3RkEDhf7hWyM8/1FsG8uHXkRX26mH8LZZAA56ViYV1nsrvK7fnQIb7A==
+mWvOfg0ZSFiIExX5glThkBubEqBlQMFsns8I4i/FoJqfh+nCuQQf++lSPAo73iIw6gGlV+gIxG8rL7IixCXh8/g6mccxVFsa+3O0Mhee1atAKE9t9FV8YTkvdmNLnzO+oy1z6Q2yaFPuMvsocRH6/NtqAaczHS8MAA+FC8IJilquV/IVO1DATuP8+wXhjYlq7erRCkAaEkJBj+8qu5oZRwsPHx8RGpC2VkTQKTgqcLbSeFDqpfhZrnJYI6RTQxPecSJ59+2yEeMiFF1TW7Sw5BDLYNzUEurAb/1aRS4OdIEMTXc2ZPMn3RAJxD5ownnXYnrclezHbkoWQZXfnxrSDg==

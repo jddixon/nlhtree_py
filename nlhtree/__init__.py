@@ -21,8 +21,8 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__ = '0.4.28'
-__version_date__ = '2016-07-22'
+__version__ = '0.4.29'
+__version_date__ = '2016-08-15'
 
 
 class NLHError(RuntimeError):

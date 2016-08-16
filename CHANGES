@@ -1,5 +1,8 @@
 py/nlhtree_py/CHANGES
 
+v0.4.29
+    2016-08-15
+        * edit down README to refer to xlattice/nlhTree.html        SLOC 2391
 v0.4.28
     2016-07-22
         * DIR_FLAT etc now attributes of UDir                       SLOC 2391
@@ -129,3 +132,7 @@ v0.0.0
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> devel

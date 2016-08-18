@@ -7,23 +7,23 @@ zPjEShF9rvcNa9XEy1dKpcDz9Szbm2SlxOgM83fDDGtOq4SSCSqndtxrOvXXPB57
 H1mJV/FmerbXRPm5ERJVNIxtLk7Gr2Ce45FVlWyJGMhpfVlKkkk+bRQ02OFfazJI
 GQIDAQAB
 -----END RSA PUBLIC KEY-----
-nlhtree_py v0.4.29
-2016-08-16 00:27:59
+nlhtree_py v0.4.30
+2016-08-18 19:50:28
 # BEGIN CONTENT #
 nlhtree_py
  .copyright 304c14d702dff7c6c2c39729ff62aed7203b3427
  .dvcz
-  builds 64c1a12e7588e90ed34411170f84930c70493027
-  lastBuildList 7b999dff91aa9fcdac1d0dd51c49d6a4ce7130bc
+  builds 2ca5b1641c81129d4f582b99cba93b437d47fd6e
+  lastBuildList 0a5b132f760b8b67821a099bf15d8c66ca256741
   projCfg 1aee48529c4ce2f22945b133fbbc628e634b5a45
   projCfg.local ed5b79980cfe40f60d8a48d3098b2b88ada4eaa9
-  version 50638831692ba9217102b9834a4b5f04333d43fc
+  version 8d017777696416c1d5912d9f4a24bbc549dab9bb
  .gitignore 5f1a04317952b671c5828218c6efe88c2594f8fb
- CHANGES f4b476732cc76450348ff4648fcec1a28f54f4a2
+ CHANGES 7b026ea1002522d546c05c4db9a44029783a31f7
  LICENSE.md ef87ef0aafe2bb3dc3b3ab29651c52e8add097b4
  MANIFEST.in 49f3fa12c06539c2c9e09f4ead7f121c41b6586c
- README.md a374962f56bd28d573d47b1f3ccc0f49ac7a78ae
- TODO c52b74ab4f5c5e52d292424d72b01ad1784b5b5b
+ README.md 96ecdcf9c0bac34507ecc36d99f37dfa984d345e
+ TODO 9f191edc8c9eda9d5975abe2f60a6d9a0f543c66
  bkp2U c68ccfbce377795646501504616b9bbfc55aa6cb
  countem 6417661ed9ea7962487c2b757f8d2c6baf01361d
  dist
@@ -61,6 +61,7 @@ nlhtree_py
   nlhtree_py-0.4.27.tar.gz 7c25a339ff6b5219d8732911209314f3ecef2bf9
   nlhtree_py-0.4.28.tar.gz 266c05118da5948481f3b0c3493f113a8959e5b5
   nlhtree_py-0.4.29.tar.gz 067c8a92a3d3cc593a21c94d8a6b77f9794a40a5
+  nlhtree_py-0.4.30.tar.gz 5d2722c25ec6c20933ccec03983304c33c4b5bfd
   nlhtree_py-0.4.7.tar.gz 208dcb2b192edcd2bc6bf55bbdd83a826e0e3c50
   nlhtree_py-0.4.8.tar.gz fb86bd17bf8c0001ee904fd203baeb35e5e483f4
   nlhtree_py-0.4.9.tar.gz 80634510bae8abaf2825fd2c13c3ceb3ce088c77
@@ -113,13 +114,14 @@ nlhtree_py
    simple-cluster.jpg 6b223ddd25937c1ef75ef328f36fc3436f10bd62
    xl-registration.jpg 15cbf951f9db173a45428b32dcec87aca83bbdf0
    xlattice-2014.jpg f185aaad06db71acd9454f31054c62c56d36f37f
-  index.md 40faf27423c12774a45b4554da2adb8285d90f83
+  index.md b966f156f31dfad60fd7c444f880969a2c7a608e
  installit fabcb17eafffd9bf015bdda55306ddb39968f43a
  nlhCheckInDataDir 706eeedcc125fcc679b54d5f7a6828380916ce70
  nlhCheckInUDir c3521a1d956b6b3af0ce52e59ac26709f2ba6116
  nlhPopulateDataDir f096d9c575dd54be0f03fd5ff7698d3b079a000d
  nlhSaveToUDir dbd3a160b5bae504f480536cdaf337ab52984640
  nlhtree
+  __init__.py 558629b0ea7ce2a1ab34405eff548029968ed627
   base.py 837b57165a12deeabb98743e76a9c7e314333cc6
  setup.py a12c36dad10650661ca927e1029d46944a87103b
  styleit 1a8195d694bef2a0dfc0ea259e5b77f05eaca8db
@@ -136,4 +138,4 @@ nlhtree_py
  testWalker.py 4ad843ced60acf632d9292af58b420c073e9b53c
 # END CONTENT #
 
-mWvOfg0ZSFiIExX5glThkBubEqBlQMFsns8I4i/FoJqfh+nCuQQf++lSPAo73iIw6gGlV+gIxG8rL7IixCXh8/g6mccxVFsa+3O0Mhee1atAKE9t9FV8YTkvdmNLnzO+oy1z6Q2yaFPuMvsocRH6/NtqAaczHS8MAA+FC8IJilquV/IVO1DATuP8+wXhjYlq7erRCkAaEkJBj+8qu5oZRwsPHx8RGpC2VkTQKTgqcLbSeFDqpfhZrnJYI6RTQxPecSJ59+2yEeMiFF1TW7Sw5BDLYNzUEurAb/1aRS4OdIEMTXc2ZPMn3RAJxD5ownnXYnrclezHbkoWQZXfnxrSDg==
+VZrmiM9um6a8tAyft25NrFKmfcwKmZb71k8/X8xAfOjZ4HqDlMZRDg5dM9hRsIe8y5wcu0wyuyqfOyP26TOG4abwCsU3M/JPdfs6SO/J2my6dfnj9wRBP4nsY0otjaWwYW9yWphJYLzVuEC6CFx4qGaRkv+KUaFRotAKCdeFCNGmwUTjgeM5JbDzZ/XPpz9Lv2MNyLT61o2XXJXOv8FsMsNZtcGiFSYG9IMqgQJecuFbailCPawZ+50WVUImHERs8UzV97Qqn4a9HKZYUIebHeSnA8nwT9ODpHNvr2+mGVpdUB1E2/dhGuLPUaxkT6K8Xz8fvfDi51tj9+6qA+2qrQ==

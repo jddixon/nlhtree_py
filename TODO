@@ -1,18 +1,21 @@
 py/nlhtree_py/TODO
 
+2016-08-18
+    * need tests for NLHTree.find(glob) => list
+
 2016-07-17
-    * split off code building random-ish dataDir, uDir, NLHTree         * DONE
-        as a separate function                                          * DONE
+    * split off code building random-ish dataDir, uDir, NLHTree
+        as a separate function
         
 2016-07-16
     * testNLHBase.py contains stubs; implement them
 
-    * add a function to remove (elements in ) an NLHTree from uDir		* DONE
-        - NLHTree.dropFromU(pathToUDir)			                        * DONE
-        - no effect if NLHTree is empty or or uDir is empty or 			* DONE
-            no members of NLHTree are in uDir			                * DONE
-        - organization of uDir discovered at run time			        * DONE
-        - dropFromU must be tested !			                        * DONE
+    * add a function to remove (elements in ) an NLHTree from uDir
+        - NLHTree.rmFromU(pathToUDir)
+        - no effect if NLHTree is empty or or uDir is empty or 
+            no members of NLHTree are in uDir
+        - organization of uDir discovered at run time
+        - rmFromU must be tested !
 
 2016-06-13
     * testCrossFunctions.py fails, u undefined at L 571 in __init__py   * FIXED

@@ -1,6 +1,9 @@
 py/nlhtree_py/CHANGES
 
 
+v0.4.31
+    2016-08-25
+        * fix license, setup.py                                     SLOC 2419
 v0.4.30
     2016-08-18
         * drop leading and trailing spaces from tree name           SLOC 2394
@@ -138,3 +141,7 @@ v0.0.0
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> devel

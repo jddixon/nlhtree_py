@@ -6,7 +6,7 @@ then
   
   rm -rf build/* 
   
-  pySloc -L py  -X dist -X tmp -v $@
+  pySloc -L py nlhCheckInDataDir nlhCheckInUDir nlhPopulateDataDir nlhSaveToUDir  -X dist -X tmp -v $@
 else
   echo "DEV_BASE is not defined"
 fi

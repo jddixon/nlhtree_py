@@ -1,5 +1,8 @@
 py/nlhtree_py/TODO
 
+2016-08-18
+    * need tests for NLHTree.find(glob) => list
+
 2016-07-17
     * split off code building random-ish dataDir, uDir, NLHTree
         as a separate function

@@ -1,5 +1,12 @@
 py/nlhtree_py/CHANGES
 
+
+v0.4.31
+    2016-08-25
+        * fix license, setup.py                                     SLOC 2419
+v0.4.30
+    2016-08-18
+        * drop leading and trailing spaces from tree name           SLOC 2394
 v0.4.29
     2016-08-15
         * edit down README to refer to xlattice/nlhTree.html        SLOC 2391
@@ -124,6 +131,8 @@ v0.1.0
 v0.0.0
     2015-05-20
         * initial import                                            SLOC   47
+
+
 
 
 

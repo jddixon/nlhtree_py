@@ -19,9 +19,14 @@ setup(name='nlhtree_py',
           'nlhPopulateDataDir',
           'nlhSaveToUDir',
       ],
-      # MISSING description
+      description='data structure for representing directory and contents',
+      url='https://jddixon.github.io/nlhtree_py',
       classifiers=[
+          'Development Status :: 4 - Beta',
+          'Intended Audience :: Developers',
           'License :: OSI Approved :: MIT License',
-          'Programming Language :: Python :: 3',
+          'Natural Language :: English',
+          'Programming Language :: Python 3',
+          'Topic :: Software Development :: Libraries :: Python Modules',
       ],
       )

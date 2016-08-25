@@ -5,7 +5,9 @@
 This project is a Python3 implementation of the NLHTree, a data structure
 defined
 [here](https://jddixon.github.io/xlattice/nlhTree.html)
-in some detail.  The NLHTree represents a directory structure as
+in some detail.
+
+The NLHTree represents a directory structure as
 an indented list.  Directory names appear alone on a line; files
 in a given directory are listed at an indent of one space below
 the directory name, with the file name followed by the

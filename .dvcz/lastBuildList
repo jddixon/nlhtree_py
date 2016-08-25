@@ -7,25 +7,26 @@ zPjEShF9rvcNa9XEy1dKpcDz9Szbm2SlxOgM83fDDGtOq4SSCSqndtxrOvXXPB57
 H1mJV/FmerbXRPm5ERJVNIxtLk7Gr2Ce45FVlWyJGMhpfVlKkkk+bRQ02OFfazJI
 GQIDAQAB
 -----END RSA PUBLIC KEY-----
-nlhtree_py v0.4.29
-2016-08-16 00:27:59
+nlhtree_py v0.4.31
+2016-08-25 18:11:51
 # BEGIN CONTENT #
 nlhtree_py
- .copyright 304c14d702dff7c6c2c39729ff62aed7203b3427
  .dvcz
-  builds 64c1a12e7588e90ed34411170f84930c70493027
-  lastBuildList 7b999dff91aa9fcdac1d0dd51c49d6a4ce7130bc
-  projCfg 1aee48529c4ce2f22945b133fbbc628e634b5a45
-  projCfg.local ed5b79980cfe40f60d8a48d3098b2b88ada4eaa9
-  version 50638831692ba9217102b9834a4b5f04333d43fc
+  builds c8e79779fdd12aed041dc33b71ee8e92693d33c6
+  copyright 304c14d702dff7c6c2c39729ff62aed7203b3427
+  lastBuildList d3111b6c6aa7464be3fa527c9751c52a711df01e
+  license 5977a55c75bb4612004451a56b0b4c22d9d3311d
+  projCfg 7757fabc0eba55daef514f5299aadc5817a07184
+  projCfg.local 7fd9890104d7606765798cdbb8be02d5f807482f
+  version c6da647f56f65093aaadf25d60d85f4b370f44dc
  .gitignore 5f1a04317952b671c5828218c6efe88c2594f8fb
- CHANGES f4b476732cc76450348ff4648fcec1a28f54f4a2
- LICENSE.md ef87ef0aafe2bb3dc3b3ab29651c52e8add097b4
+ CHANGES dfbc77de9d2d53a5cd5b7c28e3d7764566c37bcd
+ LICENSE-MIT.md ef87ef0aafe2bb3dc3b3ab29651c52e8add097b4
  MANIFEST.in 49f3fa12c06539c2c9e09f4ead7f121c41b6586c
- README.md a374962f56bd28d573d47b1f3ccc0f49ac7a78ae
- TODO c52b74ab4f5c5e52d292424d72b01ad1784b5b5b
+ README.md 96ecdcf9c0bac34507ecc36d99f37dfa984d345e
+ TODO 9f191edc8c9eda9d5975abe2f60a6d9a0f543c66
  bkp2U c68ccfbce377795646501504616b9bbfc55aa6cb
- countem 6417661ed9ea7962487c2b757f8d2c6baf01361d
+ countem 1760c9c80faa115294436e8f0a7998432b28aa93
  dist
   nlhtree-0.0.0.tar.gz d331a6187aa530fbd600f2fd0f120bbff84dea35
   nlhtree-0.1.0.tar.gz aa390036b8392badfdfdfc84ce75e4d25c45ddfe
@@ -61,6 +62,8 @@ nlhtree_py
   nlhtree_py-0.4.27.tar.gz 7c25a339ff6b5219d8732911209314f3ecef2bf9
   nlhtree_py-0.4.28.tar.gz 266c05118da5948481f3b0c3493f113a8959e5b5
   nlhtree_py-0.4.29.tar.gz 067c8a92a3d3cc593a21c94d8a6b77f9794a40a5
+  nlhtree_py-0.4.30.tar.gz 5d2722c25ec6c20933ccec03983304c33c4b5bfd
+  nlhtree_py-0.4.31.tar.gz 3e708df5dff56e2d2f27110a7b5b78ba4596b99c
   nlhtree_py-0.4.7.tar.gz 208dcb2b192edcd2bc6bf55bbdd83a826e0e3c50
   nlhtree_py-0.4.8.tar.gz fb86bd17bf8c0001ee904fd203baeb35e5e483f4
   nlhtree_py-0.4.9.tar.gz 80634510bae8abaf2825fd2c13c3ceb3ce088c77
@@ -113,16 +116,16 @@ nlhtree_py
    simple-cluster.jpg 6b223ddd25937c1ef75ef328f36fc3436f10bd62
    xl-registration.jpg 15cbf951f9db173a45428b32dcec87aca83bbdf0
    xlattice-2014.jpg f185aaad06db71acd9454f31054c62c56d36f37f
-  index.md 40faf27423c12774a45b4554da2adb8285d90f83
+  index.md b966f156f31dfad60fd7c444f880969a2c7a608e
  installit fabcb17eafffd9bf015bdda55306ddb39968f43a
  nlhCheckInDataDir 706eeedcc125fcc679b54d5f7a6828380916ce70
  nlhCheckInUDir c3521a1d956b6b3af0ce52e59ac26709f2ba6116
  nlhPopulateDataDir f096d9c575dd54be0f03fd5ff7698d3b079a000d
  nlhSaveToUDir dbd3a160b5bae504f480536cdaf337ab52984640
  nlhtree
-  __init__.py a9013ada28222f64d1052f1f938273fe3ea5b3ff
+  __init__.py 0d907d4c223689bfcbc4125964878a23972bc821
   base.py 837b57165a12deeabb98743e76a9c7e314333cc6
- setup.py a12c36dad10650661ca927e1029d46944a87103b
+ setup.py 22018530c2269887b850cf24ad81488d7f275640
  styleit 1a8195d694bef2a0dfc0ea259e5b77f05eaca8db
  test
  test.all 6aa41d772d09f8a65c3fa10235e48aadb123b994
@@ -137,4 +140,4 @@ nlhtree_py
  testWalker.py 4ad843ced60acf632d9292af58b420c073e9b53c
 # END CONTENT #
 
-mWvOfg0ZSFiIExX5glThkBubEqBlQMFsns8I4i/FoJqfh+nCuQQf++lSPAo73iIw6gGlV+gIxG8rL7IixCXh8/g6mccxVFsa+3O0Mhee1atAKE9t9FV8YTkvdmNLnzO+oy1z6Q2yaFPuMvsocRH6/NtqAaczHS8MAA+FC8IJilquV/IVO1DATuP8+wXhjYlq7erRCkAaEkJBj+8qu5oZRwsPHx8RGpC2VkTQKTgqcLbSeFDqpfhZrnJYI6RTQxPecSJ59+2yEeMiFF1TW7Sw5BDLYNzUEurAb/1aRS4OdIEMTXc2ZPMn3RAJxD5ownnXYnrclezHbkoWQZXfnxrSDg==
+LIQUn1JYXtZKZFCC9mUxN+zl4dpi9EDVO/WokWkhUXZABGqdgEmzi8+zNFH6ybGgOSYOjwtd8tb1q6RrddvCTD90gJ1+WFYqiX5y5cDKW+Mb0WxgkR/tx0NHPUpzZVP6chZrNPle9Vrc73Re5on+OaUAPC+8Gfsjub6U6acZZDARmhPezkxZvEgmDq2+3qklKDmOpEg/MWY7wTYHKfOqTTV1BP7XSFN+0/swnNfu/Yys9H1cLicUkjGtIHm2lbenEprjoZiFFSqR/A8Ecq0BHYuws0wskkY0/9P6yHnk8jvxMMDv1DeshMKgkTzq9jdvF64gnEyOlMrTkMA3F9oiDw==

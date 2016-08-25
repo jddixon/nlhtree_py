@@ -1,5 +1,7 @@
 # nlhtree_py/.fileMap.local
 
+txt:std:LICENSE-MIT.md
+
 code:std:.dvcz/projCfg
 code:std:.dvcz/projCfg.local
 code:std:.gitignore

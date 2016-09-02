@@ -9,9 +9,9 @@ import unittest
 
 from rnglib import SimpleRNG
 from nlhtree import NLHTree as NT
-from xlattice import (
-    SHA1_BIN_LEN, SHA2_BIN_LEN,
-    SHA1_HEX_LEN, SHA2_HEX_LEN)
+from xlattice import (Q,
+                      SHA1_BIN_LEN, SHA2_BIN_LEN,
+                      SHA1_HEX_LEN, SHA2_HEX_LEN)
 from xlattice.crypto import SP
 
 
@@ -58,10 +58,11 @@ class TestNLHTree3 (unittest.TestCase):
     def tearDown(self):
         pass
 
-    def doTestPatternMatching(self, usingSHA1):
-        if usingSHA1:
+    def doTestPatternMatching(self, usingSHA):
+        if usingSHA == Q.USING_SHA1:
             ss = self.EXAMPLE1
         else:
+            # FIX ME FIX ME FIX ME
             ss = self.EXAMPLE2
 
         # first line --------------------------------------
@@ -75,9 +76,10 @@ class TestNLHTree3 (unittest.TestCase):
         self.assertEqual(name, 'dataDir')
 
         # file with indent of 1 ---------------------------
-        if usingSHA1:
+        if usingSHA == Q.USING_SHA1:
             m = NT.FILE_LINE_RE_1.match(ss[1])
         else:
+            # FIX ME FIX ME FIX ME
             m = NT.FILE_LINE_RE_2.match(ss[1])
         self.assertTrue(m)
         self.assertEqual(len(m.group(1)), 1)
@@ -87,9 +89,10 @@ class TestNLHTree3 (unittest.TestCase):
         indent, name, hash = NT.parseOtherLine(ss[1])
         self.assertEqual(indent, 1)
         self.assertEqual(name, 'data1')
-        if usingSHA1:
+        if usingSHA == Q.USING_SHA1:
             self.assertEqual(len(hash), SHA1_HEX_LEN)
         else:
+            # FIX ME FIX ME FIX ME
             self.assertEqual(len(hash), SHA2_HEX_LEN)
 
         # subdirectory ------------------------------------
@@ -105,9 +108,10 @@ class TestNLHTree3 (unittest.TestCase):
         self.assertEqual(hash, None)
 
         # lower level file ----------------------
-        if usingSHA1:
+        if usingSHA == Q.USING_SHA1:
             m = NT.FILE_LINE_RE_1.match(ss[12])
         else:
+            # FIX ME FIX ME FIX ME
             m = NT.FILE_LINE_RE_2.match(ss[12])
         self.assertTrue(m)
         self.assertEqual(len(m.group(1)), 4)
@@ -117,30 +121,32 @@ class TestNLHTree3 (unittest.TestCase):
         indent, name, hash = NT.parseOtherLine(ss[12])
         self.assertEqual(indent, 4)
         self.assertEqual(name, 'data41')
-        if usingSHA1:
+        if usingSHA == Q.USING_SHA1:
             self.assertEqual(len(hash), SHA1_HEX_LEN)
         else:
+            # FIX ME FIX ME FIX ME
             self.assertEqual(len(hash), SHA2_HEX_LEN)
 
     def testPatternMatching(self):
-        self.doTestPatternMatching(usingSHA1=True)
-        self.doTestPatternMatching(usingSHA1=False)
+        self.doTestPatternMatching(usingSHA=True)
+        self.doTestPatternMatching(usingSHA=False)
 
-    def doTestSerialization(self, usingSHA1):
-        if usingSHA1:
-            tree = NT.createFromStringArray(self.EXAMPLE1, usingSHA1)
+    def doTestSerialization(self, usingSHA):
+        if usingSHA == Q.USING_SHA1:
+            tree = NT.createFromStringArray(self.EXAMPLE1, usingSHA)
         else:
-            tree = NT.createFromStringArray(self.EXAMPLE2, usingSHA1)
-        self.assertEqual(tree.usingSHA1, usingSHA1)
+            # FIX ME FIX ME FIX ME
+            tree = NT.createFromStringArray(self.EXAMPLE2, usingSHA)
+        self.assertEqual(tree.usingSHA, usingSHA)
 
         ss = []
         tree.toStrings(ss, 0)
 
-        tree2 = NT.createFromStringArray(ss, usingSHA1)
+        tree2 = NT.createFromStringArray(ss, usingSHA)
         self.assertEqual(tree, tree2)
 
         s = '\n'.join(ss) + '\n'
-        tree3 = NT.parse(s, usingSHA1)
+        tree3 = NT.parse(s, usingSHA)
         s3 = tree3.__str__()
 
         self.assertEqual(s3, s)
@@ -150,8 +156,8 @@ class TestNLHTree3 (unittest.TestCase):
         self.assertEqual(dupe3, tree3)
 
     def testSerialization(self):
-        self.doTestSerialization(usingSHA1=True)
-        self.doTestSerialization(usingSHA1=False)
+        self.doTestSerialization(usingSHA=True)
+        self.doTestSerialization(usingSHA=False)
 
 
 if __name__ == '__main__':

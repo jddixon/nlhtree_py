@@ -1,4 +1,5 @@
 # nlhtree_py/nlhtree/base.py
+from xlattice import Q    # FIX ME
 
 import binascii
 import fnmatch
@@ -19,18 +20,18 @@ __all__ = [
 
 class NLHBase(object):
 
-    def __init__(self, name, usingSHA1):
-        self._root = NLHTree(name, usingSHA1)   # immutable ref to a NLHTree
+    def __init__(self, name, usingSHA):
+        self._root = NLHTree(name, usingSHA)   # immutable ref to a NLHTree
         self._curTree = self._root              # the current tree; mutable
-        self._usingSHA1 = usingSHA1
+        self._usingSHA = usingSHA
 
     @property
     def name(self):
         return self._root.name
 
     @property
-    def usingSHA1(self):
-        return self._root.usingSHA1
+    def usingSHA(self):
+        return self._root.usingSHA
 
     @property
     def root(self):

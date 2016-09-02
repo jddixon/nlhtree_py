@@ -10,6 +10,7 @@ from binascii import hexlify
 
 from rnglib import SimpleRNG
 from nlhtree import *
+from xlattice import Q
 from xlattice.u import UDir
 
 
@@ -21,7 +22,7 @@ class TestDropFromU (unittest.TestCase):
     def tearDown(self):
         pass
 
-    def generateUDT(self, struc, usingSHA1):
+    def generateUDT(self, struc, usingSHA):
         """
         Generate under ./tmp a data directory with random content,
         a uDir containing the same data, and an NLHTree that matches.
@@ -51,7 +52,7 @@ class TestDropFromU (unittest.TestCase):
         # END
 
         # create uDir and the NLHTree
-        uDir = UDir(uPath, struc, usingSHA1)
+        uDir = UDir(uPath, struc, usingSHA)
         self.assertTrue(os.path.exists(uPath))
 
         # make a unique data directory under tmp/
@@ -70,7 +71,7 @@ class TestDropFromU (unittest.TestCase):
         #print("dataTmp = %s" % dataTmp)
         # END
 
-        tree = NLHTree(topName, usingSHA1)
+        tree = NLHTree(topName, usingSHA)
 
         # generate N and N unique random values, where N is at least 16
         N = 16 + self.rng.nextInt16(16)
@@ -87,9 +88,10 @@ class TestDropFromU (unittest.TestCase):
             values.append(datum)
 
             # generate hash = binKey ----------------------
-            if usingSHA1:
+            if usingSHA == Q.USING_SHA1:
                 sha = hashlib.sha1()
             else:
+                # FIX ME FIX ME FIX ME
                 sha = hashlib.sha256()
             sha.update(datum)
             binKey = sha.digest()
@@ -114,16 +116,16 @@ class TestDropFromU (unittest.TestCase):
 
         return uPath, dataPath, tree, hashes, values
 
-    def doTestWithEphemeralTree(self, struc, usingSHA1):
+    def doTestWithEphemeralTree(self, struc, usingSHA):
 
         uPath, dataPath, tree, hashes, values = self.generateUDT(
-            struc, usingSHA1)
+            struc, usingSHA)
 
         # DEBUG
         # print("TREE:\n%s" % tree)
         # END
         # verify that the dataDir matches the nlhTree
-        tree2 = NLHTree.createFromFileSystem(dataPath, usingSHA1)
+        tree2 = NLHTree.createFromFileSystem(dataPath, usingSHA)
         self.assertEqual(tree2, tree)
 
         N = len(values)             # number of values present
@@ -165,7 +167,7 @@ class TestDropFromU (unittest.TestCase):
         # from uDir
         q.dropFromUDir(uPath)
 
-        uDir = UDir(uPath, struc, usingSHA1)
+        uDir = UDir(uPath, struc, usingSHA)
         self.assertTrue(os.path.exists(uPath))
 
         # these values should still be present in uDir

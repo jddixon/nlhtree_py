@@ -9,6 +9,7 @@ import unittest
 
 from rnglib import SimpleRNG
 from nlhtree import NLHTree
+from xlattice import Q
 from xlattice.util import makeExRE
 
 
@@ -20,11 +21,11 @@ class TestCrossFunctions (unittest.TestCase):
     def tearDown(self):
         pass
 
-    def doTestCrossFunctions(self, usingSHA1):
+    def doTestCrossFunctions(self, usingSHA):
         # we assume that there is valid data in
         #   example/{example.nlh,dataDir,uDir}
 
-        self.assertTrue(usingSHA1)       # the only mode currently supported
+        self.assertTrue(usingSHA)       # the only mode currently supported
 
         GOLD_DATA = 'example/dataDir'
         GOLD_LIST_FILE = 'example/example.nlh'
@@ -49,8 +50,8 @@ class TestCrossFunctions (unittest.TestCase):
         exclusions = ['build']
         exRE = makeExRE(exclusions)
 
-        tree = NLHTree.createFromFileSystem(GOLD_DATA, usingSHA1, exRE, None)
-        tree.saveToUDir(GOLD_DATA, TARGET_UDIR, usingSHA1)
+        tree = NLHTree.createFromFileSystem(GOLD_DATA, usingSHA, exRE, None)
+        tree.saveToUDir(GOLD_DATA, TARGET_UDIR, usingSHA)
 
         self.assertTrue(os.path.exists(GOLD_LIST_FILE))
         with open(GOLD_LIST_FILE, 'r') as f:
@@ -59,7 +60,7 @@ class TestCrossFunctions (unittest.TestCase):
         outputListing = tree.__str__()
         self.assertEqual(goldListing, outputListing)
 
-        tree = NLHTree.createFromFileSystem(GOLD_DATA, usingSHA1)
+        tree = NLHTree.createFromFileSystem(GOLD_DATA, usingSHA)
         self.assertIsNotNone(tree)
 
         # first iteration over tree
@@ -86,12 +87,12 @@ class TestCrossFunctions (unittest.TestCase):
         unmatched = tree.checkInDataDir(TARGET_DATA_DIR)
         self.assertEqual(len(unmatched), 0)
 
-        tree2 = NLHTree.createFromFileSystem(TARGET_DATA_DIR, usingSHA1)
+        tree2 = NLHTree.createFromFileSystem(TARGET_DATA_DIR, usingSHA)
         self.assertEqual(tree, tree2)
 
     def testSimplestConstructor(self):
-        self.doTestCrossFunctions(usingSHA1=True)
-        # self.doTestCrossFunctions(usingSHA1=False)
+        self.doTestCrossFunctions(usingSHA=True)
+        # self.doTestCrossFunctions(usingSHA=False)
 
 if __name__ == '__main__':
     unittest.main()

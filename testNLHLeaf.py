@@ -7,6 +7,7 @@ import unittest
 
 from rnglib import SimpleRNG
 from nlhtree import *
+from xlattice import Q
 
 
 class TestNLHLeaf (unittest.TestCase):
@@ -20,10 +21,11 @@ class TestNLHLeaf (unittest.TestCase):
     # utility functions #############################################
 
     # actual unit tests #############################################
-    def doTestSimpleConstructor(self, usingSHA1):
-        if usingSHA1:
+    def doTestSimpleConstructor(self, usingSHA):
+        if usingSHA == Q.USING_SHA1:
             sha = hashlib.sha1()
         else:
+            # FIX ME FIX ME FIX ME
             sha = hashlib.sha256()
 
         name = self.rng.nextFileName(8)
@@ -58,8 +60,8 @@ class TestNLHLeaf (unittest.TestCase):
         self.assertEqual(leaf1c, leaf1)
 
     def testSimplestConstructor(self):
-        self.doTestSimpleConstructor(usingSHA1=True)
-        self.doTestSimpleConstructor(usingSHA1=False)
+        self.doTestSimpleConstructor(usingSHA=True)
+        self.doTestSimpleConstructor(usingSHA=False)
 
 if __name__ == '__main__':
     unittest.main()

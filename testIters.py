@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from xlattice import Q    # FIX ME
 
 # testIters.py
 
@@ -36,7 +37,7 @@ class TestIters (unittest.TestCase):
         REL_PATH_TO_DATA = 'example/dataDir'
         REL_PATH_TO_NLH = 'example/example.nlh'
 
-        tree = NLHTree.createFromFileSystem(REL_PATH_TO_DATA, usingSHA1=True)
+        tree = NLHTree.createFromFileSystem(REL_PATH_TO_DATA, usingSHA=True)
         self.assertIsNotNone(tree)
         s = tree.__str__()
         self.assertEqual(EXAMPLE, s)        # the serialized NLHTree

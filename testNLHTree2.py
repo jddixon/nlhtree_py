@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from xlattice import Q    # FIX ME
 
 # testNLHTree.py
 import hashlib
@@ -59,19 +60,19 @@ class TestNLHTree2 (unittest.TestCase):
     # unit tests ----------------------------------------------------
 
     def testPathlessUnboundConstructor1(self):
-        self.doTestPathlessUnboundConstructor1(usingSHA1=True)
-        self.doTestPathlessUnboundConstructor1(usingSHA1=False)
+        self.doTestPathlessUnboundConstructor1(usingSHA=True)
+        self.doTestPathlessUnboundConstructor1(usingSHA=False)
 
-    def doTestPathlessUnboundConstructor1(self, usingSHA1):
+    def doTestPathlessUnboundConstructor1(self, usingSHA):
         (dirName1, dirName2) = self.getTwoUniqueDirectoryNames()
 
-        tree1 = NLHTree(dirName1, usingSHA1)
+        tree1 = NLHTree(dirName1, usingSHA)
         self.assertEqual(dirName1, tree1.name)
-        self.assertEqual(tree1.usingSHA1, usingSHA1)
+        self.assertEqual(tree1.usingSHA, usingSHA)
 
-        tree2 = NLHTree(dirName2, usingSHA1)
+        tree2 = NLHTree(dirName2, usingSHA)
         self.assertEqual(dirName2, tree2.name)
-        self.assertEqual(tree2.usingSHA1, usingSHA1)
+        self.assertEqual(tree2.usingSHA, usingSHA)
 
         self.assertTrue(tree1 == tree1)
         self.assertFalse(tree1 == tree2)
@@ -81,20 +82,20 @@ class TestNLHTree2 (unittest.TestCase):
         self.assertEqual(tree1c, tree1)
 
     def testBoundFlatDirs(self):
-        self.doTestBoundFlatDirs(usingSHA1=True)
-        self.doTestBoundFlatDirs(usingSHA1=False)
+        self.doTestBoundFlatDirs(usingSHA=True)
+        self.doTestBoundFlatDirs(usingSHA=False)
 
-    def doTestBoundFlatDirs(self, usingSHA1):
+    def doTestBoundFlatDirs(self, usingSHA):
         """test directory is single level, with four data files"""
         (dirName1, dirPath1, dirName2, dirPath2) = \
             self.makeTwoTestDirectories(ONE, FOUR)
-        tree1 = NLHTree.createFromFileSystem(dirPath1, usingSHA1)
+        tree1 = NLHTree.createFromFileSystem(dirPath1, usingSHA)
         self.assertEqual(dirName1, tree1.name, True)
         nodes1 = tree1.nodes
         self.assertTrue(nodes1 is not None)
         self.assertEqual(FOUR, len(nodes1))
 
-        tree2 = NLHTree.createFromFileSystem(dirPath2, usingSHA1)
+        tree2 = NLHTree.createFromFileSystem(dirPath2, usingSHA)
         self.assertEqual(dirName2, tree2.name)
         nodes2 = tree2.nodes
         self.assertTrue(nodes2 is not None)
@@ -108,21 +109,21 @@ class TestNLHTree2 (unittest.TestCase):
         self.assertEqual(tree1c, tree1)
 
     def testBoundNeedleDirs1(self):
-        self.doTestBoundNeedleDirs(usingSHA1=True)
-        self.doTestBoundNeedleDirs(usingSHA1=False)
+        self.doTestBoundNeedleDirs(usingSHA=True)
+        self.doTestBoundNeedleDirs(usingSHA=False)
 
-    def doTestBoundNeedleDirs(self, usingSHA1):
+    def doTestBoundNeedleDirs(self, usingSHA):
         """test directories four deep with one data file at the lowest level"""
         (dirName1, dirPath1, dirName2, dirPath2) = \
             self.makeTwoTestDirectories(FOUR, ONE)
-        tree1 = NLHTree.createFromFileSystem(dirPath1, usingSHA1)
+        tree1 = NLHTree.createFromFileSystem(dirPath1, usingSHA)
 
         self.assertEqual(dirName1, tree1.name)
         nodes1 = tree1.nodes
         self.assertTrue(nodes1 is not None)
         self.assertEqual(ONE, len(nodes1))
 
-        tree2 = NLHTree.createFromFileSystem(dirPath2, usingSHA1)
+        tree2 = NLHTree.createFromFileSystem(dirPath2, usingSHA)
         self.assertEqual(dirName2, tree2.name)
         nodes2 = tree2.nodes
         self.assertTrue(nodes2 is not None)

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from xlattice import Q    # FIX ME
 
 # testWalker.py
 
@@ -37,7 +38,7 @@ class TestWalker (unittest.TestCase):
         #print("\nSPOT CHECKS")
         # END
         REL_PATH_TO_DATA = 'example/dataDir'
-        tree = NLHTree.createFromFileSystem(REL_PATH_TO_DATA, usingSHA1=True)
+        tree = NLHTree.createFromFileSystem(REL_PATH_TO_DATA, usingSHA=True)
         self.assertIsNotNone(tree)
         self.assertEqual(len(tree.nodes), 6)
         self.assertEqual(tree.name, 'dataDir')
@@ -78,7 +79,7 @@ class TestWalker (unittest.TestCase):
         REL_PATH_TO_DATA = 'example/dataDir'
         REL_PATH_TO_NLH = 'example/example.nlh'
 
-        tree = NLHTree.createFromFileSystem(REL_PATH_TO_DATA, usingSHA1=True)
+        tree = NLHTree.createFromFileSystem(REL_PATH_TO_DATA, usingSHA=True)
         self.assertIsNotNone(tree)
         s = tree.__str__()
         self.assertEqual(EXAMPLE, s)        # the serialized NLHTree

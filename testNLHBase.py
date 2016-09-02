@@ -9,6 +9,8 @@ from rnglib import SimpleRNG
 from nlhtree.base import NLHBase
 from nlhtree import *
 
+from xlattice import Q
+
 
 class TestNLHBase (unittest.TestCase):
 
@@ -21,11 +23,11 @@ class TestNLHBase (unittest.TestCase):
     # utility functions #############################################
 
     # actual unit tests #############################################
-    def doTestConstructor(self, usingSHA1):
+    def doTestConstructor(self, usingSHA):
         name = self.rng.nextFileName(8)
-        b = NLHBase(name, usingSHA1)
+        b = NLHBase(name, usingSHA)
         self.assertEqual(b.name, name)
-        self.assertEqual(b.usingSHA1, usingSHA1)
+        self.assertEqual(b.usingSHA, usingSHA)
         root = b.root
         ct = b.curTree
         self.assertEqual(root.name, ct.name)
@@ -34,17 +36,18 @@ class TestNLHBase (unittest.TestCase):
         self.doTestConstructor(True)
         self.doTestConstructor(False)
 
-    def doTestWithSimpleTree(self, usingSHA1):
-        if usingSHA1:
+    def doTestWithSimpleTree(self, usingSHA):
+        if usingSHA == Q.USING_SHA1:
             sha = hashlib.sha1()
         else:
+            # FIX ME FIX ME FIX ME
             sha = hashlib.sha256()
 
         # XXX WORKING HERE
 
     def testSimpletTree(self):
-        self.doTestWithSimpleTree(usingSHA1=True)
-        self.doTestWithSimpleTree(usingSHA1=False)
+        self.doTestWithSimpleTree(usingSHA=True)
+        self.doTestWithSimpleTree(usingSHA=False)
 
 
 if __name__ == '__main__':

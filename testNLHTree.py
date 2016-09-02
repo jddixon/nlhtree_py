@@ -8,6 +8,7 @@ import unittest
 
 from rnglib import SimpleRNG
 from nlhtree import *
+from xlattice import Q
 
 
 class TestNLHTree (unittest.TestCase):
@@ -19,48 +20,50 @@ class TestNLHTree (unittest.TestCase):
         pass
 
     # utility functions #############################################
-    def makeLeaf(self, namesSoFar, usingSHA1):
+    def makeLeaf(self, namesSoFar, usingSHA):
         while True:
             name = self.rng.nextFileName(8)
             if name not in namesSoFar:
                 namesSoFar.add(name)
                 break
         n = self.rng.someBytes(8)        # 8 quasi-random bytes
-        if usingSHA1:
+        if usingSHA == Q.USING_SHA1:
             sha = hashlib.sha1()
         else:
+            # FIX ME FIX ME FIX ME
             sha = hashlib.sha256()
         sha.update(n)
         return NLHLeaf(name, sha.digest())
 
     # actual unit tests #############################################
     def testSimpleConstructor(self):
-        self.doTestSimpleConstructor(usingSHA1=True)
-        self.doTestSimpleConstructor(usingSHA1=False)
+        self.doTestSimpleConstructor(usingSHA=True)
+        self.doTestSimpleConstructor(usingSHA=False)
 
-    def doTestSimpleConstructor(self, usingSHA1):
+    def doTestSimpleConstructor(self, usingSHA):
         name = self.rng.nextFileName(8)
-        tree = NLHTree(name, usingSHA1)
+        tree = NLHTree(name, usingSHA)
         self.assertEqual(tree.name, name)
-        self.assertEqual(tree.usingSHA1, usingSHA1)
+        self.assertEqual(tree.usingSHA, usingSHA)
         self.assertEqual(len(tree.nodes), 0)
 
-    def doTestInsert4Leafs(self, usingSHA1):
+    def doTestInsert4Leafs(self, usingSHA):
         """
         Create 4 leaf nodes with random but unique names.  Insert
         them into a tree, verifying that the resulting sort is correct.
         """
-        if usingSHA1:
+        if usingSHA == Q.USING_SHA1:
             sha = hashlib.sha1()
         else:
+            # FIX ME FIX ME FIX ME
             sha = hashlib.sha256()
         name = self.rng.nextFileName(8)
-        tree = NLHTree(name, usingSHA1)
+        tree = NLHTree(name, usingSHA)
         leafNames = set()
-        a = self.makeLeaf(leafNames, usingSHA1)
-        b = self.makeLeaf(leafNames, usingSHA1)
-        c = self.makeLeaf(leafNames, usingSHA1)
-        d = self.makeLeaf(leafNames, usingSHA1)
+        a = self.makeLeaf(leafNames, usingSHA)
+        b = self.makeLeaf(leafNames, usingSHA)
+        c = self.makeLeaf(leafNames, usingSHA)
+        d = self.makeLeaf(leafNames, usingSHA)
         self.assertEqual(len(tree.nodes), 0)
         tree.insert(a)
         self.assertEqual(len(tree.nodes), 1)
@@ -83,8 +86,8 @@ class TestNLHTree (unittest.TestCase):
         self.assertEqual(tree2, tree)
 
     def testInsert4Leafs(self):
-        self.doTestInsert4Leafs(usingSHA1=True)
-        self.doTestInsert4Leafs(usingSHA1=False)
+        self.doTestInsert4Leafs(usingSHA=True)
+        self.doTestInsert4Leafs(usingSHA=False)
 
 
 if __name__ == '__main__':

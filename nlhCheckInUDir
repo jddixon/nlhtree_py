@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+from xlattice import Q    # FIX ME
 
 # ~/dev/py/nlhtree_py/nlhSaveToUDir
 
@@ -30,7 +31,7 @@ def main():
 
     parser = ArgumentParser(description=DESC)
 
-    parser.add_argument('-1', '--usingSHA1', action='store_true',
+    parser.add_argument('-1', '--usingSHA', action='store_true',
                         help='using the 160-bit SHA1 hash')
 
     parser.add_argument('-b', '--listFile', default='list.nlh',
@@ -86,12 +87,12 @@ def main():
         print('showVersion      = ' + str(args.showVersion))
         print('testing          = ' + str(args.testing))
         print('uDir             = ' + str(args.uDir))
-        print('usingSHA1        = ' + str(args.usingSHA1))
+        print('usingSHA        = ' + str(args.usingSHA))
         print('verbose          = ' + str(args.verbose))
 
     # do what's required --------------------------------------------
     if not args.justShow:
-        tree = NLHTree.parseFile(args.listFile, args.usingSHA1)
+        tree = NLHTree.parseFile(args.listFile, args.usingSHA)
         tree.checkInUDir(args.uDir)
 
 if __name__ == '__main__':

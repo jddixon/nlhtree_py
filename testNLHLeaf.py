@@ -34,7 +34,7 @@ class TestNLHLeaf (unittest.TestCase):
         sha.update(n)
         hash0 = sha.digest()
 
-        leaf0 = NLHLeaf(name, hash0)
+        leaf0 = NLHLeaf(name, hash0, usingSHA)
         self.assertEqual(name, leaf0.name)
         self.assertEqual(hash0, leaf0.binHash)
 
@@ -45,7 +45,7 @@ class TestNLHLeaf (unittest.TestCase):
         self.rng.nextBytes(n)
         sha.update(n)
         hash1 = sha.digest()
-        leaf1 = NLHLeaf(name2, hash1)
+        leaf1 = NLHLeaf(name2, hash1, usingSHA)
         self.assertEqual(name2, leaf1.name)
         self.assertEqual(hash1, leaf1.binHash)
 
@@ -60,8 +60,8 @@ class TestNLHLeaf (unittest.TestCase):
         self.assertEqual(leaf1c, leaf1)
 
     def testSimplestConstructor(self):
-        self.doTestSimpleConstructor(usingSHA=True)
-        self.doTestSimpleConstructor(usingSHA=False)
+        for using in [Q.USING_SHA1, Q.USING_SHA2, ]:
+            self.doTestSimpleConstructor(using)
 
 if __name__ == '__main__':
     unittest.main()

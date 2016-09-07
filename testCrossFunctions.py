@@ -25,10 +25,15 @@ class TestCrossFunctions (unittest.TestCase):
         # we assume that there is valid data in
         #   example/{example.nlh,dataDir,uDir}
 
-        self.assertTrue(usingSHA)       # the only mode currently supported
-
-        GOLD_DATA = 'example/dataDir'
-        GOLD_LIST_FILE = 'example/example.nlh'
+        if usingSHA == Q.USING_SHA1:
+            GOLD_DATA = 'example1/dataDir'
+            GOLD_LIST_FILE = 'example1/example.nlh'
+        elif usingSHA == Q.USING_SHA2:
+            GOLD_DATA = 'example2/dataDir'
+            GOLD_LIST_FILE = 'example2/example.nlh'
+        else:
+            # FIX ME FIX ME
+            raise UnimplementedError
 
         TARGET_DATA_DIR = 'tmp/dataDir'
         TARGET_LIST_FILE = 'tmp/listing.nlh'
@@ -91,8 +96,9 @@ class TestCrossFunctions (unittest.TestCase):
         self.assertEqual(tree, tree2)
 
     def testSimplestConstructor(self):
-        self.doTestCrossFunctions(usingSHA=True)
-        # self.doTestCrossFunctions(usingSHA=False)
+        for using in [Q.USING_SHA1, Q.USING_SHA2, ]:
+            # FIX ME FIX ME
+            self.doTestCrossFunctions(using)
 
 if __name__ == '__main__':
     unittest.main()

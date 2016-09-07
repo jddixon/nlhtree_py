@@ -33,7 +33,7 @@ class TestNLHTree (unittest.TestCase):
             # FIX ME FIX ME FIX ME
             sha = hashlib.sha256()
         sha.update(n)
-        return NLHLeaf(name, sha.digest())
+        return NLHLeaf(name, sha.digest(), usingSHA)
 
     # actual unit tests #############################################
     def testSimpleConstructor(self):

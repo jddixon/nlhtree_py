@@ -22,8 +22,8 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__ = '0.5.0'
-__version_date__ = '2016-09-01'
+__version__ = '0.6.0'
+__version_date__ = '2016-09-07'
 
 
 class NLHError(RuntimeError):
@@ -36,7 +36,7 @@ class NLHParseError(NLHError):
 
 class NLHNode(object):
 
-    def __init__(self, name, usingSHA=False):
+    def __init__(self, name, usingSHA=Q.USING_SHA2):
         # XXX needs checks
         self._name = name.strip()
         self._usingSHA = usingSHA
@@ -78,17 +78,16 @@ class NLHNode(object):
         self._binHash = value
 
     @staticmethod
-    def checkHash(hash):
-        """ return True if SHA1, False if SHA2, otherwise raise """
-        if hash is None:
-            raise NLHError('hash cannot be None')
-        hashLen = len(hash)
-        if hashLen == SHA1_BIN_LEN:
-            return True
-        elif hashLen == SHA2_BIN_LEN:
-            return False
-        else:
-            raise NLHError('not a valid SHA hash length')
+    def checkHash(binHash, usingSHA):
+        """ raise if inappropriate binHash length"""
+
+        if binHash is None:
+            raise NLHError('binary hash cannot be None')
+        binHashLen = len(binHash)
+        if binHashLen != SHA1_BIN_LEN and \
+                binHashLen != SHA2_BIN_LEN and \
+                binHashLen != SHA3_BIN_LEN:
+            raise NLHError('not a valid SHA binary hash length')
 
     def __eq__(self):
         raise NotImplementedError
@@ -105,14 +104,12 @@ class NLHNode(object):
 
 class NLHLeaf(NLHNode):
 
-    def __init__(self, name, hash):
-        usingSHA = NLHNode.checkHash(hash)   # exception if check fails
+    def __init__(self, name, binHash, usingSHA):
+        NLHNode.checkHash(binHash, usingSHA)       # exception if check fails
         super().__init__(name, usingSHA)
 
-        # XXX VERIFY HASH IS WELL-FORMED
-
-        if hash:
-            self._binHash = hash
+        if binHash:
+            self._binHash = binHash
         else:
             self._binHash = None
 
@@ -134,7 +131,15 @@ class NLHLeaf(NLHNode):
 
     def clone(self):
         """ make a deep copy """
-        return NLHLeaf(self._name, self._binHash)
+
+        # FIX ME FIX ME
+        hashLen = len(self._binHash)
+        if hashLen == SHA1_BIN_LEN:
+            usingSHA = Q.USING_SHA1
+        else:
+            # FIX ME FIX ME
+            usingSHA = Q.USING_SHA2
+        return NLHLeaf(self._name, self._binHash, usingSHA)
 
     # ITERABLE ############################################
 
@@ -151,7 +156,7 @@ class NLHLeaf(NLHNode):
     # END ITERABLE ########################################
 
     @staticmethod
-    def createFromFileSystem(path, name, usingSHA=False):
+    def createFromFileSystem(path, name, usingSHA=Q.USING_SHA2):
         """
         Create an NLHLeaf from the contents of the file at **path**.
         The name is part of the path but is passed to simplify the code.
@@ -164,7 +169,7 @@ class NLHLeaf(NLHNode):
                 # FIX ME FIX ME FIX ME
                 hash = fileSHA2Hex(path)
             bHash = binascii.a2b_hex(hash)
-            return NLHLeaf(name, bHash)
+            return NLHLeaf(name, bHash, usingSHA)
         else:
             return None
 
@@ -180,7 +185,7 @@ class NLHTree(NLHNode):
     FILE_LINE_RE_2 = re.compile(r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{64})$',
                                 re.IGNORECASE)
 
-    def __init__(self, name, usingSHA=False):
+    def __init__(self, name, usingSHA=Q.USING_SHA2):
         super().__init__(name, usingSHA)
         self._nodes = []
         self._n = -1            # duplication seems necessary
@@ -301,7 +306,7 @@ class NLHTree(NLHNode):
                 node.toStrings(ss, indent + 1)
 
     @staticmethod
-    def createFromFileSystem(pathToDir, usingSHA=False,
+    def createFromFileSystem(pathToDir, usingSHA=Q.USING_SHA2,
                              exRE=None, matchRE=None):
         """
         Create an NLHTree based on the information in the directory
@@ -384,7 +389,7 @@ class NLHTree(NLHNode):
         raise NLHParseError("can't parse line: '%s'" % s)
 
     @staticmethod
-    def createFromStringArray(ss, usingSHA=False):
+    def createFromStringArray(ss, usingSHA=Q.USING_SHA2):
         # at entry, we don't know whether the string array uses
         # SHA1 or SHA256
 
@@ -407,7 +412,7 @@ class NLHTree(NLHNode):
                 print("IMPOSSIBLE: indent %d, depth %d" % (indent, depth))
                 # END
                 if hash:
-                    leaf = NLHLeaf(name, bHash)
+                    leaf = NLHLeaf(name, bHash, usingSHA)
                     stack[depth].insert(leaf)
                 else:
                     subTree = NLHTree(name, usingSHA)
@@ -420,7 +425,7 @@ class NLHTree(NLHNode):
                     stack.append(subTree)
                     depth += 1
                 else:
-                    leaf = NLHLeaf(name, bHash)
+                    leaf = NLHLeaf(name, bHash, usingSHA)
                     stack[depth].insert(leaf)
 
             else:
@@ -433,7 +438,7 @@ class NLHTree(NLHNode):
                     stack.append(subTree)
                     depth += 1
                 else:
-                    leaf = NLHLeaf(name, bHash)
+                    leaf = NLHLeaf(name, bHash, usingSHA)
                     stack[depth].insert(leaf)
 
         return root
@@ -556,7 +561,7 @@ class NLHTree(NLHNode):
         return unmatched
 
     def saveToUDir(self, dataDir,
-                   uPath=os.environ['DVCZ_UDIR'], usingSHA=False):
+                   uPath=os.environ['DVCZ_UDIR'], usingSHA=Q.USING_SHA2):
         """
         Given an NLHTree for the data directory, walk the tree, copying
         all files present in dataDir into uPath by content key.  We assume
@@ -611,7 +616,7 @@ class NLHTree(NLHNode):
     # ITERATORS #####################################################
 
     @staticmethod
-    def walkFile(pathToFile):
+    def walkFile(pathToFile, usingSHA):
         """
         For each line in the NLHTree listing, return either the
         relative path to a directory (including the directory name)
@@ -628,7 +633,6 @@ class NLHTree(NLHNode):
         path = ''
         parts = []
         hashLen = -1
-        usingSHA = False
 
         with open(pathToFile, 'r') as f:
             line = f.readline()
@@ -656,17 +660,22 @@ class NLHTree(NLHNode):
 
                 # -- file -------------------------------------------
                 if not done:
-                    m = NLHTree.FILE_LINE_RE_1.match(line)
+                    if usingSHA == Q.USING_SHA1:
+                        m = NLHTree.FILE_LINE_RE_1.match(line)
+                    else:
+                        # FIX ME FIX ME
+                        m = NLHTree.FILE_LINE_RE_2.match(line)
                     if m:
                         curDepth = len(m.group(1))
                         fileName = m.group(2)
                         hash = m.group(3)
                         yield (os.path.join(path, fileName), hash)
                         done = True
-                # -- error ------------------------------------------
-                if not done:
-                    yield ("DUNNO WHAT THIS IS: %s" % line, )
-                    done = True
+                    # DEBUG
+                    else:
+                        print("NO FILE LINE MATCH ON %s" % line)
+                    # END
+
                 line = f.readline()
                 lineNbr += 1
 
@@ -731,7 +740,8 @@ class NLHTree(NLHNode):
                     fileName = m.group(2)
                     hash = m.group(3)
                     yield (os.path.join(path, fileName), hash)
-                    done = True
+                done = True
+
             # -- error ------------------------------------------
             if not done:
                 yield ("DUNNO WHAT THIS IS: %s" % line, )

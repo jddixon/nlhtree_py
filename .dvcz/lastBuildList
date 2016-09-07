@@ -7,24 +7,24 @@ zPjEShF9rvcNa9XEy1dKpcDz9Szbm2SlxOgM83fDDGtOq4SSCSqndtxrOvXXPB57
 H1mJV/FmerbXRPm5ERJVNIxtLk7Gr2Ce45FVlWyJGMhpfVlKkkk+bRQ02OFfazJI
 GQIDAQAB
 -----END RSA PUBLIC KEY-----
-nlhtree_py v0.4.31
-2016-08-25 18:11:51
+nlhtree_py v0.6.0
+2016-09-07 20:49:10
 # BEGIN CONTENT #
 nlhtree_py
  .dvcz
-  builds c8e79779fdd12aed041dc33b71ee8e92693d33c6
+  builds c87eaed26c2dd637a8fdffa35041931eb92f464e
   copyright 304c14d702dff7c6c2c39729ff62aed7203b3427
-  lastBuildList d3111b6c6aa7464be3fa527c9751c52a711df01e
+  lastBuildList cc18d3e44051f96421c9924c53f526a7139ca728
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
   projCfg 7757fabc0eba55daef514f5299aadc5817a07184
   projCfg.local 7fd9890104d7606765798cdbb8be02d5f807482f
-  version c6da647f56f65093aaadf25d60d85f4b370f44dc
- .gitignore 5f1a04317952b671c5828218c6efe88c2594f8fb
- CHANGES dfbc77de9d2d53a5cd5b7c28e3d7764566c37bcd
+  version 222bdbaa144102b8128ec1e5a855f8e6baa0585a
+ .gitignore 2bc4bcb7826ea9b5fb999444fe18f6785df1de72
+ CHANGES aaf0d188e5f07051f5ccca763467f2099c5d4031
  LICENSE-MIT.md ef87ef0aafe2bb3dc3b3ab29651c52e8add097b4
  MANIFEST.in 49f3fa12c06539c2c9e09f4ead7f121c41b6586c
  README.md 96ecdcf9c0bac34507ecc36d99f37dfa984d345e
- TODO 9f191edc8c9eda9d5975abe2f60a6d9a0f543c66
+ TODO 2d613801545f1d3c3a23738ff57cf3fc02b34002
  bkp2U c68ccfbce377795646501504616b9bbfc55aa6cb
  countem 1760c9c80faa115294436e8f0a7998432b28aa93
  dist
@@ -67,7 +67,9 @@ nlhtree_py
   nlhtree_py-0.4.7.tar.gz 208dcb2b192edcd2bc6bf55bbdd83a826e0e3c50
   nlhtree_py-0.4.8.tar.gz fb86bd17bf8c0001ee904fd203baeb35e5e483f4
   nlhtree_py-0.4.9.tar.gz 80634510bae8abaf2825fd2c13c3ceb3ce088c77
- example
+  nlhtree_py-0.5.0.tar.gz 8dd3534fe9d089dcee390dab6360be3aece8b92d
+  nlhtree_py-0.6.0.tar.gz dc247f35355c674c27c9fc51aefc453dae7a7742
+ example1
   dataDir
    data1 34463aa26c4d7214a96e6e42c3a9e8f55727c695
    data2 14193743b265973e5824ca5257eef488094e19e9
@@ -102,6 +104,31 @@ nlhtree_py
     39
      da39a3ee5e6b4b0d3255bfef95601890afd80709 da39a3ee5e6b4b0d3255bfef95601890afd80709
    in
+ example2
+  dataDir
+   data1 82037c4d3f8ea8433c2781326d7367038eddf47d
+   data2 0ac298980ddaa1d6ecfa7f1bea9d9b0a417ec6ee
+   subDir1
+    data11 e0f888666ad88320e5bc285dd3a01bc6cf7dc605
+    data12 da39a3ee5e6b4b0d3255bfef95601890afd80709
+   subDir2
+   subDir3
+    data31 bfdb614a21e6cec18b1a811d0d5a985875b9a6ca
+   subDir4
+    subDir41
+     subDir411
+      data31 0043090d6f4732c09a4625a2cdce6243f612bfe8
+  example.nlh dcf2ced3496e7cdd03b02e99b8c2d6906c06eda9
+  node
+   skPriv.pem dffc8bd59445440dd5764969bfd8e9f1512c264f
+  uDir
+   2b0fef7f8a1820fbaf01e5649d153a3f01877ca5ade6f8b548da94eac693934f e0f888666ad88320e5bc285dd3a01bc6cf7dc605
+   6be91186acce7baa87df8f7cc3a57f716fe9864ec928cf0eb27f53c9d427bed6 0043090d6f4732c09a4625a2cdce6243f612bfe8
+   93c4feb737c20fa6428f130cf531997c8680f0cf6487d84b2fbafd4bac1f1b69 82037c4d3f8ea8433c2781326d7367038eddf47d
+   a5a2cc9b232d0b0efecbdf7801172da7cd2bc1df301076297e5cb45032ecadde bfdb614a21e6cec18b1a811d0d5a985875b9a6ca
+   c8eda98bb28d17b280e1c5209668ec70788855e2ff2711e16adc087e9bd7f7c1 0ac298980ddaa1d6ecfa7f1bea9d9b0a417ec6ee
+   e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 da39a3ee5e6b4b0d3255bfef95601890afd80709
+   in
  ghpDoc
   css
    LICENSE.html5-boilerplate.md ded771b3245b190da0e81c76de5a80d41392c0a6
@@ -118,26 +145,27 @@ nlhtree_py
    xlattice-2014.jpg f185aaad06db71acd9454f31054c62c56d36f37f
   index.md b966f156f31dfad60fd7c444f880969a2c7a608e
  installit fabcb17eafffd9bf015bdda55306ddb39968f43a
- nlhCheckInDataDir 706eeedcc125fcc679b54d5f7a6828380916ce70
- nlhCheckInUDir c3521a1d956b6b3af0ce52e59ac26709f2ba6116
- nlhPopulateDataDir f096d9c575dd54be0f03fd5ff7698d3b079a000d
- nlhSaveToUDir dbd3a160b5bae504f480536cdaf337ab52984640
+ nlhCheckInDataDir 8d9f77e5771e3c5546a98f364eb1b8e720cba66f
+ nlhCheckInUDir 9e02662670b252875e194b5184b348cb98b7d372
+ nlhPopulateDataDir f260c5c0837fb45ab2094de3308499ad0d1027ce
+ nlhSaveToUDir d4d34d1f5057d24f9f12ce336e5ae28cee30e948
  nlhtree
-  __init__.py 0d907d4c223689bfcbc4125964878a23972bc821
-  base.py 837b57165a12deeabb98743e76a9c7e314333cc6
+  __init__.py 1f665ddd6c833c9c77ff71162a99cca030e76d1e
+  base.py 77ee85fe8b1df715f7697f52e899ab9e99b9cc61
  setup.py 22018530c2269887b850cf24ad81488d7f275640
  styleit 1a8195d694bef2a0dfc0ea259e5b77f05eaca8db
  test
  test.all 6aa41d772d09f8a65c3fa10235e48aadb123b994
- testCrossFunctions.py 7d54c6f27754e2675100954bc2ae81a03b4490b5
- testDropFromU.py a3c7f14bf52805bdf15fece1933c5d3fc6c4a075
- testIters.py 9c0a47de8959b8f279bfba6c24b7713b5f98da95
- testNLHBase.py 82a4d1459331a20b637869fdc754570a23d5039b
- testNLHLeaf.py 020ddd45fcd499265db0bb33f8f5516f4dfbe59b
- testNLHTree.py f538094b5b487f162f3b064be2a1a8b70832d103
- testNLHTree2.py 9c22a4bb62f17b05c3c010ff089fccfc2ead1935
- testNLHTree3.py 6be9ff7b0c5df9cae29505008355800d1162754a
- testWalker.py 4ad843ced60acf632d9292af58b420c073e9b53c
+ testCrossFunctions.py f8e5dc24b27d1a37b927fa020c669f628509cbf0
+ testDropFromU.py ca788a9eec61ec76fe918b87476e3db401ee59f6
+ testIters.py 4e71fcce64787b038b9959d1b58ad01172d5ffc3
+ testNLHBase.py 9a534cca4f06ab260de981a2e32d8d56c42f2335
+ testNLHLeaf.py 93001429ef5f08beeb718bf3b42749bd03807e44
+ testNLHTree.py 51daff7dd985e91836ac040c4b8c87648c7967e5
+ testNLHTree2.py ad4feea3e20e31c88f456be31684ede8dc2656f0
+ testNLHTree3.py d2b3665176f6b40b0293b9bece54067afbe3c9e6
+ testWalker.diff c2d256ba39d358912a5e2c1403e291a7f377e419
+ testWalker.py 35f3abc2a5ba47a2fe8c92f5345d4e71368245ea
 # END CONTENT #
 
-LIQUn1JYXtZKZFCC9mUxN+zl4dpi9EDVO/WokWkhUXZABGqdgEmzi8+zNFH6ybGgOSYOjwtd8tb1q6RrddvCTD90gJ1+WFYqiX5y5cDKW+Mb0WxgkR/tx0NHPUpzZVP6chZrNPle9Vrc73Re5on+OaUAPC+8Gfsjub6U6acZZDARmhPezkxZvEgmDq2+3qklKDmOpEg/MWY7wTYHKfOqTTV1BP7XSFN+0/swnNfu/Yys9H1cLicUkjGtIHm2lbenEprjoZiFFSqR/A8Ecq0BHYuws0wskkY0/9P6yHnk8jvxMMDv1DeshMKgkTzq9jdvF64gnEyOlMrTkMA3F9oiDw==
+bJj+I30j7oNuatIWM4yvKhmb/qIZji4udnc/fYvXh3ZwMYsTgNw6VioR5ODuK4NpKgWvuEpeuQswe7EYIi4fjBbybiAV2iC+M6DdFBsNKS6t1Ba2Wz06WckBEivYvOBUQ12S03gMLD9u8nIBMVa1Qmku8sF85dc6bZiOsalMQTYhxDSchtEsvlzEpvOi0cXLsUH58Fq/RRr1TpkQGww37MSJ82jDUepFWz3xRIS38Oe6QHOgCpR267/tzvHnMWV+JNUF7HBbU2BKmC7BdN0m16FOSpLy6Ufkh+/XPbpyZJj/NyFdilNz/12+Pd4ROSEd61FuXqZmaeriBYFJuZoU8w==

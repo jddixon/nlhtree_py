@@ -48,7 +48,7 @@ class TestDropFromU (unittest.TestCase):
             uPath = os.path.join('tmp', uRootName)
 
         # DEBUG
-        #print("uRootName = %s" % uRootName)
+        print("uRootName = %s" % uRootName)
         # END
 
         # create uDir and the NLHTree
@@ -68,7 +68,9 @@ class TestDropFromU (unittest.TestCase):
         dataDir = os.makedirs(dataPath, mode=0o755)
 
         # DEBUG
-        #print("dataTmp = %s" % dataTmp)
+        print("dataTmp = %s" % dataTmp)
+        print("topName = %s" % topName)
+        print('dataPath = %s' % dataPath)
         # END
 
         tree = NLHTree(topName, usingSHA)
@@ -108,8 +110,13 @@ class TestDropFromU (unittest.TestCase):
                 f.write(datum)
 
             # insert leaf into tree -----------------------
-            leaf = NLHLeaf(fileName, binKey)
+            pathFromTop = os.path.join(topName, fileName)
+            leaf = NLHLeaf(fileName, binKey, usingSHA)
             tree.insert(leaf)
+
+            # DEBUG
+            print("  inserting <%s %s>" % (leaf.name, leaf.hexHash))
+            # END
 
             # write data into uDir ------------------------
             uDir.putData(datum, hexKey)
@@ -122,10 +129,13 @@ class TestDropFromU (unittest.TestCase):
             struc, usingSHA)
 
         # DEBUG
-        # print("TREE:\n%s" % tree)
+        print("TREE:\n%s" % tree)
         # END
         # verify that the dataDir matches the nlhTree
         tree2 = NLHTree.createFromFileSystem(dataPath, usingSHA)
+        # DEBUG
+        print("TREE2:\n%s" % tree2)
+        # END
         self.assertEqual(tree2, tree)
 
         N = len(values)             # number of values present
@@ -142,48 +152,54 @@ class TestDropFromU (unittest.TestCase):
         # print("dropping %d from %d elements" % (K, N))
         # END
 
-        selNdxes = p[0:K]        # indexes of values to drop
-        otherNdxes = p[K:]         # of those which should still be present
+        dropMe = p[0:K]        # indexes of values to drop
+        keepMe = p[K:]         # of those which should still be present
 
         # construct an NLHTree containing values to be dropped from uDir
         q = tree.clone()
-        for i in selNdxes:
+        for i in keepMe:
             name = 'value%04d' % i
             q.delete(name)     # the parameter is a glob !
 
         # these values should be absent from q: they won't be dropped from uDir
-        for i in selNdxes:
+        for i in keepMe:
             name = 'value%04d' % i
             x = q.find(name)
             self.assertEqual(len(x), 0)
 
         # these values shd still be present in q: they'll be dropped from UDir
-        for i in otherNdxes:
+        for i in dropMe:
             name = 'value%04d' % i
             x = q.find(name)
             self.assertEqual(len(x), 1)
 
         # the q subtree contains those elements which will be dropped
         # from uDir
-        q.dropFromUDir(uPath)
+        unmatched = q.dropFromUDir(uPath)
+        # DEBUG
+        for x in unmatched:  # (relPath, hahs)
+            print("unmatched: %s %s" % (x[0], x[1]))
+        # END
+        # self.assertEqual( len(unmatched), 0)      ### XXX
 
         uDir = UDir(uPath, struc, usingSHA)
         self.assertTrue(os.path.exists(uPath))
 
         # these values should still be present in uDir
-        for i in selNdxes:
+        for i in keepMe:
             hexHash = hexHashes[i]
             self.assertTrue(uDir.exists(hexHash))
 
         # these values should NOT be present in UDir
-        for i in otherNdxes:
+        for i in dropMe:
             hexHash = hexHashes[i]
             self.assertFalse(uDir.exists(hexHash))
 
     def testWithEphemeralTree(self):
         for struc in [UDir.DIR_FLAT, UDir.DIR16x16, UDir.DIR256x256, ]:
-            self.doTestWithEphemeralTree(struc, True)
-            self.doTestWithEphemeralTree(struc, False)
+            for using in [Q.USING_SHA1, Q.USING_SHA3, ]:
+                # FIX ME FIX ME
+                self.doTestWithEphemeralTree(struc, using)
 
 if __name__ == '__main__':
     unittest.main()

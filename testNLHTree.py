@@ -8,7 +8,7 @@ import unittest
 
 from rnglib import SimpleRNG
 from nlhtree import *
-from xlattice import Q
+from xlattice import Q, checkUsingSHA
 
 
 class TestNLHTree (unittest.TestCase):
@@ -29,16 +29,17 @@ class TestNLHTree (unittest.TestCase):
         n = self.rng.someBytes(8)        # 8 quasi-random bytes
         if usingSHA == Q.USING_SHA1:
             sha = hashlib.sha1()
-        else:
-            # FIX ME FIX ME FIX ME
+        elif usingSHA == Q.USING_SHA2:
             sha = hashlib.sha256()
+        elif usingSHA == Q.USING_SHA3:
+            sha = hashlib.sha3_256()
         sha.update(n)
         return NLHLeaf(name, sha.digest(), usingSHA)
 
     # actual unit tests #############################################
     def testSimpleConstructor(self):
-        self.doTestSimpleConstructor(usingSHA=True)
-        self.doTestSimpleConstructor(usingSHA=False)
+        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
+            self.doTestSimpleConstructor(using)
 
     def doTestSimpleConstructor(self, usingSHA):
         name = self.rng.nextFileName(8)
@@ -52,11 +53,13 @@ class TestNLHTree (unittest.TestCase):
         Create 4 leaf nodes with random but unique names.  Insert
         them into a tree, verifying that the resulting sort is correct.
         """
+        checkUsingSHA(usingSHA)
         if usingSHA == Q.USING_SHA1:
             sha = hashlib.sha1()
-        else:
-            # FIX ME FIX ME FIX ME
+        elif usingSHA == Q.USING_SHA2:
             sha = hashlib.sha256()
+        elif usingSHA == Q.USING_SHA3:
+            sha = hashlib.sha3_256()
         name = self.rng.nextFileName(8)
         tree = NLHTree(name, usingSHA)
         leafNames = set()
@@ -86,8 +89,8 @@ class TestNLHTree (unittest.TestCase):
         self.assertEqual(tree2, tree)
 
     def testInsert4Leafs(self):
-        self.doTestInsert4Leafs(usingSHA=True)
-        self.doTestInsert4Leafs(usingSHA=False)
+        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
+            self.doTestInsert4Leafs(using)
 
 
 if __name__ == '__main__':

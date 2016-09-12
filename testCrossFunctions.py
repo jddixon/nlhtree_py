@@ -9,7 +9,7 @@ import unittest
 
 from rnglib import SimpleRNG
 from nlhtree import NLHTree
-from xlattice import Q
+from xlattice import Q, checkUsingSHA
 from xlattice.util import makeExRE
 
 
@@ -22,8 +22,11 @@ class TestCrossFunctions (unittest.TestCase):
         pass
 
     def doTestCrossFunctions(self, usingSHA):
-        # we assume that there is valid data in
-        #   example/{example.nlh,dataDir,uDir}
+        """
+        We assume that there is valid data in
+            example/{example.nlh,dataDir,uDir}
+        """
+        checkUsingSHA(usingSHA)
 
         if usingSHA == Q.USING_SHA1:
             GOLD_DATA = 'example1/dataDir'
@@ -31,9 +34,11 @@ class TestCrossFunctions (unittest.TestCase):
         elif usingSHA == Q.USING_SHA2:
             GOLD_DATA = 'example2/dataDir'
             GOLD_LIST_FILE = 'example2/example.nlh'
+        elif usingSHA == Q.USING_SHA3:
+            GOLD_DATA = 'example3/dataDir'
+            GOLD_LIST_FILE = 'example3/example.nlh'
         else:
-            # FIX ME FIX ME
-            raise UnimplementedError
+            raise NotImplementedError
 
         TARGET_DATA_DIR = 'tmp/dataDir'
         TARGET_LIST_FILE = 'tmp/listing.nlh'
@@ -63,6 +68,9 @@ class TestCrossFunctions (unittest.TestCase):
             goldListing = f.read()
 
         outputListing = tree.__str__()
+        # DEBUG
+        print("OUTPUT LISING for %s:\n%s" % (usingSHA, outputListing))
+        # END
         self.assertEqual(goldListing, outputListing)
 
         tree = NLHTree.createFromFileSystem(GOLD_DATA, usingSHA)
@@ -96,8 +104,7 @@ class TestCrossFunctions (unittest.TestCase):
         self.assertEqual(tree, tree2)
 
     def testSimplestConstructor(self):
-        for using in [Q.USING_SHA1, Q.USING_SHA2, ]:
-            # FIX ME FIX ME
+        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
             self.doTestCrossFunctions(using)
 
 if __name__ == '__main__':

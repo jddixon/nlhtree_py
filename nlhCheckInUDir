@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-from xlattice import Q    # FIX ME
 
 # ~/dev/py/nlhtree_py/nlhSaveToUDir
 

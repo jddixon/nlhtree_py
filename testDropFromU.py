@@ -3,6 +3,8 @@
 # nlhtree_py/testDropFromU.py
 
 import hashlib
+import sha3     # must follow hashlib
+
 import os
 import time
 import unittest
@@ -10,7 +12,7 @@ from binascii import hexlify
 
 from rnglib import SimpleRNG
 from nlhtree import *
-from xlattice import Q
+from xlattice import Q, checkUsingSHA
 from xlattice.u import UDir
 
 
@@ -92,9 +94,10 @@ class TestDropFromU (unittest.TestCase):
             # generate hash = binKey ----------------------
             if usingSHA == Q.USING_SHA1:
                 sha = hashlib.sha1()
-            else:
-                # FIX ME FIX ME FIX ME
+            elif usingSHA == Q.USING_SHA2:
                 sha = hashlib.sha256()
+            elif usingSHA == Q.USING_SHA3:
+                sha = hashlib.sha3_256()
             sha.update(datum)
             binKey = sha.digest()
             hexKey = sha.hexdigest()
@@ -197,8 +200,7 @@ class TestDropFromU (unittest.TestCase):
 
     def testWithEphemeralTree(self):
         for struc in [UDir.DIR_FLAT, UDir.DIR16x16, UDir.DIR256x256, ]:
-            for using in [Q.USING_SHA1, Q.USING_SHA3, ]:
-                # FIX ME FIX ME
+            for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
                 self.doTestWithEphemeralTree(struc, using)
 
 if __name__ == '__main__':

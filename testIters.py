@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-from xlattice import Q    # FIX ME
 
 # testIters.py
 
 import hashlib
+import sha3     # must follow hashlib
+
 import sys
 import unittest
 
+from xlattice import Q, checkUsingSHA
 from nlhtree import *
 
 EXAMPLE1 = """dataDir
@@ -25,18 +27,33 @@ EXAMPLE1 = """dataDir
 """
 
 EXAMPLE2 = """dataDir
- data1 93c4feb737c20fa6428f130cf531997c8680f0cf6487d84b2fbafd4bac1f1b69
- data2 c8eda98bb28d17b280e1c5209668ec70788855e2ff2711e16adc087e9bd7f7c1
+ data1 023d6598659f6a6b044ee909f3f3e6c4343850a1c5c71ef3f873c8e46b68e898
+ data2 29223e6e7c63529feaa441773097b68951fe8652830098b3c5c2df72fd5b7821
  subDir1
-  data11 2b0fef7f8a1820fbaf01e5649d153a3f01877ca5ade6f8b548da94eac693934f
+  data11 9394e20adb8adf9727ee6d12377aa57230eb548eb2c718d117c2e9c3aecf0e33
   data12 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
  subDir2
  subDir3
-  data31 a5a2cc9b232d0b0efecbdf7801172da7cd2bc1df301076297e5cb45032ecadde
+  data31 9adc17b1d861fae64ddbc792fafb097c55d316a585359b6356af8fa8992aefac
  subDir4
   subDir41
    subDir411
-    data31 6be91186acce7baa87df8f7cc3a57f716fe9864ec928cf0eb27f53c9d427bed6
+    data31 4308da851a73798454e22ee6d71a4d0732b9fd1ab10e607da53bf8c88ad7d44b
+"""
+
+EXAMPLE3 = """dataDir
+ data1 adf6c7f792e8198631aacbbc8cee51181176f4c157d578ee226040d70f552db1
+ data2 c6e5bfc9f7189ef6276d0bf25f05c12c0e1dcdf10e1ac69f62a0642e9d7dfcc5
+ subDir1
+  data11 03ef2f36e12e9afaaabb71fe84c6db3a225714bfa0bd58440727932e23174886
+  data12 a7ffc6f8bf1ed76651c14756a061d662f580ff4de43b49fa82d80a4b80f8434a
+ subDir2
+ subDir3
+  data31 9400dfa37b52665f2056c93071a851a5e4c3c2c9245d39c640d9de796fa3d530
+ subDir4
+  subDir41
+   subDir411
+    data31 360ba73957c140fc28b8d6a8b7033cd2f896158fc8988fc68bb4877e4e13a048
 """
 
 
@@ -50,19 +67,20 @@ class TestIters (unittest.TestCase):
 
     def testIters(self):
 
-        for using in [Q.USING_SHA1, Q.USING_SHA2, ]:
-            # FIX ME FIX ME
+        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
             self.doTestIters(using)
 
     def doTestIters(self, usingSHA):
-
+        checkUsingSHA(usingSHA)
         if usingSHA == Q.USING_SHA1:
             REL_PATH_TO_DATA = 'example1/dataDir'
             REL_PATH_TO_NLH = 'example1/example.nlh'
-        else:
-            # FIX ME FIX ME
+        elif usingSHA == Q.USING_SHA2:
             REL_PATH_TO_DATA = 'example2/dataDir'
             REL_PATH_TO_NLH = 'example2/example.nlh'
+        elif usingSHA == Q.USING_SHA3:
+            REL_PATH_TO_DATA = 'example3/dataDir'
+            REL_PATH_TO_NLH = 'example3/example.nlh'
 
         tree = NLHTree.createFromFileSystem(REL_PATH_TO_DATA, usingSHA)
         self.assertIsNotNone(tree)
@@ -71,8 +89,9 @@ class TestIters (unittest.TestCase):
             self.assertEqual(EXAMPLE1, s)        # the serialized NLHTree
         elif usingSHA == Q.USING_SHA2:
             self.assertEqual(EXAMPLE2, s)        # the serialized NLHTree
+        elif usingSHA == Q.USING_SHA3:
+            self.assertEqual(EXAMPLE3, s)        # the serialized NLHTree
         else:
-            # FIX ME FIX ME
             raise NotImplementedError
 
         # The serialized NLHTree, the string s, is identical to the EXAMPLE

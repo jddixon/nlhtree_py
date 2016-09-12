@@ -1,5 +1,4 @@
 # nlhtree_py/nlhtree/base.py
-from xlattice import Q    # FIX ME
 
 import binascii
 import fnmatch

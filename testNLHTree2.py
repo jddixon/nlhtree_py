@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-from xlattice import Q    # FIX ME
 
 # testNLHTree.py
 import hashlib
+import sha3     # XXX should be conditional
+
 import os
 import re
 import shutil
@@ -11,7 +12,8 @@ import time
 import unittest
 
 from rnglib import SimpleRNG
-from xlattice import SHA1_HEX_NONE, SHA2_HEX_NONE
+from xlattice import (SHA1_HEX_NONE, SHA2_HEX_NONE, SHA3_HEX_NONE,
+                      Q, checkUsingSHA)
 from nlhtree import *
 
 ONE = 1
@@ -60,12 +62,13 @@ class TestNLHTree2 (unittest.TestCase):
     # unit tests ----------------------------------------------------
 
     def testPathlessUnboundConstructor1(self):
-        self.doTestPathlessUnboundConstructor1(usingSHA=True)
-        self.doTestPathlessUnboundConstructor1(usingSHA=False)
+        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
+            self.doTestPathlessUnboundConstructor1(using)
 
     def doTestPathlessUnboundConstructor1(self, usingSHA):
         (dirName1, dirName2) = self.getTwoUniqueDirectoryNames()
 
+        checkUsingSHA(usingSHA)
         tree1 = NLHTree(dirName1, usingSHA)
         self.assertEqual(dirName1, tree1.name)
         self.assertEqual(tree1.usingSHA, usingSHA)
@@ -82,8 +85,8 @@ class TestNLHTree2 (unittest.TestCase):
         self.assertEqual(tree1c, tree1)
 
     def testBoundFlatDirs(self):
-        self.doTestBoundFlatDirs(usingSHA=True)
-        self.doTestBoundFlatDirs(usingSHA=False)
+        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
+            self.doTestBoundFlatDirs(using)
 
     def doTestBoundFlatDirs(self, usingSHA):
         """test directory is single level, with four data files"""
@@ -109,8 +112,8 @@ class TestNLHTree2 (unittest.TestCase):
         self.assertEqual(tree1c, tree1)
 
     def testBoundNeedleDirs1(self):
-        self.doTestBoundNeedleDirs(usingSHA=True)
-        self.doTestBoundNeedleDirs(usingSHA=False)
+        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
+            self.doTestBoundNeedleDirs(using)
 
     def doTestBoundNeedleDirs(self, usingSHA):
         """test directories four deep with one data file at the lowest level"""

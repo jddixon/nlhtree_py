@@ -8,22 +8,21 @@ import re
 import sys
 from stat import *
 
-from xlattice import Q
+from xlattice import Q, checkUsingSHA
 from xlattice.crypto import SP   # for getSpaces()
-from xlattice.u import (fileSHA1Hex, fileSHA2Hex, UDir)
+from xlattice.u import (fileSHA1Hex, fileSHA2Hex, fileSHA3Hex, UDir)
 
 from xlattice import (
-    SHA1_BIN_LEN, SHA2_BIN_LEN,
-    SHA1_HEX_LEN, SHA2_HEX_LEN,
-    SHA1_BIN_NONE, SHA2_BIN_NONE,
-    SHA1_HEX_NONE, SHA2_HEX_NONE)
+    SHA1_BIN_LEN, SHA1_HEX_LEN, SHA1_BIN_NONE, SHA1_HEX_NONE,
+    SHA2_BIN_LEN, SHA2_HEX_LEN, SHA2_BIN_NONE, SHA2_HEX_NONE,
+    SHA3_BIN_LEN, SHA3_HEX_LEN, SHA3_BIN_NONE, SHA3_HEX_NONE)
 
 __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__ = '0.6.0'
-__version_date__ = '2016-09-07'
+__version__ = '0.6.2'
+__version_date__ = '2016-09-12'
 
 
 class NLHError(RuntimeError):
@@ -37,7 +36,7 @@ class NLHParseError(NLHError):
 class NLHNode(object):
 
     def __init__(self, name, usingSHA=Q.USING_SHA2):
-        # XXX needs checks
+        checkUsingSHA(usingSHA)
         self._name = name.strip()
         self._usingSHA = usingSHA
         self._binHash = None
@@ -55,9 +54,10 @@ class NLHNode(object):
         if self._binHash is None:
             if self._usingSHA == Q.USING_SHA1:
                 return SHA1_HEX_NONE
-            else:
-                # FIX ME FIX ME FIX ME
+            elif self._usingSHA == Q.USING_SHA2:
                 return SHA2_HEX_NONE
+            elif self._usingSHA == Q.USING_SHA3:
+                return SHA3_HEX_NONE
         else:
             return str(binascii.b2a_hex(self._binHash), 'ascii')
 
@@ -132,13 +132,14 @@ class NLHLeaf(NLHNode):
     def clone(self):
         """ make a deep copy """
 
-        # FIX ME FIX ME
         hashLen = len(self._binHash)
         if hashLen == SHA1_BIN_LEN:
             usingSHA = Q.USING_SHA1
-        else:
-            # FIX ME FIX ME
+        elif hashLen == SHA2_BIN_LEN:
             usingSHA = Q.USING_SHA2
+        elif hashLen == SHA3_BIN_LEN:
+            usingSHA = Q.USING_SHA3
+
         return NLHLeaf(self._name, self._binHash, usingSHA)
 
     # ITERABLE ############################################
@@ -162,12 +163,17 @@ class NLHLeaf(NLHNode):
         The name is part of the path but is passed to simplify the code.
         Returns None if the file cannot be found.
         """
+        # DEBUG
+        print("NLHLeaf.createFromFileSystem: %s/%s %s" % (
+            path, name, usingSHA))
+        # END
         if os.path.exists(path):
             if usingSHA == Q.USING_SHA1:
                 hash = fileSHA1Hex(path)
-            else:
-                # FIX ME FIX ME FIX ME
+            elif usingSHA == Q.USING_SHA2:
                 hash = fileSHA2Hex(path)
+            elif usingSHA == Q.USING_SHA3:
+                hash = fileSHA3Hex(path)
             bHash = binascii.a2b_hex(hash)
             return NLHLeaf(name, bHash, usingSHA)
         else:
@@ -662,9 +668,10 @@ class NLHTree(NLHNode):
                 if not done:
                     if usingSHA == Q.USING_SHA1:
                         m = NLHTree.FILE_LINE_RE_1.match(line)
-                    else:
-                        # FIX ME FIX ME
+                    elif usingSHA == Q.USING_SHA2:
                         m = NLHTree.FILE_LINE_RE_2.match(line)
+                    elif usingSHA == Q.USING_SHA3:
+                        m = NLHTree.FILE_LINE_RE_3.match(line)
                     if m:
                         curDepth = len(m.group(1))
                         fileName = m.group(2)
@@ -680,36 +687,11 @@ class NLHTree(NLHNode):
                 lineNbr += 1
 
     @staticmethod
-    def walkString(s):
-        """
-        s is an NLHTree listing in the form of a single string with
-        lines ending with newlines.  There is a newline at the end of
-        the listing.
-        """
-        lines = s.split('\n')
-        if lines[-1] == '':
-            lines = lines[:-1]          # drop the last line if empty
-        return NLHTree.walkStrings(lines)
-
-    @staticmethod
-    def walkStrings(ss):
-        """
-        For each line in the NLHTree listing, return either the
-        relative path to a directory (including the directory name)
-        or the relative path to a file plus its SHA1 hex hash.
-        Each of these is a tuple: the former is a singleton, and the
-        latter is a 2-tuple.
-
-        The NLHTree listing is in the form of a list of lines.
-
-        COMMENTS AND BLANK LINES ARE NOT YET SUPPORTED.
-        """
-
+    def _walkStrings(ss, usingSHA=Q.USING_SHA2):
         curDepth = 0
         path = ''
         parts = []
         hashLen = -1
-        usingSHA = False
 
         for lineNbr, line in enumerate(ss):
             done = False
@@ -734,7 +716,14 @@ class NLHTree(NLHNode):
 
             # -- file -------------------------------------------
             if not done:
-                m = NLHTree.FILE_LINE_RE_1.match(line)
+                if usingSHA == Q.USING_SHA1:
+                    m = NLHTree.FILE_LINE_RE_1.match(line)
+                elif usingSHA == Q.USING_SHA2:
+                    m = NLHTree.FILE_LINE_RE_2.match(line)
+                elif usingSHA == Q.USING_SHA3:
+                    m = NLHTree.FILE_LINE_RE_3.match(line)
+                else:
+                    raise NotImplementedError()
                 if m:
                     curDepth = len(m.group(1))
                     fileName = m.group(2)
@@ -746,6 +735,35 @@ class NLHTree(NLHNode):
             if not done:
                 yield ("DUNNO WHAT THIS IS: %s" % line, )
                 done = True
+
+    @staticmethod
+    def walkString(s, usingSHA=Q.USING_SHA2):
+        """
+        s is an NLHTree listing in the form of a single string with
+        lines ending with newlines.  There is a newline at the end of
+        the listing.
+        """
+        checkUsingSHA(usingSHA)
+        lines = s.split('\n')
+        if lines[-1] == '':
+            lines = lines[:-1]          # drop the last line if empty
+        return NLHTree._walkStrings(lines, usingSHA)
+
+    @staticmethod
+    def walkStrings(ss, usingSHA=Q.USING_SHA2):
+        """
+        For each line in the NLHTree listing, return either the
+        relative path to a directory (including the directory name)
+        or the relative path to a file plus its SHA1 hex hash.
+        Each of these is a tuple: the former is a singleton, and the
+        latter is a 2-tuple.
+
+        The NLHTree listing is in the form of a list of lines.
+
+        COMMENTS AND BLANK LINES ARE NOT YET SUPPORTED.
+        """
+        checkUsingSHA(usingSHA)
+        return NLHTree._walkStrings(ss, usingSHA)
 
     # ITERABLE ############################################
 

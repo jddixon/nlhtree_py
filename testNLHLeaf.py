@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 
 # testNLHLeaf.py
+
 import hashlib
+import sha3     # must follow hashlib
+
 import time
 import unittest
 
 from rnglib import SimpleRNG
+from xlattice import Q, checkUsingSHA
 from nlhtree import *
-from xlattice import Q
 
 
 class TestNLHLeaf (unittest.TestCase):
@@ -22,11 +25,13 @@ class TestNLHLeaf (unittest.TestCase):
 
     # actual unit tests #############################################
     def doTestSimpleConstructor(self, usingSHA):
+        checkUsingSHA(usingSHA)
         if usingSHA == Q.USING_SHA1:
             sha = hashlib.sha1()
-        else:
-            # FIX ME FIX ME FIX ME
+        elif usingSHA == Q.USING_SHA2:
             sha = hashlib.sha256()
+        elif usingSHA == Q.USING_SHA3:
+            sha = hashlib.sha3_256()
 
         name = self.rng.nextFileName(8)
         n = self.rng.someBytes(8)

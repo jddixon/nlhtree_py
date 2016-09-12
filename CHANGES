@@ -1,5 +1,12 @@
 py/nlhtree_py/CHANGES
 
+
+v0.6.2
+    2016-09-12
+        * fix testIters.py, testWalker.py; sha3 tested              SLOC 2678
+v0.6.1
+    2016-09-09
+        * fix FIX_MEs                                               SLOC 2664
 v0.6.0
     2016-09-07
         * correct handling of usingSHA1,2                           SLOC 2545
@@ -136,6 +143,8 @@ v0.1.0
 v0.0.0
     2015-05-20
         * initial import                                            SLOC   47
+
+
 
 
 

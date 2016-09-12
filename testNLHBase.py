@@ -2,6 +2,8 @@
 
 # testNLHBase.py
 import hashlib
+import sha3         # should be conditional
+
 import time
 import unittest
 
@@ -9,7 +11,7 @@ from rnglib import SimpleRNG
 from nlhtree.base import NLHBase
 from nlhtree import *
 
-from xlattice import Q
+from xlattice import Q, checkUsingSHA
 
 
 class TestNLHBase (unittest.TestCase):
@@ -33,21 +35,22 @@ class TestNLHBase (unittest.TestCase):
         self.assertEqual(root.name, ct.name)
 
     def testConstructor(self):
-        self.doTestConstructor(True)
-        self.doTestConstructor(False)
+        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
+            self.doTestConstructor(using)
 
     def doTestWithSimpleTree(self, usingSHA):
         if usingSHA == Q.USING_SHA1:
             sha = hashlib.sha1()
-        else:
-            # FIX ME FIX ME FIX ME
+        elif usingSHA == Q.USING_SHA2:
             sha = hashlib.sha256()
+        elif usingSHA == Q.USING_SHA3:
+            sha = hashlib.sha3_256()
 
         # XXX WORKING HERE
 
     def testSimpletTree(self):
-        self.doTestWithSimpleTree(usingSHA=True)
-        self.doTestWithSimpleTree(usingSHA=False)
+        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
+            self.doTestWithSimpleTree(using)
 
 
 if __name__ == '__main__':

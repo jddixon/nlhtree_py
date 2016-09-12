@@ -9,9 +9,9 @@ import unittest
 
 from rnglib import SimpleRNG
 from nlhtree import NLHTree as NT
-from xlattice import (Q,
-                      SHA1_BIN_LEN, SHA2_BIN_LEN,
-                      SHA1_HEX_LEN, SHA2_HEX_LEN)
+from xlattice import (Q, checkUsingSHA,
+                      SHA1_BIN_LEN, SHA2_BIN_LEN, SHA3_BIN_LEN,
+                      SHA1_HEX_LEN, SHA2_HEX_LEN, SHA3_HEX_LEN)
 from xlattice.crypto import SP
 
 
@@ -51,6 +51,21 @@ class TestNLHTree3 (unittest.TestCase):
         '    data41 01234567890123456789012331c16def9fc4a4b6415b0b133e156a919cf41cc8',
         ' zData 01234567890123456789012331c16def9fc4a4b6415b0b133e156a919cf41cc8',
     ]
+    EXAMPLE3 = [
+        'dataDir',
+        ' data1 6d57759cf499a8ff7762a10043548f22513ed83456452332a8abd4b59d7e9203',
+        ' data2 dacbf5c11f4ddbd1277ecbc304e09967d3124148560f82634d3912db8b4bd547',
+        ' subDir1',
+        '  data11 fb47958129f261f65c1655002ff5f9806bc969283ad772af5e8caaf214a9ed72',
+        '  data12 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+        ' subDir2',
+        ' subDir3',
+        '  data31 7659fb836a76fb3f3369e1a4ca247104220e4778d5862e38a123e10f02520e87',
+        ' subDir4',
+        '  subDir41',
+        '   subDir411',
+        '    data41 00bb6d0864cb4952a0c41cbea65cf09de41e00fc6fa1011a27c5dd8814c98175',
+    ]
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
@@ -59,11 +74,13 @@ class TestNLHTree3 (unittest.TestCase):
         pass
 
     def doTestPatternMatching(self, usingSHA):
+        checkUsingSHA(usingSHA)
         if usingSHA == Q.USING_SHA1:
             ss = self.EXAMPLE1
-        else:
-            # FIX ME FIX ME FIX ME
+        elif usingSHA == Q.USING_SHA2:
             ss = self.EXAMPLE2
+        elif usingSHA == Q.USING_SHA3:
+            ss = self.EXAMPLE3
 
         # first line --------------------------------------
         m = NT.DIR_LINE_RE.match(ss[0])
@@ -79,7 +96,7 @@ class TestNLHTree3 (unittest.TestCase):
         if usingSHA == Q.USING_SHA1:
             m = NT.FILE_LINE_RE_1.match(ss[1])
         else:
-            # FIX ME FIX ME FIX ME
+            # XXX This works for both SHA2 and SHA3
             m = NT.FILE_LINE_RE_2.match(ss[1])
         self.assertTrue(m)
         self.assertEqual(len(m.group(1)), 1)
@@ -92,7 +109,7 @@ class TestNLHTree3 (unittest.TestCase):
         if usingSHA == Q.USING_SHA1:
             self.assertEqual(len(hash), SHA1_HEX_LEN)
         else:
-            # FIX ME FIX ME FIX ME
+            # XXX This works for both SHA2 and SHA 3
             self.assertEqual(len(hash), SHA2_HEX_LEN)
 
         # subdirectory ------------------------------------
@@ -111,7 +128,7 @@ class TestNLHTree3 (unittest.TestCase):
         if usingSHA == Q.USING_SHA1:
             m = NT.FILE_LINE_RE_1.match(ss[12])
         else:
-            # FIX ME FIX ME FIX ME
+            # XXX This works for both SHA2 and SHA 3
             m = NT.FILE_LINE_RE_2.match(ss[12])
         self.assertTrue(m)
         self.assertEqual(len(m.group(1)), 4)
@@ -124,19 +141,16 @@ class TestNLHTree3 (unittest.TestCase):
         if usingSHA == Q.USING_SHA1:
             self.assertEqual(len(hash), SHA1_HEX_LEN)
         else:
-            # FIX ME FIX ME FIX ME
+            # XXX This works for both SHA2 and SHA 3
             self.assertEqual(len(hash), SHA2_HEX_LEN)
 
     def testPatternMatching(self):
-        self.doTestPatternMatching(usingSHA=True)
-        self.doTestPatternMatching(usingSHA=False)
+        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
+            self.doTestPatternMatching(using)
 
     def doTestSerialization(self, usingSHA):
-        if usingSHA == Q.USING_SHA1:
-            tree = NT.createFromStringArray(self.EXAMPLE1, usingSHA)
-        else:
-            # FIX ME FIX ME FIX ME
-            tree = NT.createFromStringArray(self.EXAMPLE2, usingSHA)
+        checkUsingSHA(usingSHA)
+        tree = NT.createFromStringArray(self.EXAMPLE1, usingSHA)
         self.assertEqual(tree.usingSHA, usingSHA)
 
         ss = []
@@ -156,8 +170,8 @@ class TestNLHTree3 (unittest.TestCase):
         self.assertEqual(dupe3, tree3)
 
     def testSerialization(self):
-        self.doTestSerialization(usingSHA=True)
-        self.doTestSerialization(usingSHA=False)
+        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
+            self.doTestSerialization(using)
 
 
 if __name__ == '__main__':

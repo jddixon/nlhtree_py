@@ -8,6 +8,8 @@ import sys
 import time
 from argparse import ArgumentParser
 
+from xlattice import (Q, checkUsingSHA,
+                      parseUsingSHA, fixUsingSHA, showUsingSHA, checkUPath)
 from nlhtree import (__version__, __version_date__,
                      NLHTree,
                      )
@@ -30,9 +32,6 @@ def main():
 
     parser = ArgumentParser(description=DESC)
 
-    parser.add_argument('-1', '--usingSHA1', action='store_true',
-                        help='using the 160-bit SHA1 hash')
-
     parser.add_argument('-b', '--listFile', default='list.nlh',
                         help='where to write listing (default = list.nlh)')
 
@@ -48,8 +47,7 @@ def main():
     parser.add_argument('-V', '--showVersion', action='store_true',
                         help='print the version number and exit')
 
-    parser.add_argument('-v', '--verbose', action='store_true',
-                        help='be chatty')
+    parseUsingSHA(parser)
 
     args = parser.parse_args()
 
@@ -58,6 +56,7 @@ def main():
         sys.exit(0)
 
     # fixups --------------------------------------------------------
+    fixUsingSHA(args)
 
     if args.testing:
         # output appears under tmp/
@@ -67,6 +66,7 @@ def main():
         listFile = os.path.join('tmp', listFile)
 
     # sanity checks -------------------------------------------------
+    checkUsingSHA(args.usingSHA)
 
     if not (args.testing or args.justShow):
         if not os.path.exists(args.dataDir):
@@ -84,12 +84,11 @@ def main():
         print('listFile         = ' + str(args.listFile))
         print('showVersion      = ' + str(args.showVersion))
         print('testing          = ' + str(args.testing))
-        print('usingSHA1        = ' + str(args.usingSHA1))
-        print('verbose          = ' + str(args.verbose))
+        showUsingSHA(args)
 
     # do what's required --------------------------------------------
     if not args.justShow:
-        tree = NLHTree.parseFile(args.listFile, args.usingSHA1)
+        tree = NLHTree.parseFile(args.listFile, args.usingSHA)
         tree.checkInDataDir(args.dataDir)
 
 if __name__ == '__main__':

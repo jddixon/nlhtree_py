@@ -1,5 +1,18 @@
 py/nlhtree_py/TODO
 
+2016-09-12
+    * get rid of noisy DEBUG statements
+
+2016-09-07
+    * NLHTree.insert params must include relPath; otherwise don't know
+        where to put the node in the tre
+    * NLHTree.clone() relies upon insert without relPath, so just
+        won't work in its current form
+    * dropFromU() needs further thought: there can be more than more 
+        than one leaf with the same hash, and removing one such leaf 
+        from the tree should not necessarily remove the corresponding 
+        file from UDir
+
 2016-08-18
     * need tests for NLHTree.find(glob) => list
 

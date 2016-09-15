@@ -70,9 +70,9 @@ class TestDropFromU (unittest.TestCase):
         dataDir = os.makedirs(dataPath, mode=0o755)
 
         # DEBUG
-        print("dataTmp = %s" % dataTmp)
-        print("topName = %s" % topName)
-        print('dataPath = %s' % dataPath)
+        #print("dataTmp = %s" % dataTmp)
+        #print("topName = %s" % topName)
+        #print('dataPath = %s' % dataPath)
         # END
 
         tree = NLHTree(topName, usingSHA)
@@ -118,7 +118,7 @@ class TestDropFromU (unittest.TestCase):
             tree.insert(leaf)
 
             # DEBUG
-            print("  inserting <%s %s>" % (leaf.name, leaf.hexHash))
+            #print("  inserting <%s %s>" % (leaf.name, leaf.hexHash))
             # END
 
             # write data into uDir ------------------------
@@ -132,12 +132,12 @@ class TestDropFromU (unittest.TestCase):
             struc, usingSHA)
 
         # DEBUG
-        print("TREE:\n%s" % tree)
+        #print("TREE:\n%s" % tree)
         # END
         # verify that the dataDir matches the nlhTree
         tree2 = NLHTree.createFromFileSystem(dataPath, usingSHA)
         # DEBUG
-        print("TREE2:\n%s" % tree2)
+        #print("TREE2:\n%s" % tree2)
         # END
         self.assertEqual(tree2, tree)
 
@@ -180,8 +180,8 @@ class TestDropFromU (unittest.TestCase):
         # from uDir
         unmatched = q.dropFromUDir(uPath)
         # DEBUG
-        for x in unmatched:  # (relPath, hahs)
-            print("unmatched: %s %s" % (x[0], x[1]))
+        # for x in unmatched:  # (relPath, hash)
+        #    print("unmatched: %s %s" % (x[0], x[1]))
         # END
         # self.assertEqual( len(unmatched), 0)      ### XXX
 

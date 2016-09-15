@@ -21,8 +21,8 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__ = '0.6.2'
-__version_date__ = '2016-09-12'
+__version__ = '0.6.4'
+__version_date__ = '2016-09-15'
 
 
 class NLHError(RuntimeError):
@@ -589,22 +589,13 @@ class NLHTree(NLHNode):
         unmatched = []
         for couple in self:
             if len(couple) == 1:
-                # DEBUG
-                #print("  DIR:  %s" % couple[0])
-                # END
                 continue                   # it's a directory
 
             elif len(couple) == 2:
                 relPath = couple[0]
                 hash = couple[1]
                 pathToFile = os.path.join(path, relPath)
-                # DEBUG
-                #print("  FILE: %s" % pathToFile)
-                # END
                 if not os.path.exists(pathToFile):
-                    # DEBUG
-                    #print("path does not exist: %s" % pathToFile)
-                    # END
                     unmatched.append(path)
                 else:
                     u.copyAndPut(pathToFile, hash)

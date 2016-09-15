@@ -1,5 +1,8 @@
 py/nlhtree_py/TODO
 
+2016-09-12
+    * get rid of noisy DEBUG statements
+
 2016-09-07
     * NLHTree.insert params must include relPath; otherwise don't know
         where to put the node in the tre

@@ -120,7 +120,7 @@ class TestWalker (unittest.TestCase):
     def doTestWalkers(self, usingSHA):
 
         # DEBUG
-        print("\ndoTestWalkers, %s" % usingSHA)
+        # print("\ndoTestWalkers, %s" % usingSHA)
         # END
 
         checkUsingSHA(usingSHA)
@@ -155,17 +155,17 @@ class TestWalker (unittest.TestCase):
         # -- walk on-disk representation ----------------------------
 
         # DEBUG
-        print("\nWALK FILE ON DISK")
-        sys.stdout.flush()
+        # print("\nWALK FILE ON DISK")
+        # sys.stdout.flush()
         # END
 
         # a couple is a 2-tuple
         for couple in NLHTree.walkFile(REL_PATH_TO_NLH, usingSHA):
             if len(couple) == 1:
-                print("    DIR:  %s" % couple[0])
+                # print("    DIR:  %s" % couple[0])       # DEBUG
                 fromDisk.append(couple)
             elif len(couple) == 2:
-                print('    FILE: %s %s' % (couple[0], couple[1]))
+                # print('    FILE: %s %s' % (couple[0], couple[1])) # DEBUG
                 fromDisk.append(couple)
             else:
                 print('    unexpected couple of length %d' % len(couple))
@@ -177,17 +177,17 @@ class TestWalker (unittest.TestCase):
             lines = lines[:-1]          # drop last line if blank
 
         # DEBUG
-        print("\nWALK LIST OF STRINGS; %s; there are %d lines" % (
-            usingSHA, len(lines)))
-        sys.stdout.flush()
+        # print("\nWALK LIST OF STRINGS; %s; there are %d lines" % (
+        #    usingSHA, len(lines)))
+        # sys.stdout.flush()
         # END
 
         for couple in NLHTree.walkStrings(lines, usingSHA):
             if len(couple) == 1:
-                print("    DIR:  %s" % couple[0])
+                # print("    DIR:  %s" % couple[0])     # DEBUG
                 fromSS.append(couple)
             elif len(couple) == 2:
-                print('    FILE: %s %s' % (couple[0], couple[1]))
+                # print('    FILE: %s %s' % (couple[0], couple[1])) # DEBUG
                 fromSS.append(couple)
             else:
                 print('    unexpected couple of length %d' % len(couple))
@@ -195,16 +195,16 @@ class TestWalker (unittest.TestCase):
         # -- walk string representation -----------------------------
 
         # DEBUG
-        print("\nWALK STRING")
-        sys.stdout.flush()
+        #print("\nWALK STRING")
+        # sys.stdout.flush()
         # END
 
         for couple in NLHTree.walkString(EXAMPLE, usingSHA):
             if len(couple) == 1:
-                print("    DIR:  %s" % couple[0])
+                # print("    DIR:  %s" % couple[0])     # DEBUG
                 fromStr.append(couple)
             elif len(couple) == 2:
-                print('    FILE: %s %s' % (couple[0], couple[1]))
+                # print('    FILE: %s %s' % (couple[0], couple[1])) # DEBUG
                 fromStr.append(couple)
             else:
                 print('    unexpected couple of length %d' % len(couple))
@@ -212,18 +212,18 @@ class TestWalker (unittest.TestCase):
         # -- walk NLHTree object ------------------------------------
 
         # DEBUG
-        print("\nWALK OBJECT")
-        sys.stdout.flush()
-        hasattr(tree, '__iter__')
-        hasattr(tree, '__next__')
+        #print("\nWALK OBJECT")
+        # sys.stdout.flush()
+        #hasattr(tree, '__iter__')
+        #hasattr(tree, '__next__')
         # END
 
         for couple in tree:
             if len(couple) == 1:
-                print("        DIR:  %s" % couple[0])
+                # print("        DIR:  %s" % couple[0])     # DEBUG
                 fromObj.append(couple)
             elif len(couple) == 2:
-                print('        FILE: %s %s' % (couple[0], couple[1]))
+                # print('        FILE: %s %s' % (couple[0], couple[1])) # DEBUG
                 fromObj.append(couple)
             else:
                 print('        unexpected couple of length %d' % len(couple))
@@ -231,8 +231,8 @@ class TestWalker (unittest.TestCase):
         # -- verify the lists are identical -------------------------
 
         # DEBUG
-        print("\nIDENTITY CHECKS %s" % usingSHA)
-        sys.stdout.flush()
+        #print("\nIDENTITY CHECKS %s" % usingSHA)
+        # sys.stdout.flush()
         # END
 
         def compareLists(a, b):
@@ -242,19 +242,19 @@ class TestWalker (unittest.TestCase):
                 self.assertEqual(a[n], b[n])
 
         # DEBUG
-        print("FROM_DISK:")
-        for i in fromDisk:
-            if len(i) == 1:
-                print("  %s" % (i[0]))
-            else:
-                print("  %s %s" % (i[0], i[1]))
+#       #print("FROM_DISK:")
+#       for i in fromDisk:
+#           if len(i) == 1:
+#               print("  %s" % (i[0]))
+#           else:
+#               print("  %s %s" % (i[0], i[1]))
 
-        print("FROM_SS:")
-        for i in fromSS:
-            if len(i) == 1:
-                print("  %s" % (i[0]))
-            else:
-                print("  %s %s" % (i[0], i[1]))
+#       print("FROM_SS:")
+#       for i in fromSS:
+#           if len(i) == 1:
+#               print("  %s" % (i[0]))
+#           else:
+#               print("  %s %s" % (i[0], i[1]))
         # END
 
         compareLists(fromDisk, fromSS)

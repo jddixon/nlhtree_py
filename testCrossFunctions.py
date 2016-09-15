@@ -69,7 +69,7 @@ class TestCrossFunctions (unittest.TestCase):
 
         outputListing = tree.__str__()
         # DEBUG
-        print("OUTPUT LISING for %s:\n%s" % (usingSHA, outputListing))
+        #print("OUTPUT LISING for %s:\n%s" % (usingSHA, outputListing))
         # END
         self.assertEqual(goldListing, outputListing)
 
@@ -85,7 +85,7 @@ class TestCrossFunctions (unittest.TestCase):
         if len(unmatched) > 0:
             for u in unmatched:
                 # DEBUG
-                print(u)
+                # print(u)
                 # END
                 print("not matched: ", u)
         self.assertEqual(len(unmatched), 0)

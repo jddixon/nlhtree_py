@@ -1,6 +1,9 @@
 py/nlhtree_py/CHANGES
 
 
+v0.6.5
+    2016-10-11
+        * partial refactor for pylint                               SLOC 2677
 v0.6.4
     2016-09-15
         * usingSHA, sha3 support, in all utilities                  SLOC 2645
@@ -165,8 +168,6 @@ v0.0.0
 
 
 
-<<<<<<< HEAD
-=======
 
 
->>>>>>> devel
+

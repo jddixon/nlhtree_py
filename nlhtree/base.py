@@ -5,7 +5,7 @@ import fnmatch
 import os
 import re
 from stat import *
-from xlattice.crypto import SP   # for getSpaces()
+from xlattice.crypto import SP   # for get_spaces()
 from nlhtree import NLHTree
 from xlattice import (
     SHA1_BIN_LEN, SHA2_BIN_LEN,
@@ -19,29 +19,44 @@ __all__ = [
 
 class NLHBase(object):
 
-    def __init__(self, name, usingSHA):
-        self._root = NLHTree(name, usingSHA)   # immutable ref to a NLHTree
-        self._curTree = self._root              # the current tree; mutable
-        self._usingSHA = usingSHA
+    def __init__(self, name, using_sha):
+        self._root = NLHTree(name, using_sha)   # immutable ref to a NLHTree
+        self._cur_tree = self._root              # the current tree; mutable
+        self._using_sha = using_sha
 
     @property
     def name(self):
         return self._root.name
 
+    # SYNONYMS ------------------------------------------------------
     @property
     def usingSHA(self):
-        return self._root.usingSHA
+        return self.using_sha
+
+    @property
+    def curTree(self):
+        return self.cur_tree
+
+    @curTree.setter
+    def curTree(self, path):
+        self.cur_tree(path)
+
+    # END SYN -------------------------------------------------------
+
+    @property
+    def using_sha(self):
+        return self._root.using_sha
 
     @property
     def root(self):
         return self._root
 
     @property
-    def curTree(self):
-        return self._curTree
+    def cur_tree(self):
+        return self._cur_tree
 
-    @curTree.setter
-    def curTree(self, path):
+    @cur_tree.setter
+    def cur_tree(self, path):
         if not path or path == '':
             raise RuntimeError('path may not be None or empty')
 
@@ -53,7 +68,7 @@ class NLHBase(object):
 
             # if it's a leaf, error
 
-            # otherwise set curTree to point to this node
+            # otherwise set cur_tree to point to this node
             pass
         else:
             raise NotImplemented("can't handle multi-part paths yet")

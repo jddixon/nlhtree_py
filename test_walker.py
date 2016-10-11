@@ -66,17 +66,17 @@ class TestWalker (unittest.TestCase):
         for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
             self.doTestSpotCheckTree(using)
 
-    def doTestSpotCheckTree(self, usingSHA):
-        checkUsingSHA(usingSHA)
+    def doTestSpotCheckTree(self, using_sha):
+        checkUsingSHA(using_sha)
 
         # DEBUG
-        print("\nSPOT CHECKS")
+        #print("\nSPOT CHECKS")
         # END
-        if usingSHA == Q.USING_SHA1:
+        if using_sha == Q.USING_SHA1:
             REL_PATH_TO_DATA = 'example1/dataDir'
         else:
             REL_PATH_TO_DATA = 'example2/dataDir'
-        tree = NLHTree.createFromFileSystem(REL_PATH_TO_DATA, usingSHA)
+        tree = NLHTree.createFromFileSystem(REL_PATH_TO_DATA, using_sha)
         self.assertIsNotNone(tree)
         self.assertEqual(len(tree.nodes), 6)
         self.assertEqual(tree.name, 'dataDir')
@@ -117,27 +117,27 @@ class TestWalker (unittest.TestCase):
         for using in [Q.USING_SHA1, Q.USING_SHA2, ]:
             self.doTestWalkers(using)
 
-    def doTestWalkers(self, usingSHA):
+    def doTestWalkers(self, using_sha):
 
         # DEBUG
-        # print("\ndoTestWalkers, %s" % usingSHA)
+        # print("\ndoTestWalkers, %s" % using_sha)
         # END
 
-        checkUsingSHA(usingSHA)
-        if usingSHA == Q.USING_SHA1:
+        checkUsingSHA(using_sha)
+        if using_sha == Q.USING_SHA1:
             REL_PATH_TO_DATA = 'example1/dataDir'
             REL_PATH_TO_NLH = 'example1/example.nlh'
             EXAMPLE = EXAMPLE1
-        elif usingSHA == Q.USING_SHA2:
+        elif using_sha == Q.USING_SHA2:
             REL_PATH_TO_DATA = 'example2/dataDir'
             REL_PATH_TO_NLH = 'example2/example.nlh'
             EXAMPLE = EXAMPLE2
-        elif usingSHA == Q.USING_SHA3:
+        elif using_sha == Q.USING_SHA3:
             REL_PATH_TO_DATA = 'example3/dataDir'
             REL_PATH_TO_NLH = 'example3/example.nlh'
             EXAMPLE = EXAMPLE3
 
-        tree = NLHTree.createFromFileSystem(REL_PATH_TO_DATA, usingSHA)
+        tree = NLHTree.createFromFileSystem(REL_PATH_TO_DATA, using_sha)
         self.assertIsNotNone(tree)
         s = tree.__str__()
         self.assertEqual(EXAMPLE, s)        # the serialized NLHTree
@@ -160,7 +160,7 @@ class TestWalker (unittest.TestCase):
         # END
 
         # a couple is a 2-tuple
-        for couple in NLHTree.walkFile(REL_PATH_TO_NLH, usingSHA):
+        for couple in NLHTree.walkFile(REL_PATH_TO_NLH, using_sha):
             if len(couple) == 1:
                 # print("    DIR:  %s" % couple[0])       # DEBUG
                 fromDisk.append(couple)
@@ -178,11 +178,11 @@ class TestWalker (unittest.TestCase):
 
         # DEBUG
         # print("\nWALK LIST OF STRINGS; %s; there are %d lines" % (
-        #    usingSHA, len(lines)))
+        #    using_sha, len(lines)))
         # sys.stdout.flush()
         # END
 
-        for couple in NLHTree.walkStrings(lines, usingSHA):
+        for couple in NLHTree.walkStrings(lines, using_sha):
             if len(couple) == 1:
                 # print("    DIR:  %s" % couple[0])     # DEBUG
                 fromSS.append(couple)
@@ -199,7 +199,7 @@ class TestWalker (unittest.TestCase):
         # sys.stdout.flush()
         # END
 
-        for couple in NLHTree.walkString(EXAMPLE, usingSHA):
+        for couple in NLHTree.walkString(EXAMPLE, using_sha):
             if len(couple) == 1:
                 # print("    DIR:  %s" % couple[0])     # DEBUG
                 fromStr.append(couple)
@@ -231,7 +231,7 @@ class TestWalker (unittest.TestCase):
         # -- verify the lists are identical -------------------------
 
         # DEBUG
-        #print("\nIDENTITY CHECKS %s" % usingSHA)
+        #print("\nIDENTITY CHECKS %s" % using_sha)
         # sys.stdout.flush()
         # END
 
@@ -260,12 +260,12 @@ class TestWalker (unittest.TestCase):
         compareLists(fromDisk, fromSS)
 
         # DEBUG
-        print("\ncomparing fromDisk, fromStr")
+        #print("\ncomparing fromDisk, fromStr")
         # END
         compareLists(fromDisk, fromStr)
 
         # DEBUG
-        print("\ncomparing fromDisk, fromObj")
+        #print("\ncomparing fromDisk, fromObj")
         # END
         compareLists(fromDisk, fromObj)
 

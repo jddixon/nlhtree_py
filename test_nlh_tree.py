@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-
 # testNLHTree.py
+
+""" Test NLHTree-related functions. """
 
 import hashlib
 import time
@@ -8,10 +9,11 @@ import unittest
 
 from rnglib import SimpleRNG
 from nlhtree import *
-from xlattice import Q, checkUsingSHA
+from xlattice import Q, check_using_sha
 
 
 class TestNLHTree (unittest.TestCase):
+    """ Test NLHTree-related functions. """
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
@@ -20,53 +22,53 @@ class TestNLHTree (unittest.TestCase):
         pass
 
     # utility functions #############################################
-    def makeLeaf(self, namesSoFar, usingSHA):
+    def make_leaf(self, names_so_far, using_sha):
         while True:
-            name = self.rng.nextFileName(8)
-            if name not in namesSoFar:
-                namesSoFar.add(name)
+            name = self.rng.next_file_name(8)
+            if name not in names_so_far:
+                names_so_far.add(name)
                 break
         n = self.rng.someBytes(8)        # 8 quasi-random bytes
-        if usingSHA == Q.USING_SHA1:
+        if using_sha == Q.USING_SHA1:
             sha = hashlib.sha1()
-        elif usingSHA == Q.USING_SHA2:
+        elif using_sha == Q.USING_SHA2:
             sha = hashlib.sha256()
-        elif usingSHA == Q.USING_SHA3:
+        elif using_sha == Q.USING_SHA3:
             sha = hashlib.sha3_256()
         sha.update(n)
-        return NLHLeaf(name, sha.digest(), usingSHA)
+        return NLHLeaf(name, sha.digest(), using_sha)
 
     # actual unit tests #############################################
-    def testSimpleConstructor(self):
+    def test_simple_constructor(self):
         for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-            self.doTestSimpleConstructor(using)
+            self.do_test_simple_constructor(using)
 
-    def doTestSimpleConstructor(self, usingSHA):
-        name = self.rng.nextFileName(8)
-        tree = NLHTree(name, usingSHA)
+    def do_test_simple_constructor(self, using_sha):
+        name = self.rng.next_file_name(8)
+        tree = NLHTree(name, using_sha)
         self.assertEqual(tree.name, name)
-        self.assertEqual(tree.usingSHA, usingSHA)
+        self.assertEqual(tree.using_sha, using_sha)
         self.assertEqual(len(tree.nodes), 0)
 
-    def doTestInsert4Leafs(self, usingSHA):
+    def do_test_insert_4_leafs(self, using_sha):
         """
         Create 4 leaf nodes with random but unique names.  Insert
         them into a tree, verifying that the resulting sort is correct.
         """
-        checkUsingSHA(usingSHA)
-        if usingSHA == Q.USING_SHA1:
+        check_using_sha(using_sha)
+        if using_sha == Q.USING_SHA1:
             sha = hashlib.sha1()
-        elif usingSHA == Q.USING_SHA2:
+        elif using_sha == Q.USING_SHA2:
             sha = hashlib.sha256()
-        elif usingSHA == Q.USING_SHA3:
+        elif using_sha == Q.USING_SHA3:
             sha = hashlib.sha3_256()
-        name = self.rng.nextFileName(8)
-        tree = NLHTree(name, usingSHA)
-        leafNames = set()
-        a = self.makeLeaf(leafNames, usingSHA)
-        b = self.makeLeaf(leafNames, usingSHA)
-        c = self.makeLeaf(leafNames, usingSHA)
-        d = self.makeLeaf(leafNames, usingSHA)
+        name = self.rng.next_file_name(8)
+        tree = NLHTree(name, using_sha)
+        leaf_names = set()
+        a = self.make_leaf(leaf_names, using_sha)
+        b = self.make_leaf(leaf_names, using_sha)
+        c = self.make_leaf(leaf_names, using_sha)
+        d = self.make_leaf(leaf_names, using_sha)
         self.assertEqual(len(tree.nodes), 0)
         tree.insert(a)
         self.assertEqual(len(tree.nodes), 1)
@@ -88,9 +90,9 @@ class TestNLHTree (unittest.TestCase):
         tree2 = tree.clone()
         self.assertEqual(tree2, tree)
 
-    def testInsert4Leafs(self):
+    def test_insert_4_leafs(self):
         for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-            self.doTestInsert4Leafs(using)
+            self.do_test_insert_4_leafs(using)
 
 
 if __name__ == '__main__':

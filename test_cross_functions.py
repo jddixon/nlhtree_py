@@ -21,20 +21,20 @@ class TestCrossFunctions (unittest.TestCase):
     def tearDown(self):
         pass
 
-    def doTestCrossFunctions(self, usingSHA):
+    def doTestCrossFunctions(self, using_sha):
         """
         We assume that there is valid data in
             example/{example.nlh,dataDir,uDir}
         """
-        checkUsingSHA(usingSHA)
+        checkUsingSHA(using_sha)
 
-        if usingSHA == Q.USING_SHA1:
+        if using_sha == Q.USING_SHA1:
             GOLD_DATA = 'example1/dataDir'
             GOLD_LIST_FILE = 'example1/example.nlh'
-        elif usingSHA == Q.USING_SHA2:
+        elif using_sha == Q.USING_SHA2:
             GOLD_DATA = 'example2/dataDir'
             GOLD_LIST_FILE = 'example2/example.nlh'
-        elif usingSHA == Q.USING_SHA3:
+        elif using_sha == Q.USING_SHA3:
             GOLD_DATA = 'example3/dataDir'
             GOLD_LIST_FILE = 'example3/example.nlh'
         else:
@@ -60,8 +60,8 @@ class TestCrossFunctions (unittest.TestCase):
         exclusions = ['build']
         exRE = makeExRE(exclusions)
 
-        tree = NLHTree.createFromFileSystem(GOLD_DATA, usingSHA, exRE, None)
-        tree.saveToUDir(GOLD_DATA, TARGET_UDIR, usingSHA)
+        tree = NLHTree.createFromFileSystem(GOLD_DATA, using_sha, exRE, None)
+        tree.saveToUDir(GOLD_DATA, TARGET_UDIR, using_sha)
 
         self.assertTrue(os.path.exists(GOLD_LIST_FILE))
         with open(GOLD_LIST_FILE, 'r') as f:
@@ -69,11 +69,11 @@ class TestCrossFunctions (unittest.TestCase):
 
         outputListing = tree.__str__()
         # DEBUG
-        #print("OUTPUT LISING for %s:\n%s" % (usingSHA, outputListing))
+        #print("OUTPUT LISING for %s:\n%s" % (using_sha, outputListing))
         # END
         self.assertEqual(goldListing, outputListing)
 
-        tree = NLHTree.createFromFileSystem(GOLD_DATA, usingSHA)
+        tree = NLHTree.createFromFileSystem(GOLD_DATA, using_sha)
         self.assertIsNotNone(tree)
 
         # first iteration over tree
@@ -100,7 +100,7 @@ class TestCrossFunctions (unittest.TestCase):
         unmatched = tree.checkInDataDir(TARGET_DATA_DIR)
         self.assertEqual(len(unmatched), 0)
 
-        tree2 = NLHTree.createFromFileSystem(TARGET_DATA_DIR, usingSHA)
+        tree2 = NLHTree.createFromFileSystem(TARGET_DATA_DIR, using_sha)
         self.assertEqual(tree, tree2)
 
     def testSimplestConstructor(self):

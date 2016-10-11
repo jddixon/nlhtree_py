@@ -5,7 +5,9 @@ then
   cd $DEV_BASE/py/nlhtree_py
   
   autopep8 -ai -r nlhtree nlhCheckInDataDir nlhCheckInUDir nlhPopulateDataDir nlhSaveToUDir *.py
-  echo "not styling example/ subdir"
+  echo "not styling example1/ subdir"
+  echo "not styling example2/ subdir"
+  echo "not styling example3/ subdir"
   echo "not styling test/ subdir"
   
 else

@@ -24,7 +24,7 @@ class TestDropFromU (unittest.TestCase):
     def tearDown(self):
         pass
 
-    def generateUDT(self, struc, usingSHA):
+    def generateUDT(self, struc, using_sha):
         """
         Generate under ./tmp a data directory with random content,
         a uDir containing the same data, and an NLHTree that matches.
@@ -50,11 +50,11 @@ class TestDropFromU (unittest.TestCase):
             uPath = os.path.join('tmp', uRootName)
 
         # DEBUG
-        print("uRootName = %s" % uRootName)
+        #print("uRootName = %s" % uRootName)
         # END
 
         # create uDir and the NLHTree
-        uDir = UDir(uPath, struc, usingSHA)
+        uDir = UDir(uPath, struc, using_sha)
         self.assertTrue(os.path.exists(uPath))
 
         # make a unique data directory under tmp/
@@ -75,7 +75,7 @@ class TestDropFromU (unittest.TestCase):
         #print('dataPath = %s' % dataPath)
         # END
 
-        tree = NLHTree(topName, usingSHA)
+        tree = NLHTree(topName, using_sha)
 
         # generate N and N unique random values, where N is at least 16
         N = 16 + self.rng.nextInt16(16)
@@ -92,11 +92,11 @@ class TestDropFromU (unittest.TestCase):
             values.append(datum)
 
             # generate hash = binKey ----------------------
-            if usingSHA == Q.USING_SHA1:
+            if using_sha == Q.USING_SHA1:
                 sha = hashlib.sha1()
-            elif usingSHA == Q.USING_SHA2:
+            elif using_sha == Q.USING_SHA2:
                 sha = hashlib.sha256()
-            elif usingSHA == Q.USING_SHA3:
+            elif using_sha == Q.USING_SHA3:
                 sha = hashlib.sha3_256()
             sha.update(datum)
             binKey = sha.digest()
@@ -114,7 +114,7 @@ class TestDropFromU (unittest.TestCase):
 
             # insert leaf into tree -----------------------
             pathFromTop = os.path.join(topName, fileName)
-            leaf = NLHLeaf(fileName, binKey, usingSHA)
+            leaf = NLHLeaf(fileName, binKey, using_sha)
             tree.insert(leaf)
 
             # DEBUG
@@ -126,16 +126,16 @@ class TestDropFromU (unittest.TestCase):
 
         return uPath, dataPath, tree, hashes, values
 
-    def doTestWithEphemeralTree(self, struc, usingSHA):
+    def doTestWithEphemeralTree(self, struc, using_sha):
 
         uPath, dataPath, tree, hashes, values = self.generateUDT(
-            struc, usingSHA)
+            struc, using_sha)
 
         # DEBUG
         #print("TREE:\n%s" % tree)
         # END
         # verify that the dataDir matches the nlhTree
-        tree2 = NLHTree.createFromFileSystem(dataPath, usingSHA)
+        tree2 = NLHTree.createFromFileSystem(dataPath, using_sha)
         # DEBUG
         #print("TREE2:\n%s" % tree2)
         # END
@@ -185,7 +185,7 @@ class TestDropFromU (unittest.TestCase):
         # END
         # self.assertEqual( len(unmatched), 0)      ### XXX
 
-        uDir = UDir(uPath, struc, usingSHA)
+        uDir = UDir(uPath, struc, using_sha)
         self.assertTrue(os.path.exists(uPath))
 
         # these values should still be present in uDir

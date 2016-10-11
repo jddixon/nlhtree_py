@@ -4,7 +4,7 @@
 
 import re
 from distutils.core import setup
-__version__ = re.search("__version__\s*=\s*'(.*)'",
+__version__ = re.search(r"__version__\s*=\s*'(.*)'",
                         open('nlhtree/__init__.py').read()).group(1)
 
 setup(name='nlhtree_py',
@@ -14,10 +14,10 @@ setup(name='nlhtree_py',
       py_modules=[],
       packages=['nlhtree', ],
       scripts=[
-          'nlhCheckInDataDir',
-          'nlhCheckInUDir',
-          'nlhPopulateDataDir',
-          'nlhSaveToUDir',
+          'nlh_check_in_data_dir',
+          'nlh_check_in_u_dir',
+          'nlh_populate_data_dir',
+          'nlh_save_to_u_dir',
       ],
       description='data structure for representing directory and contents',
       url='https://jddixon.github.io/nlhtree_py',
@@ -28,5 +28,4 @@ setup(name='nlhtree_py',
           'Natural Language :: English',
           'Programming Language :: Python 3',
           'Topic :: Software Development :: Libraries :: Python Modules',
-      ],
-      )
+      ],)

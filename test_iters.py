@@ -70,26 +70,26 @@ class TestIters (unittest.TestCase):
         for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
             self.doTestIters(using)
 
-    def doTestIters(self, usingSHA):
-        checkUsingSHA(usingSHA)
-        if usingSHA == Q.USING_SHA1:
+    def doTestIters(self, using_sha):
+        checkUsingSHA(using_sha)
+        if using_sha == Q.USING_SHA1:
             REL_PATH_TO_DATA = 'example1/dataDir'
             REL_PATH_TO_NLH = 'example1/example.nlh'
-        elif usingSHA == Q.USING_SHA2:
+        elif using_sha == Q.USING_SHA2:
             REL_PATH_TO_DATA = 'example2/dataDir'
             REL_PATH_TO_NLH = 'example2/example.nlh'
-        elif usingSHA == Q.USING_SHA3:
+        elif using_sha == Q.USING_SHA3:
             REL_PATH_TO_DATA = 'example3/dataDir'
             REL_PATH_TO_NLH = 'example3/example.nlh'
 
-        tree = NLHTree.createFromFileSystem(REL_PATH_TO_DATA, usingSHA)
+        tree = NLHTree.createFromFileSystem(REL_PATH_TO_DATA, using_sha)
         self.assertIsNotNone(tree)
         s = tree.__str__()
-        if usingSHA == Q.USING_SHA1:
+        if using_sha == Q.USING_SHA1:
             self.assertEqual(EXAMPLE1, s)        # the serialized NLHTree
-        elif usingSHA == Q.USING_SHA2:
+        elif using_sha == Q.USING_SHA2:
             self.assertEqual(EXAMPLE2, s)        # the serialized NLHTree
-        elif usingSHA == Q.USING_SHA3:
+        elif using_sha == Q.USING_SHA3:
             self.assertEqual(EXAMPLE3, s)        # the serialized NLHTree
         else:
             raise NotImplementedError

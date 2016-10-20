@@ -2,8 +2,8 @@
 project:nlhtree_py
 package:nlhtree
 mainlang:py
-version:0.6.4
-versionDate:2016-09-15
+version:0.7.0
+versionDate:2016-10-20
 :?dirs?:
 dir:std:ghpDoc
 dir:std:dist
@@ -42,10 +42,10 @@ bash:std:test.all
 bash:std:doPyLint
 bash:std:checkCoverage
 py:std:setup.py
-py:global:nlhCheckInDataDir
-py:global:nlhCheckInUDir
-py:global:nlhPopulateDataDir
-py:global:nlhSaveToUDir
+py:global:nlh_check_in_data_dir
+py:global:nlh_check_in_u_dir
+py:global:nlh_populate_data_dir
+py:global:nlh_save_to_u_dir
 py:test:test_cross_functions.py
 py:test:test_drop_from_u.py
 py:test:test_iters.py
@@ -55,3 +55,6 @@ py:test:test_nlh_tree.py
 py:test:test_nlh_tree2.py
 py:test:test_nlh_tree3.py
 py:test:test_walker.py
+dunno:local:name-pairs-api
+dunno:local:name-pairs-local
+dunno:local:renamePerXLattice

@@ -1,6 +1,9 @@
 py/nlhtree_py/CHANGES
 
 
+v0.7.0
+    2016-10-20
+        * rename files and API per PEP 8                            SLOC 2875
 v0.6.5
     2016-10-11
         * partial refactor for pylint                               SLOC 2677
@@ -153,6 +156,7 @@ v0.1.0
 v0.0.0
     2015-05-20
         * initial import                                            SLOC   47
+
 
 
 

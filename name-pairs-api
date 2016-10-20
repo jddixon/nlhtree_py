@@ -1,0 +1,12 @@
+# nlhtree_py/name-pairs-api
+
+# nlhtree/base ------------------------------------------------------
+curTree                 cur_tree
+
+# nlhtree/__init__ --------------------------------------------------
+
+createFromFileSystem    create_from_file_system
+createFromStringArray   create_from_string_array
+parseFirstLine          parse_first_line
+parseOtherLine          parse_other_line
+toStrings               to_strings

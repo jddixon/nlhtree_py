@@ -2,13 +2,15 @@
 
 # testIters.py
 
-import hashlib
-import sha3     # must follow hashlib
-
 import sys
 import unittest
 
-from xlattice import Q, checkUsingSHA
+import hashlib
+if sys.version_info < (3, 6):
+    # pylint: disable=unused-import
+    import sha3     # monkey-patches hashlib
+
+from xlattice import Q, check_using_sha
 from nlhtree import *
 
 EXAMPLE1 = """dataDir
@@ -71,7 +73,7 @@ class TestIters (unittest.TestCase):
             self.doTestIters(using)
 
     def doTestIters(self, using_sha):
-        checkUsingSHA(using_sha)
+        check_using_sha(using_sha)
         if using_sha == Q.USING_SHA1:
             REL_PATH_TO_DATA = 'example1/dataDir'
             REL_PATH_TO_NLH = 'example1/example.nlh'
@@ -82,15 +84,15 @@ class TestIters (unittest.TestCase):
             REL_PATH_TO_DATA = 'example3/dataDir'
             REL_PATH_TO_NLH = 'example3/example.nlh'
 
-        tree = NLHTree.createFromFileSystem(REL_PATH_TO_DATA, using_sha)
+        tree = NLHTree.create_from_file_system(REL_PATH_TO_DATA, using_sha)
         self.assertIsNotNone(tree)
-        s = tree.__str__()
+        string = tree.__str__()
         if using_sha == Q.USING_SHA1:
-            self.assertEqual(EXAMPLE1, s)        # the serialized NLHTree
+            self.assertEqual(EXAMPLE1, string)        # the serialized NLHTree
         elif using_sha == Q.USING_SHA2:
-            self.assertEqual(EXAMPLE2, s)        # the serialized NLHTree
+            self.assertEqual(EXAMPLE2, string)        # the serialized NLHTree
         elif using_sha == Q.USING_SHA3:
-            self.assertEqual(EXAMPLE3, s)        # the serialized NLHTree
+            self.assertEqual(EXAMPLE3, string)        # the serialized NLHTree
         else:
             raise NotImplementedError
 
@@ -118,7 +120,7 @@ class TestIters (unittest.TestCase):
         couple = node0.__next__()
         self.assertEqual(len(couple), 2)
         self.assertEqual(couple[0], node0.name)
-        self.assertEqual(couple[1], node0.hexHash)
+        self.assertEqual(couple[1], node0.hex_hash)
 
         try:
             couple = node0.__next__()
@@ -135,7 +137,7 @@ class TestIters (unittest.TestCase):
         couple = node1.__next__()
         self.assertEqual(len(couple), 2)
         self.assertEqual(couple[0], node1.name)
-        self.assertEqual(couple[1], node1.hexHash)
+        self.assertEqual(couple[1], node1.hex_hash)
 
         try:
             couple = node1.__next__()

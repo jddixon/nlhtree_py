@@ -9,8 +9,8 @@ import unittest
 
 from rnglib import SimpleRNG
 from nlhtree import NLHTree
-from xlattice import Q, checkUsingSHA
-from xlattice.util import makeExRE
+from xlattice import Q, check_using_sha
+from xlattice.util import make_ex_re
 
 
 class TestCrossFunctions (unittest.TestCase):
@@ -26,7 +26,7 @@ class TestCrossFunctions (unittest.TestCase):
         We assume that there is valid data in
             example/{example.nlh,dataDir,uDir}
         """
-        checkUsingSHA(using_sha)
+        check_using_sha(using_sha)
 
         if using_sha == Q.USING_SHA1:
             GOLD_DATA = 'example1/dataDir'
@@ -58,14 +58,15 @@ class TestCrossFunctions (unittest.TestCase):
         self.assertTrue(os.path.exists(os.path.join(TARGET_UDIR, 'in')))
 
         exclusions = ['build']
-        exRE = makeExRE(exclusions)
+        exRE = make_ex_re(exclusions)
 
-        tree = NLHTree.createFromFileSystem(GOLD_DATA, using_sha, exRE, None)
+        tree = NLHTree.create_from_file_system(
+            GOLD_DATA, using_sha, exRE, None)
         tree.saveToUDir(GOLD_DATA, TARGET_UDIR, using_sha)
 
         self.assertTrue(os.path.exists(GOLD_LIST_FILE))
-        with open(GOLD_LIST_FILE, 'r') as f:
-            goldListing = f.read()
+        with open(GOLD_LIST_FILE, 'r') as file:
+            goldListing = file.read()
 
         outputListing = tree.__str__()
         # DEBUG
@@ -73,7 +74,7 @@ class TestCrossFunctions (unittest.TestCase):
         # END
         self.assertEqual(goldListing, outputListing)
 
-        tree = NLHTree.createFromFileSystem(GOLD_DATA, using_sha)
+        tree = NLHTree.create_from_file_system(GOLD_DATA, using_sha)
         self.assertIsNotNone(tree)
 
         # first iteration over tree
@@ -100,7 +101,7 @@ class TestCrossFunctions (unittest.TestCase):
         unmatched = tree.checkInDataDir(TARGET_DATA_DIR)
         self.assertEqual(len(unmatched), 0)
 
-        tree2 = NLHTree.createFromFileSystem(TARGET_DATA_DIR, using_sha)
+        tree2 = NLHTree.create_from_file_system(TARGET_DATA_DIR, using_sha)
         self.assertEqual(tree, tree2)
 
     def testSimplestConstructor(self):

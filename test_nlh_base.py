@@ -4,8 +4,7 @@
 """ Test basic NLHTree functions. """
 
 import hashlib
-import sha3         # monkey-patches hashlib; should be conditional
-
+import sys
 import time
 import unittest
 
@@ -13,10 +12,14 @@ from rnglib import SimpleRNG
 from nlhtree.base import NLHBase
 from nlhtree import *
 
-from xlattice import Q, checkUsingSHA
+from xlattice import Q, check_using_sha
+
+if sys.version_info < (3, 6):
+    # pylint: disable=unused-import
+    import sha3     # monkey-patches hashlib
 
 
-class TestNLHBase (unittest.TestCase):
+class TestNLHBase(unittest.TestCase):
     """ Test basic NLHTree functions. """
 
     def setUp(self):
@@ -27,11 +30,11 @@ class TestNLHBase (unittest.TestCase):
 
     def do_test_constructor(self, using_sha):
         name = self.rng.next_file_name(8)
-        b = NLHBase(name, using_sha)
-        self.assertEqual(b.name, name)
-        self.assertEqual(b.using_sha, using_sha)
-        root = b.root
-        ct = b.curTree
+        bVal = NLHBase(name, using_sha)
+        self.assertEqual(bVal.name, name)
+        self.assertEqual(bVal.using_sha, using_sha)
+        root = bVal.root
+        ct = bVal.cur_tree
         self.assertEqual(root.name, ct.name)
 
     def testConstructor(self):

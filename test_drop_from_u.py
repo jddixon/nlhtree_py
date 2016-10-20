@@ -2,17 +2,20 @@
 
 # nlhtree_py/testDropFromU.py
 
-import hashlib
-import sha3     # must follow hashlib
-
 import os
+import sys
 import time
 import unittest
 from binascii import hexlify
 
+import hashlib
+if sys.version_info < (3, 6):
+    # pylint: disable=unused-import
+    import sha3     # monkey-patches hashlib
+
 from rnglib import SimpleRNG
 from nlhtree import *
-from xlattice import Q, checkUsingSHA
+from xlattice import Q, check_using_sha
 from xlattice.u import UDir
 
 
@@ -44,18 +47,18 @@ class TestDropFromU (unittest.TestCase):
         # make a unique U directory under ./tmp/
         os.makedirs('tmp', mode=0o755, exist_ok=True)
         uRootName = self.rng.nextFileName(8)
-        uPath = os.path.join('tmp', uRootName)
-        while os.path.exists(uPath):
+        u_path = os.path.join('tmp', uRootName)
+        while os.path.exists(u_path):
             uRootName = self.rng.nextFileName(8)
-            uPath = os.path.join('tmp', uRootName)
+            u_path = os.path.join('tmp', uRootName)
 
         # DEBUG
         #print("uRootName = %s" % uRootName)
         # END
 
         # create uDir and the NLHTree
-        uDir = UDir(uPath, struc, using_sha)
-        self.assertTrue(os.path.exists(uPath))
+        u_dir = UDir(u_path, struc, using_sha)
+        self.assertTrue(os.path.exists(u_path))
 
         # make a unique data directory under tmp/
         dataTmp = self.rng.nextFileName(8)
@@ -67,7 +70,7 @@ class TestDropFromU (unittest.TestCase):
         # dataDir must have same base name as NLHTree
         topName = self.rng.nextFileName(8)
         dataPath = os.path.join(tmpPath, topName)
-        dataDir = os.makedirs(dataPath, mode=0o755)
+        os.makedirs(dataPath, mode=0o755)
 
         # DEBUG
         #print("dataTmp = %s" % dataTmp)
@@ -106,11 +109,11 @@ class TestDropFromU (unittest.TestCase):
             # write data file -----------------------------
             fileName = 'value%04d' % n
             pathToFile = os.path.join(dataPath, fileName)
-            with open(pathToFile, 'wb') as f:
+            with open(pathToFile, 'wb') as file:
                 # DEBUG
                 #print("writing %s to %s" % (hexKey, pathToFile))
                 # END
-                f.write(datum)
+                file.write(datum)
 
             # insert leaf into tree -----------------------
             pathFromTop = os.path.join(topName, fileName)
@@ -122,20 +125,20 @@ class TestDropFromU (unittest.TestCase):
             # END
 
             # write data into uDir ------------------------
-            uDir.putData(datum, hexKey)
+            u_dir.put_data(datum, hexKey)
 
-        return uPath, dataPath, tree, hashes, values
+        return u_path, dataPath, tree, hashes, values
 
     def doTestWithEphemeralTree(self, struc, using_sha):
 
-        uPath, dataPath, tree, hashes, values = self.generateUDT(
+        u_path, dataPath, tree, hashes, values = self.generateUDT(
             struc, using_sha)
 
         # DEBUG
         #print("TREE:\n%s" % tree)
         # END
         # verify that the dataDir matches the nlhTree
-        tree2 = NLHTree.createFromFileSystem(dataPath, using_sha)
+        tree2 = NLHTree.create_from_file_system(dataPath, using_sha)
         # DEBUG
         #print("TREE2:\n%s" % tree2)
         # END
@@ -178,25 +181,25 @@ class TestDropFromU (unittest.TestCase):
 
         # the q subtree contains those elements which will be dropped
         # from uDir
-        unmatched = q.dropFromUDir(uPath)
+        unmatched = q.dropFromUDir(u_path)
         # DEBUG
         # for x in unmatched:  # (relPath, hash)
         #    print("unmatched: %s %s" % (x[0], x[1]))
         # END
         # self.assertEqual( len(unmatched), 0)      ### XXX
 
-        uDir = UDir(uPath, struc, using_sha)
-        self.assertTrue(os.path.exists(uPath))
+        u_dir = UDir(u_path, struc, using_sha)
+        self.assertTrue(os.path.exists(u_path))
 
         # these values should still be present in uDir
         for i in keepMe:
             hexHash = hexHashes[i]
-            self.assertTrue(uDir.exists(hexHash))
+            self.assertTrue(u_dir.exists(hexHash))
 
         # these values should NOT be present in UDir
         for i in dropMe:
             hexHash = hexHashes[i]
-            self.assertFalse(uDir.exists(hexHash))
+            self.assertFalse(u_dir.exists(hexHash))
 
     def testWithEphemeralTree(self):
         for struc in [UDir.DIR_FLAT, UDir.DIR16x16, UDir.DIR256x256, ]:

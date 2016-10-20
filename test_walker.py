@@ -2,12 +2,15 @@
 
 # testWalker.py
 
-import hashlib
-import sha3         # should be conditional
 import sys
 import unittest
 
-from xlattice import Q, checkUsingSHA
+import hashlib
+if sys.version_info < (3, 6):
+    # pylint: disable=unused-import
+    import sha3     # monkey-patches hashlib
+
+from xlattice import Q, check_using_sha
 from nlhtree import *
 
 EXAMPLE1 = """dataDir
@@ -67,7 +70,7 @@ class TestWalker (unittest.TestCase):
             self.doTestSpotCheckTree(using)
 
     def doTestSpotCheckTree(self, using_sha):
-        checkUsingSHA(using_sha)
+        check_using_sha(using_sha)
 
         # DEBUG
         #print("\nSPOT CHECKS")
@@ -76,7 +79,7 @@ class TestWalker (unittest.TestCase):
             REL_PATH_TO_DATA = 'example1/dataDir'
         else:
             REL_PATH_TO_DATA = 'example2/dataDir'
-        tree = NLHTree.createFromFileSystem(REL_PATH_TO_DATA, using_sha)
+        tree = NLHTree.create_from_file_system(REL_PATH_TO_DATA, using_sha)
         self.assertIsNotNone(tree)
         self.assertEqual(len(tree.nodes), 6)
         self.assertEqual(tree.name, 'dataDir')
@@ -123,7 +126,7 @@ class TestWalker (unittest.TestCase):
         # print("\ndoTestWalkers, %s" % using_sha)
         # END
 
-        checkUsingSHA(using_sha)
+        check_using_sha(using_sha)
         if using_sha == Q.USING_SHA1:
             REL_PATH_TO_DATA = 'example1/dataDir'
             REL_PATH_TO_NLH = 'example1/example.nlh'
@@ -137,10 +140,10 @@ class TestWalker (unittest.TestCase):
             REL_PATH_TO_NLH = 'example3/example.nlh'
             EXAMPLE = EXAMPLE3
 
-        tree = NLHTree.createFromFileSystem(REL_PATH_TO_DATA, using_sha)
+        tree = NLHTree.create_from_file_system(REL_PATH_TO_DATA, using_sha)
         self.assertIsNotNone(tree)
-        s = tree.__str__()
-        self.assertEqual(EXAMPLE, s)        # the serialized NLHTree
+        string = tree.__str__()
+        self.assertEqual(EXAMPLE, string)        # the serialized NLHTree
 
         # The serialized NLHTree, the string s, is identical to the EXAMPLE1/2
         # serialization above.  So we should be able to walk EXAMPLE1/2,
@@ -235,11 +238,11 @@ class TestWalker (unittest.TestCase):
         # sys.stdout.flush()
         # END
 
-        def compareLists(a, b):
+        def compareLists(aVal, bVal):
             # a and b are lists of tuples
-            self.assertEqual(len(a), len(b))
-            for n in range(len(a)):
-                self.assertEqual(a[n], b[n])
+            self.assertEqual(len(aVal), len(bVal))
+            for n in range(len(aVal)):
+                self.assertEqual(aVal[n], bVal[n])
 
         # DEBUG
 #       #print("FROM_DISK:")

@@ -3,9 +3,14 @@
 
 """ Test NLHTree-related functions. """
 
-import hashlib
+import sys
 import time
 import unittest
+
+import hashlib
+if sys.version_info < (3, 6):
+    # pylint: disable=unused-import
+    import sha3     # monkey-patches hashlib
 
 from rnglib import SimpleRNG
 from nlhtree import *
@@ -65,18 +70,18 @@ class TestNLHTree (unittest.TestCase):
         name = self.rng.next_file_name(8)
         tree = NLHTree(name, using_sha)
         leaf_names = set()
-        a = self.make_leaf(leaf_names, using_sha)
-        b = self.make_leaf(leaf_names, using_sha)
-        c = self.make_leaf(leaf_names, using_sha)
-        d = self.make_leaf(leaf_names, using_sha)
+        aVal = self.make_leaf(leaf_names, using_sha)
+        bVal = self.make_leaf(leaf_names, using_sha)
+        cVal = self.make_leaf(leaf_names, using_sha)
+        dVal = self.make_leaf(leaf_names, using_sha)
         self.assertEqual(len(tree.nodes), 0)
-        tree.insert(a)
+        tree.insert(aVal)
         self.assertEqual(len(tree.nodes), 1)
-        tree.insert(b)
+        tree.insert(bVal)
         self.assertEqual(len(tree.nodes), 2)
-        tree.insert(c)
+        tree.insert(cVal)
         self.assertEqual(len(tree.nodes), 3)
-        tree.insert(d)
+        tree.insert(dVal)
         self.assertEqual(len(tree.nodes), 4)
         # we expect the nodes to be sorted
         for i in range(3):

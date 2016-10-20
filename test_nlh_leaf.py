@@ -3,11 +3,14 @@
 
 """ Test NLHLeaf-related functions. """
 
-import hashlib
-import sha3     # must follow hashlib
-
+import sys
 import time
 import unittest
+
+import hashlib
+if sys.version_info < (3, 6):
+    # pylint: disable=unused-import
+    import sha3     # monkey-patches hashlib
 
 from rnglib import SimpleRNG
 from xlattice import Q, check_using_sha

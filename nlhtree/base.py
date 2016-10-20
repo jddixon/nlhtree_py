@@ -28,21 +28,6 @@ class NLHBase(object):
     def name(self):
         return self._root.name
 
-    # SYNONYMS ------------------------------------------------------
-    @property
-    def usingSHA(self):
-        return self.using_sha
-
-    @property
-    def curTree(self):
-        return self.cur_tree
-
-    @curTree.setter
-    def curTree(self, path):
-        self.cur_tree(path)
-
-    # END SYN -------------------------------------------------------
-
     @property
     def using_sha(self):
         return self._root.using_sha
@@ -71,8 +56,23 @@ class NLHBase(object):
             # otherwise set cur_tree to point to this node
             pass
         else:
-            raise NotImplemented("can't handle multi-part paths yet")
+            raise NotImplementedError("can't handle multi-part paths yet")
 
             # XXX if the path begins with a forward slash ('/'), then
             # tentatively set the current tree to the root and then
             # apply the normal relpath logic from there
+
+    # SYNONYMS ------------------------------------------------------
+    @property
+    def usingSHA(self):
+        return self.using_sha
+
+    @property
+    def curTree(self):
+        return self._cur_tree
+
+    @curTree.setter
+    def curTree(self, path):
+        self.cur_tree = path
+
+    # END SYN -------------------------------------------------------

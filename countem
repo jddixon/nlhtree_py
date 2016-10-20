@@ -6,7 +6,7 @@ then
   
   rm -rf build/* 
   
-  pySloc -L py nlhCheckInDataDir nlhCheckInUDir nlhPopulateDataDir nlhSaveToUDir  -X cover -X htmlcov -X dist -X tmp -v $@
+  runpysloc -L py nlh_check_in_data_dir nlh_check_in_u_dir nlh_populate_data_dir nlh_save_to_u_dir  -X cover -X htmlcov -X dist -X tmp -v $@
 else
   echo "DEV_BASE is not defined"
 fi

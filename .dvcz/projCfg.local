@@ -11,7 +11,7 @@ dir:pkg:nlhtree
 dir:tmp:build
 dir:tmp:tmp
 
-py:global:nlhCheckInDataDir
-py:global:nlhCheckInUDir
-py:global:nlhPopulateDataDir
-py:global:nlhSaveToUDir
+py:global:nlh_check_in_data_dir
+py:global:nlh_check_in_u_dir
+py:global:nlh_populate_data_dir
+py:global:nlh_save_to_u_dir

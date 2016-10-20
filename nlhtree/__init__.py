@@ -21,8 +21,8 @@ __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree',
            ]
 
-__version__ = '0.6.5'
-__version_date__ = '2016-10-11'
+__version__ = '0.7.0'
+__version_date__ = '2016-10-20'
 
 
 class NLHError(RuntimeError):
@@ -40,34 +40,6 @@ class NLHNode(object):
         self._name = name.strip()
         self._using_sha = using_sha
         self._bin_hash = None
-
-    # SYNONYMS ------------------------------------------------------
-    @property
-    def usingSHA(self):
-        """ SYNONYM """
-        return self.using_sha
-
-    @property
-    def hexHash(self):
-        return self.hex_hash
-
-    @hexHash.setter
-    def hexHash(self, value):
-        self.hex_hash(value)
-
-    @property
-    def binHash(self):
-        return self.bin_hash
-
-    @binHash.setter
-    def binHash(self, value):
-        self.bin_hash(value)
-
-    @staticmethod
-    def checkHash(binHash, using_sha):
-        self.check_hash(using_sha)
-
-    # END SYN -------------------------------------------------------
 
     @property
     def name(self):
@@ -117,7 +89,7 @@ class NLHNode(object):
                 bin_hash_len != SHA3_BIN_LEN:
             raise NLHError('not a valid SHA binary hash length')
 
-    def __eq__(self):
+    def __eq__(self, other):
         raise NotImplementedError
 
     def clone(self):
@@ -128,6 +100,39 @@ class NLHNode(object):
 
     def __next__(self):
         raise NotImplementedError
+
+    # SYNONYMS ------------------------------------------------------
+    @property
+    def usingSHA(self):
+        """ SYNONYM """
+        return self.using_sha
+
+    @property
+    def hexHash(self):
+        """ SYNONYM """
+        return self.hex_hash
+
+    @hexHash.setter
+    def hexHash(self, value):
+        """ SYNONYM """
+        self.hex_hash(value)
+
+    @property
+    def binHash(self):
+        """ SYNONYM """
+        return self.bin_hash
+
+    @binHash.setter
+    def binHash(self, value):
+        """ SYNONYM """
+        self._bin_hash(value)
+
+    @staticmethod
+    def checkHash(bin_hash, using_sha):
+        """ SYNONYM """
+        NLHNode.check_hash(bin_hash, using_sha)
+
+    # END SYN -------------------------------------------------------
 
 
 class NLHLeaf(NLHNode):
@@ -185,13 +190,6 @@ class NLHLeaf(NLHNode):
 
     # END ITERABLE ########################################
 
-    # SYNONYMS ------------------------------------------------------
-    @staticmethod
-    def createFromFileSystem(path, name, using_sha=Q.USING_SHA2):
-        return create_from_file_system(path, name, using_sha)
-
-    # END SYN -------------------------------------------------------
-
     @staticmethod
     def create_from_file_system(path, name, using_sha=Q.USING_SHA2):
         """
@@ -211,6 +209,13 @@ class NLHLeaf(NLHNode):
         else:
             return None
 
+    # SYNONYMS ------------------------------------------------------
+    @staticmethod
+    def createFromFileSystem(path, name, using_sha=Q.USING_SHA2):
+        return NLHLeaf.create_from_file_system(path, name, using_sha)
+
+    # END SYN -------------------------------------------------------
+
 
 class NLHTree(NLHNode):
 
@@ -223,11 +228,15 @@ class NLHTree(NLHNode):
     FILE_LINE_RE_2 = re.compile(r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{64})$',
                                 re.IGNORECASE)
 
+    FILE_LINE_RE_3 = re.compile(r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{64})$',
+                                re.IGNORECASE)
+
     def __init__(self, name, using_sha=Q.USING_SHA2):
         super().__init__(name, using_sha)
         self._nodes = []
         self._n = -1            # duplication seems necessary
         self._prefix = ''       # ditto
+        self._subTree = None    # for iterators
 
     @property
     def nodes(self):
@@ -331,7 +340,7 @@ class NLHTree(NLHNode):
 
     def __str__(self):
         ss = []
-        self.toStrings(ss, 0)
+        self.to_strings(ss, 0)
         s = '\n'.join(ss) + '\n'
         return s
 
@@ -341,7 +350,7 @@ class NLHTree(NLHNode):
             if isinstance(node, NLHLeaf):
                 ss.append(node._toString(indent + 1))
             else:
-                node.toStrings(ss, indent + 1)
+                node.to_strings(ss, indent + 1)
 
     @staticmethod
     def create_from_file_system(path_to_dir, using_sha=Q.USING_SHA2,
@@ -442,7 +451,7 @@ class NLHTree(NLHNode):
 
         lines = lines[1:]
         for line in lines:
-            indent, name, hash = NLHTree.parseOtherLine(line)
+            indent, name, hash = NLHTree.parse_other_line(line)
             if hash is not None:
                 bHash = binascii.a2b_hex(hash)
 
@@ -481,30 +490,6 @@ class NLHTree(NLHNode):
                     stack[depth].insert(leaf)
 
         return root
-
-    # SYNONYMS ------------------------------------------------------
-    def toStrings(self, lines, indent=0):
-        self.to_strings(lines, indent)
-
-    @staticmethod
-    def createFromFileSystem(path_to_dir, using_sha=Q.USING_SHA2,
-                             ex_re=None, match_re=None):
-        return NLHTree.create_from_file_system(
-            path_to_dir, using_sha, ex_re, match_re)
-
-    @staticmethod
-    def parseFirstLine(line):
-        return NLHTree.parse_first_line(line)
-
-    @staticmethod
-    def parseOtherLine(line):
-        return NLHTree.parse_other_line(line)
-
-    @staticmethod
-    def createFromStringArray(lines, using_sha=Q.USING_SHA2):
-        return NLHTree.create_from_string_array(lines, using_sha)
-
-    # END SYN -------------------------------------------------------
 
     @staticmethod
     def parseFile(path_to_file, using_sha):
@@ -856,3 +841,27 @@ class NLHTree(NLHNode):
             return self._subTree.__next__()
 
     # END ITERABLE ########################################
+
+    # SYNONYMS ------------------------------------------------------
+    def toStrings(self, lines, indent=0):
+        self.to_strings(lines, indent)
+
+    @staticmethod
+    def createFromFileSystem(path_to_dir, using_sha=Q.USING_SHA2,
+                             ex_re=None, match_re=None):
+        return NLHTree.create_from_file_system(
+            path_to_dir, using_sha, ex_re, match_re)
+
+    @staticmethod
+    def parseFirstLine(line):
+        return NLHTree.parse_first_line(line)
+
+    @staticmethod
+    def parseOtherLine(line):
+        return NLHTree.parse_other_line(line)
+
+    @staticmethod
+    def createFromStringArray(lines, using_sha=Q.USING_SHA2):
+        return NLHTree.create_from_string_array(lines, using_sha)
+
+    # END SYN -------------------------------------------------------

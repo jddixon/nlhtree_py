@@ -77,34 +77,34 @@ class TestNLHTree3 (unittest.TestCase):
     def do_test_pattern_matching(self, using_sha):
         check_using_sha(using_sha)
         if using_sha == Q.USING_SHA1:
-            ss = self.EXAMPLE1
+            strings = self.EXAMPLE1
         elif using_sha == Q.USING_SHA2:
-            ss = self.EXAMPLE2
+            strings = self.EXAMPLE2
         elif using_sha == Q.USING_SHA3:
-            ss = self.EXAMPLE3
+            strings = self.EXAMPLE3
 
         # first line --------------------------------------
-        m = NT.DIR_LINE_RE.match(ss[0])
+        m = NT.DIR_LINE_RE.match(strings[0])
         self.assertTrue(m)
         self.assertEqual(len(m.group(1)), 0)
         self.assertEqual(m.group(2), 'dataDir')
 
         # simpler approach ----------------------
-        name = NT.parse_first_line(ss[0])
+        name = NT.parse_first_line(strings[0])
         self.assertEqual(name, 'dataDir')
 
         # file with indent of 1 ---------------------------
         if using_sha == Q.USING_SHA1:
-            m = NT.FILE_LINE_RE_1.match(ss[1])
+            m = NT.FILE_LINE_RE_1.match(strings[1])
         else:
             # XXX This works for both SHA2 and SHA3
-            m = NT.FILE_LINE_RE_2.match(ss[1])
+            m = NT.FILE_LINE_RE_2.match(strings[1])
         self.assertTrue(m)
         self.assertEqual(len(m.group(1)), 1)
         self.assertEqual(m.group(2), 'data1')
 
         # that simpler approach -----------------
-        indent, name, hash = NT.parse_other_line(ss[1])
+        indent, name, hash = NT.parse_other_line(strings[1])
         self.assertEqual(indent, 1)
         self.assertEqual(name, 'data1')
         if using_sha == Q.USING_SHA1:
@@ -114,29 +114,29 @@ class TestNLHTree3 (unittest.TestCase):
             self.assertEqual(len(hash), SHA2_HEX_LEN)
 
         # subdirectory ------------------------------------
-        m = NT.DIR_LINE_RE.match(ss[3])
+        m = NT.DIR_LINE_RE.match(strings[3])
         self.assertTrue(m)
         self.assertEqual(len(m.group(1)), 1)
         self.assertEqual(m.group(2), 'subDir1')
 
         # that simpler approach -----------------
-        indent, name, hash = NT.parse_other_line(ss[3])
+        indent, name, hash = NT.parse_other_line(strings[3])
         self.assertEqual(indent, 1)
         self.assertEqual(name, 'subDir1')
         self.assertEqual(hash, None)
 
         # lower level file ----------------------
         if using_sha == Q.USING_SHA1:
-            m = NT.FILE_LINE_RE_1.match(ss[12])
+            m = NT.FILE_LINE_RE_1.match(strings[12])
         else:
             # XXX This works for both SHA2 and SHA 3
-            m = NT.FILE_LINE_RE_2.match(ss[12])
+            m = NT.FILE_LINE_RE_2.match(strings[12])
         self.assertTrue(m)
         self.assertEqual(len(m.group(1)), 4)
         self.assertEqual(m.group(2), 'data41')
 
         # that simpler approach -----------------
-        indent, name, hash = NT.parse_other_line(ss[12])
+        indent, name, hash = NT.parse_other_line(strings[12])
         self.assertEqual(indent, 4)
         self.assertEqual(name, 'data41')
         if using_sha == Q.USING_SHA1:
@@ -154,17 +154,17 @@ class TestNLHTree3 (unittest.TestCase):
         tree = NT.create_from_string_array(self.EXAMPLE1, using_sha)
         self.assertEqual(tree.using_sha, using_sha)
 
-        ss = []
-        tree.toStrings(ss, 0)
+        strings = []
+        tree.to_strings(strings, 0)
 
-        tree2 = NT.create_from_string_array(ss, using_sha)
+        tree2 = NT.create_from_string_array(strings, using_sha)
         self.assertEqual(tree, tree2)
 
-        s = '\n'.join(ss) + '\n'
-        tree3 = NT.parse(s, using_sha)
+        string = '\n'.join(strings) + '\n'
+        tree3 = NT.parse(string, using_sha)
         s3 = tree3.__str__()
 
-        self.assertEqual(s3, s)
+        self.assertEqual(s3, string)
         self.assertEqual(tree3, tree)
 
         dupe3 = tree3.clone()

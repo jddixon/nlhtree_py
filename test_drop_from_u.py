@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-
 # nlhtree_py/testDropFromU.py
+
+""" Test the dropFromU functionality. """
 
 import os
 import sys
@@ -9,17 +10,18 @@ import unittest
 from binascii import hexlify
 
 import hashlib
+from rnglib import SimpleRNG
+from nlhtree import NLHTree, NLHLeaf
+from xlattice import Q  # , check_using_sha
+from xlattice.u import UDir
+
 if sys.version_info < (3, 6):
     # pylint: disable=unused-import
     import sha3     # monkey-patches hashlib
 
-from rnglib import SimpleRNG
-from nlhtree import *
-from xlattice import Q, check_using_sha
-from xlattice.u import UDir
 
-
-class TestDropFromU (unittest.TestCase):
+class TestDropFromU(unittest.TestCase):
+    """ Test the dropFromUDir functionality. """
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
@@ -27,10 +29,11 @@ class TestDropFromU (unittest.TestCase):
     def tearDown(self):
         pass
 
-    def generateUDT(self, struc, using_sha):
+    def generate_udt(self, struc, using_sha):
         """
         Generate under ./tmp a data directory with random content,
         a uDir containing the same data, and an NLHTree that matches.
+
         uDir has the directory structure (DIR_FLAT, DIR16x16, DIR256x256,
         etc requested.  Hashes are SHA1 if using SHA1 is True, SHA256
         otherwise.
@@ -41,19 +44,19 @@ class TestDropFromU (unittest.TestCase):
         hashes is a list of the SHA hashes of the values.  Each hash
         is a binary value.  If using SHA1 it consists of 20 bytes.
 
-        return uPath, dataPath, tree, hashes, values
+        return uPath, data_path, tree, hashes, values
         """
 
         # make a unique U directory under ./tmp/
         os.makedirs('tmp', mode=0o755, exist_ok=True)
-        uRootName = self.rng.nextFileName(8)
-        u_path = os.path.join('tmp', uRootName)
+        u_root_name = self.rng.nextFileName(8)
+        u_path = os.path.join('tmp', u_root_name)
         while os.path.exists(u_path):
-            uRootName = self.rng.nextFileName(8)
-            u_path = os.path.join('tmp', uRootName)
+            u_root_name = self.rng.nextFileName(8)
+            u_path = os.path.join('tmp', u_root_name)
 
         # DEBUG
-        #print("uRootName = %s" % uRootName)
+        #print("u_root_name = %s" % u_root_name)
         # END
 
         # create uDir and the NLHTree
@@ -61,40 +64,42 @@ class TestDropFromU (unittest.TestCase):
         self.assertTrue(os.path.exists(u_path))
 
         # make a unique data directory under tmp/
-        dataTmp = self.rng.nextFileName(8)
-        tmpPath = os.path.join('tmp', dataTmp)
-        while os.path.exists(tmpPath):
-            dataTmp = self.rng.nextFileName(8)
-            tmpPath = os.path.join('tmp', dataTmp)
+        data_tmp = self.rng.nextFileName(8)
+        tmp_path = os.path.join('tmp', data_tmp)
+        while os.path.exists(tmp_path):
+            data_tmp = self.rng.nextFileName(8)
+            tmp_path = os.path.join('tmp', data_tmp)
 
         # dataDir must have same base name as NLHTree
-        topName = self.rng.nextFileName(8)
-        dataPath = os.path.join(tmpPath, topName)
-        os.makedirs(dataPath, mode=0o755)
+        top_name = self.rng.nextFileName(8)
+        data_path = os.path.join(tmp_path, top_name)
+        os.makedirs(data_path, mode=0o755)
 
         # DEBUG
-        #print("dataTmp = %s" % dataTmp)
-        #print("topName = %s" % topName)
-        #print('dataPath = %s' % dataPath)
+        #print("data_tmp = %s" % data_tmp)
+        #print("top_name = %s" % top_name)
+        #print('data_path = %s' % data_path)
         # END
 
-        tree = NLHTree(topName, using_sha)
+        tree = NLHTree(top_name, using_sha)
 
-        # generate N and N unique random values, where N is at least 16
-        N = 16 + self.rng.nextInt16(16)
+        # generate nnn and nnn unique random values, where nnn is at least 16
+        nnn = 16 + self.rng.nextInt16(16)
         # DEBUG
-        #print("N = %d" % N)
-        # END
+        #print("nnn = %d" % nnn)
+        # EnnnD
 
         values = []
         hashes = []
-        for n in range(N):
+        for count in range(nnn):
             # generate datum ------------------------------
-            vLen = 32 + self.rng.nextInt16(32)      # length of value generated
-            datum = self.rng.someBytes(vLen)        # that many random bytes
+            # length of value generated
+            v_len = 32 + self.rng.nextInt16(32)
+            datum = self.rng.someBytes(v_len)        # that many random bytes
             values.append(datum)
 
-            # generate hash = binKey ----------------------
+            # generate hash = bin_key ----------------------
+            # pylint:disable=redefined-variable-type
             if using_sha == Q.USING_SHA1:
                 sha = hashlib.sha1()
             elif using_sha == Q.USING_SHA2:
@@ -102,86 +107,95 @@ class TestDropFromU (unittest.TestCase):
             elif using_sha == Q.USING_SHA3:
                 sha = hashlib.sha3_256()
             sha.update(datum)
-            binKey = sha.digest()
-            hexKey = sha.hexdigest()
-            hashes.append(binKey)
+            bin_key = sha.digest()
+            hex_key = sha.hexdigest()
+            hashes.append(bin_key)
 
             # write data file -----------------------------
-            fileName = 'value%04d' % n
-            pathToFile = os.path.join(dataPath, fileName)
-            with open(pathToFile, 'wb') as file:
+            file_name = 'value%04d' % count
+            path_to_file = os.path.join(data_path, file_name)
+            with open(path_to_file, 'wb') as file:
                 # DEBUG
-                #print("writing %s to %s" % (hexKey, pathToFile))
+                #print("writing %s to %s" % (hex_key, path_to_file))
                 # END
                 file.write(datum)
 
             # insert leaf into tree -----------------------
-            pathFromTop = os.path.join(topName, fileName)
-            leaf = NLHLeaf(fileName, binKey, using_sha)
+            # path_from_top = os.path.join(top_name, file_name)
+            leaf = NLHLeaf(file_name, bin_key, using_sha)
             tree.insert(leaf)
 
             # DEBUG
-            #print("  inserting <%s %s>" % (leaf.name, leaf.hexHash))
+            #print("  inserting <%s %s>" % (leaf.name, leaf.hex_hash))
             # END
 
             # write data into uDir ------------------------
-            u_dir.put_data(datum, hexKey)
+            u_dir.put_data(datum, hex_key)
 
-        return u_path, dataPath, tree, hashes, values
+        return u_path, data_path, tree, hashes, values
 
-    def doTestWithEphemeralTree(self, struc, using_sha):
+    def do_test_with_ephemeral_tree(self, struc, using_sha):
+        """
+        Generate a tmp/ subdirectory containing a quasi-random data
+        directory and corresponding uDir and NLHTree serialization.
 
-        u_path, dataPath, tree, hashes, values = self.generateUDT(
+        We use the directory strucure (struc) and hash type (using_sha)
+        indicated, running various consistency tests on the three.
+        """
+
+        u_path, data_path, tree, hashes, values = self.generate_udt(
             struc, using_sha)
 
         # DEBUG
         #print("TREE:\n%s" % tree)
         # END
         # verify that the dataDir matches the nlhTree
-        tree2 = NLHTree.create_from_file_system(dataPath, using_sha)
+        tree2 = NLHTree.create_from_file_system(data_path, using_sha)
         # DEBUG
         #print("TREE2:\n%s" % tree2)
         # END
         self.assertEqual(tree2, tree)
 
-        N = len(values)             # number of values present
-        hexHashes = []
-        for i in range(N):
-            hexHashes.append(hexlify(hashes[i]).decode('ascii'))
+        nnn = len(values)             # number of values present
+        hex_hashes = []
+        for count in range(nnn):
+            hex_hashes.append(hexlify(hashes[count]).decode('ascii'))
 
-        p = [i for i in range(N)]  # indexes into lists
-        self.rng.shuffle(p)         # shuffled
+        ndxes = [ndx for ndx in range(nnn)]  # indexes into lists
+        self.rng.shuffle(ndxes)         # shuffled
 
-        K = self.rng.nextInt16(N)   # we will drop this many indexes
+        kkk = self.rng.nextInt16(nnn)   # we will drop this many indexes
 
         # DEBUG
-        # print("dropping %d from %d elements" % (K, N))
+        # print("dropping %d from %d elements" % (kkk, nnn))
         # END
 
-        dropMe = p[0:K]        # indexes of values to drop
-        keepMe = p[K:]         # of those which should still be present
+        drop_me = ndxes[0:kkk]        # indexes of values to drop
+        keep_me = ndxes[kkk:]         # of those which should still be present
 
         # construct an NLHTree containing values to be dropped from uDir
-        q = tree.clone()
-        for i in keepMe:
-            name = 'value%04d' % i
-            q.delete(name)     # the parameter is a glob !
+        clone = tree.clone()
+        for count in keep_me:
+            name = 'value%04d' % count
+            clone.delete(name)     # the parameter is a glob !
 
         # these values should be absent from q: they won't be dropped from uDir
-        for i in keepMe:
-            name = 'value%04d' % i
-            x = q.find(name)
-            self.assertEqual(len(x), 0)
+        for count in keep_me:
+            name = 'value%04d' % count
+            xxx = clone.find(name)
+            self.assertEqual(len(xxx), 0)
 
-        # these values shd still be present in q: they'll be dropped from UDir
-        for i in dropMe:
-            name = 'value%04d' % i
-            x = q.find(name)
-            self.assertEqual(len(x), 1)
+        # these values shd still be present in clone: they'll be dropped from
+        # UDir
+        for count in drop_me:
+            name = 'value%04d' % count
+            xxx = clone.find(name)
+            self.assertEqual(len(xxx), 1)
 
-        # the q subtree contains those elements which will be dropped
+        # the clone subtree contains those elements which will be dropped
         # from uDir
-        unmatched = q.dropFromUDir(u_path)
+        _ = clone.drop_from_u_dir(u_path)      # was unmatched
+
         # DEBUG
         # for x in unmatched:  # (relPath, hash)
         #    print("unmatched: %s %s" % (x[0], x[1]))
@@ -192,19 +206,24 @@ class TestDropFromU (unittest.TestCase):
         self.assertTrue(os.path.exists(u_path))
 
         # these values should still be present in uDir
-        for i in keepMe:
-            hexHash = hexHashes[i]
-            self.assertTrue(u_dir.exists(hexHash))
+        for count in keep_me:
+            hex_hash = hex_hashes[count]
+            self.assertTrue(u_dir.exists(hex_hash))
 
         # these values should NOT be present in UDir
-        for i in dropMe:
-            hexHash = hexHashes[i]
-            self.assertFalse(u_dir.exists(hexHash))
+        for count in drop_me:
+            hex_hash = hex_hashes[count]
+            self.assertFalse(u_dir.exists(hex_hash))
 
-    def testWithEphemeralTree(self):
+    def test_with_ephemeral_tree(self):
+        """
+        Generate tmp/ subdirectories containing a quasi-random data
+        directory and corresponding uDir and NLHTree serialization,
+        using various directory structures and hash types.
+        """
         for struc in [UDir.DIR_FLAT, UDir.DIR16x16, UDir.DIR256x256, ]:
             for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-                self.doTestWithEphemeralTree(struc, using)
+                self.do_test_with_ephemeral_tree(struc, using)
 
 if __name__ == '__main__':
     unittest.main()

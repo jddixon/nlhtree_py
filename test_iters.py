@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
-
 # testIters.py
 
-import sys
+""" Test iteration over NLHTree instances. """
+
+#import sys
 import unittest
 
-import hashlib
-if sys.version_info < (3, 6):
-    # pylint: disable=unused-import
-    import sha3     # monkey-patches hashlib
-
+# import hashlib
 from xlattice import Q, check_using_sha
-from nlhtree import *
+from nlhtree import NLHTree, NLHLeaf
+
+# if sys.version_info < (3, 6):
+#    # pylint: disable=unused-import
+#    import sha3     # monkey-patches hashlib
 
 EXAMPLE1 = """dataDir
  data1 34463aa26c4d7214a96e6e42c3a9e8f55727c695
@@ -59,7 +60,8 @@ EXAMPLE3 = """dataDir
 """
 
 
-class TestIters (unittest.TestCase):
+class TestIters(unittest.TestCase):
+    """ Test iteration over NLHTree instances. """
 
     def setUp(self):
         pass
@@ -67,24 +69,27 @@ class TestIters (unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testIters(self):
+    def test_iters(self):
+        """ Test iteration using various hash types. """
 
         for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-            self.doTestIters(using)
+            self.do_test_iters(using)
 
-    def doTestIters(self, using_sha):
+    def do_test_iters(self, using_sha):
+        """ Test iteration using specific hash type. """
+
         check_using_sha(using_sha)
         if using_sha == Q.USING_SHA1:
-            REL_PATH_TO_DATA = 'example1/dataDir'
-            REL_PATH_TO_NLH = 'example1/example.nlh'
+            rel_path_to_data = 'example1/dataDir'
+            # rel_path_to_nlh = 'example1/example.nlh'
         elif using_sha == Q.USING_SHA2:
-            REL_PATH_TO_DATA = 'example2/dataDir'
-            REL_PATH_TO_NLH = 'example2/example.nlh'
+            rel_path_to_data = 'example2/dataDir'
+            # rel_path_to_nlh = 'example2/example.nlh'
         elif using_sha == Q.USING_SHA3:
-            REL_PATH_TO_DATA = 'example3/dataDir'
-            REL_PATH_TO_NLH = 'example3/example.nlh'
+            rel_path_to_data = 'example3/dataDir'
+            # rel_path_to_nlh = 'example3/example.nlh'
 
-        tree = NLHTree.create_from_file_system(REL_PATH_TO_DATA, using_sha)
+        tree = NLHTree.create_from_file_system(rel_path_to_data, using_sha)
         self.assertIsNotNone(tree)
         string = tree.__str__()
         if using_sha == Q.USING_SHA1:

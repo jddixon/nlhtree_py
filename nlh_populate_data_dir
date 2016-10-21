@@ -1,41 +1,39 @@
 #!/usr/bin/python3
+# ~/dev/py/nlhtree_py/nlh_populate_data_dir
 
-# ~/dev/py/nlhtree_py/nlhSaveToUDir
+""" Given an NLHTree and a content-keyed store, populate a data directory. """
 
 import os
-import re
 import sys
-import time
 from argparse import ArgumentParser
 
-from xlattice import (Q, check_using_sha,
-                      parseUsingSHA, fix_using_sha, show_using_sha, check_u_path)
-from nlhtree import (__version__, __version_date__,
-                     NLHTree,
-                     )
+from xlattice import (parse_using_sha, fix_using_sha,
+                      show_using_sha, check_u_path)
+from nlhtree import (__version__, __version_date__, NLHTree)
 
 
 def main():
+    """
+    Given an NLHTree and a content-keyed store, populate a data directory.
 
-    pathToInit = os.path.join('nlhtree', '__init__.py')
-    version = re.search("__version__\s*=\s*'(.*)'",
-                        open(pathToInit).read()).group(1)
-    versionDate = re.search("__version_date__\s*=\s*'(.*)'",
-                            open(pathToInit).read()).group(1)
+    That is, the files and subdirectories in the serialized NLHTree are
+    recreated under the data directory, using the data in the content-
+    keyed store.
+    """
 
-    appName = 'nlhSaveToUDir %s' % __version__
-    UDIR = os.environ['DVCZ_UDIR']
+    app_name = 'nlh_populate_data_dir %s' % __version__
+    # UDIR = os.environ['DVCZ_UDIR']
 
     # parse the command line ----------------------------------------
-    desc   =\
-        'given a project directory, write an NLHTree while backing the project up to U'
+    desc = \
+        'given an NLHTree and U, recreate the corresponding data directory'
 
     parser = ArgumentParser(description=desc)
 
-    parser.add_argument('-b', '--listFile', default='list.nlh',
+    parser.add_argument('-b', '--list_file', default='list.nlh',
                         help='where to write listing (default = list.nlh)')
 
-    parser.add_argument('-j', '--justShow', action='store_true',
+    parser.add_argument('-j', '--just_show', action='store_true',
                         help='show options and exit')
 
     parser.add_argument('-p', '--path', default='.',
@@ -44,17 +42,17 @@ def main():
     parser.add_argument('-T', '--testing', action='store_true',
                         help='this is a test run')
 
-    parser.add_argument('-V', '--showVersion', action='store_true',
+    parser.add_argument('-V', '--show_version', action='store_true',
                         help='print the version number and exit')
 
-    parser.add_argument('-z', '--dontDoIt', action='store_true',
+    parser.add_argument('-z', '--dont_do_it', action='store_true',
                         help="don't actually do anything, just say what you would do")
 
-    parseUsingSHA(parser)
+    parse_using_sha(parser)
     args = parser.parse_args()
 
-    if args.showVersion:
-        print(appName)
+    if args.show_version:
+        print(app_name)
         sys.exit(0)
 
     # fixups --------------------------------------------------------
@@ -64,17 +62,17 @@ def main():
         # XXX this should be fixed to interpose # a random directory name
         #   that is not already in use
         # XXX This behavior needs to be clearly documented.
-        args.listFile = os.path.join('tmp', args.listFile)
+        args.list_file = os.path.join('tmp', args.list_file)
         if args.u_path[0] == '/':
             args.u_path = args.u_path[1:]
         args.u_path = os.path.join('tmp', args.u_path)
 
     # sanity checks -------------------------------------------------
 
-    if not (args.testing or args.justShow):
+    if not (args.testing or args.just_show):
         if not os.path.exists(args.path):
             os.makedirs(args.path, mode=0o755)
-    if not args.justShow:
+    if not args.just_show:
         check_u_path(parser, args, mustExist=True)
         os.makedirs(os.path.join(args.u_path, 'in'), mode=0o755, exist_ok=True)
         os.makedirs(
@@ -86,26 +84,26 @@ def main():
 
     # complete setup ------------------------------------------------
 
-    if args.verbose or args.justShow:
-        print("%s %s" % (appName, __version_date__))
+    if args.verbose or args.just_show:
+        print("%s %s" % (app_name, __version_date__))
 
-    if args.verbose or args.justShow:
-        print('dontDoIt         = ' + str(args.dontDoIt))
-        print('justShow         = ' + str(args.justShow))
-        print('listFile         = ' + str(args.listFile))
+    if args.verbose or args.just_show:
+        print('dont_do_it       = ' + str(args.dont_do_it))
+        print('just_show        = ' + str(args.justShow))
+        print('list_file        = ' + str(args.list_file))
         print('path             = ' + str(args.path))
-        print('showVersion      = ' + str(args.showVersion))
+        print('show_version     = ' + str(args.showVersion))
         print('testing          = ' + str(args.testing))
         show_using_sha(args)
 
     # do what's required --------------------------------------------
-    if not args.justShow:
-        if args.dontDoIt:
+    if not args.just_show:
+        if args.dont_do_it:
             print("would be saving %s to %s and writing a listing to %s" % (
-                args.path, args.u_path, args.listFile))
+                args.path, args.u_path, args.list_file))
         else:
-            tree = NLHTree.parseFile(args.listFile, args.using_sha)
-            tree.populateDataDir(args.u_path, args.path)
+            tree = NLHTree.parse_file(args.list_file, args.using_sha)
+            tree.populate_data_dir(args.u_path, args.path)
 
 if __name__ == '__main__':
     main()

@@ -1,6 +1,7 @@
 #!/usr/bin/python3
-
 # 'apt-get install python-dev' may be necessary to get .core
+
+""" Set up distutils for nlhtree_py. """
 
 import re
 from distutils.core import setup

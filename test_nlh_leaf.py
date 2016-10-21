@@ -8,16 +8,16 @@ import time
 import unittest
 
 import hashlib
+from rnglib import SimpleRNG
+from xlattice import Q, check_using_sha
+from nlhtree import NLHLeaf
+
 if sys.version_info < (3, 6):
     # pylint: disable=unused-import
     import sha3     # monkey-patches hashlib
 
-from rnglib import SimpleRNG
-from xlattice import Q, check_using_sha
-from nlhtree import *
 
-
-class TestNLHLeaf (unittest.TestCase):
+class TestNLHLeaf(unittest.TestCase):
     """ Test NLHLeaf-related functions. """
 
     def setUp(self):
@@ -30,7 +30,10 @@ class TestNLHLeaf (unittest.TestCase):
 
     # actual unit tests #############################################
     def do_test_simple_constructor(self, using_sha):
+        """ Test constructor for specific hash. """
+
         check_using_sha(using_sha)
+        # pylint:disable=redefine-variable-type
         if using_sha == Q.USING_SHA1:
             sha = hashlib.sha1()
         elif using_sha == Q.USING_SHA2:
@@ -39,9 +42,9 @@ class TestNLHLeaf (unittest.TestCase):
             sha = hashlib.sha3_256()
 
         name = self.rng.next_file_name(8)
-        n = self.rng.someBytes(8)
-        self.rng.next_bytes(n)
-        sha.update(n)
+        nnn = self.rng.someBytes(8)
+        self.rng.next_bytes(nnn)
+        sha.update(nnn)
         hash0 = sha.digest()
 
         leaf0 = NLHLeaf(name, hash0, using_sha)
@@ -51,9 +54,9 @@ class TestNLHLeaf (unittest.TestCase):
         name2 = name
         while name2 == name:
             name2 = self.rng.next_file_name(8)
-        n = self.rng.someBytes(8)
-        self.rng.next_bytes(n)
-        sha.update(n)
+        nnn = self.rng.someBytes(8)
+        self.rng.next_bytes(nnn)
+        sha.update(nnn)
         hash1 = sha.digest()
         leaf1 = NLHLeaf(name2, hash1, using_sha)
         self.assertEqual(name2, leaf1.name)
@@ -70,6 +73,8 @@ class TestNLHLeaf (unittest.TestCase):
         self.assertEqual(leaf1c, leaf1)
 
     def test_simplest_constructor(self):
+        """ Test simple constructor for various hashes. """
+
         for using in [Q.USING_SHA1, Q.USING_SHA2, ]:
             self.do_test_simple_constructor(using)
 

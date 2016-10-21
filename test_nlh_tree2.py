@@ -1,30 +1,31 @@
 #!/usr/bin/env python3
-
 # testNLHTree.py
 
+""" Test trees derived from various quasi-random directory structures. """
+
 import os
-import re
+#import re
 import shutil
-import sys
+# import sys
 import time
 import unittest
 
-import hashlib
-if sys.version_info < (3, 6):
-    # pylint: disable=unused-import
-    import sha3     # monkey-patches hashlib
-
+# import hashlib          # unused
 from rnglib import SimpleRNG
-from xlattice import (SHA1_HEX_NONE, SHA2_HEX_NONE, SHA3_HEX_NONE,
-                      Q, check_using_sha)
-from nlhtree import *
+from xlattice import (Q, check_using_sha)
+from nlhtree import NLHTree
+
+# if sys.version_info < (3, 6):
+#    # pylint: disable=unused-import
+#    import sha3     # monkey-patches hashlib
 
 ONE = 1
 FOUR = 4
 MAX_NAME_LEN = 8
 
 
-class TestNLHTree2 (unittest.TestCase):
+class TestNLHTree2(unittest.TestCase):
+    """ Test trees derived from various quasi-random directory structures. """
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
@@ -35,16 +36,22 @@ class TestNLHTree2 (unittest.TestCase):
     # utility functions ---------------------------------------------
 
     def get_two_unique_directory_names(self):
-        dir_name1 = self.rng.nextFileName(MAX_NAME_LEN)
+        """ Make two unique directory names. """
+
+        dir_name1 = self.rng.next_file_name(MAX_NAME_LEN)
         dir_name2 = dir_name1
         while dir_name2 == dir_name1:
-            dir_name2 = self.rng.nextFileName(MAX_NAME_LEN)
+            dir_name2 = self.rng.next_file_name(MAX_NAME_LEN)
         self.assertTrue(len(dir_name1) > 0)
         self.assertTrue(len(dir_name2) > 0)
         self.assertTrue(dir_name1 != dir_name2)
         return (dir_name1, dir_name2)
 
     def make_one_named_test_directory(self, name, depth, width):
+        """
+        Create a test directory below tmp/ with specified characteristics.
+        """
+
         dir_path = "tmp/%s" % name
         if os.path.exists(dir_path):
             shutil.rmtree(dir_path)
@@ -52,23 +59,29 @@ class TestNLHTree2 (unittest.TestCase):
         return dir_path
 
     def make_two_test_directories(self, depth, width):
-        dir_name1 = self.rng.nextFileName(MAX_NAME_LEN)
+        """ Make two distinct quasi-random test directories below tmp/. """
+
+        dir_name1 = self.rng.next_file_name(MAX_NAME_LEN)
         dir_path1 = self.make_one_named_test_directory(dir_name1, depth, width)
 
         dir_name2 = dir_name1
         while dir_name2 == dir_name1:
-            dir_name2 = self.rng.nextFileName(MAX_NAME_LEN)
+            dir_name2 = self.rng.next_file_name(MAX_NAME_LEN)
         dir_path2 = self.make_one_named_test_directory(dir_name2, depth, width)
 
         return (dir_name1, dir_path1, dir_name2, dir_path2)
 
     # unit tests ----------------------------------------------------
 
-    def test_pathless_unbound_constructor1(self):
-        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-            self.do_test_pathless_unbound_constructor1(using)
+    def test_pathless_unbound(self):
+        """ Test the constructor using various hash types. """
 
-    def do_test_pathless_unbound_constructor1(self, using_sha):
+        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
+            self.do_test_pathless_unbound(using)
+
+    def do_test_pathless_unbound(self, using_sha):
+        """ Test constructor using two directories and a specific hash type. """
+
         (dir_name1, dir_name2) = self.get_two_unique_directory_names()
 
         check_using_sha(using_sha)
@@ -88,11 +101,19 @@ class TestNLHTree2 (unittest.TestCase):
         self.assertEqual(tree1c, tree1)
 
     def test_bound_flat_dirs(self):
+        """
+        Test directory is single level, with four data files, using
+        various hash types.
+        """
         for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
             self.do_test_bound_flat_dirs(using)
 
     def do_test_bound_flat_dirs(self, using_sha):
-        """test directory is single level, with four data files"""
+        """
+        Test directory is single level, with four data files, using
+        specific hash type.
+        """
+
         (dir_name1, dir_path1, dir_name2, dir_path2) =\
             self.make_two_test_directories(ONE, FOUR)
         tree1 = NLHTree.create_from_file_system(dir_path1, using_sha)
@@ -115,11 +136,18 @@ class TestNLHTree2 (unittest.TestCase):
         self.assertEqual(tree1c, tree1)
 
     def test_bound_needle_dirs1(self):
+        """
+        Test directories four deep with one data file at the lowest level
+        using various hash types.
+        """
         for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
             self.do_test_bound_needle_dirs(using)
 
     def do_test_bound_needle_dirs(self, using_sha):
-        """test directories four deep with one data file at the lowest level"""
+        """
+        Test directories four deep with one data file at the lowest level
+        using specific hash type.
+        """
         (dir_name1, dir_path1, dir_name2, dir_path2) =\
             self.make_two_test_directories(FOUR, ONE)
         tree1 = NLHTree.create_from_file_system(dir_path1, using_sha)

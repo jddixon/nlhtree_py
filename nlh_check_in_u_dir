@@ -1,54 +1,47 @@
 #!/usr/bin/python3
+# ~/dev/py/nlhtree_py/nlh_check_in_u_dir
 
-# ~/dev/py/nlhtree_py/nlhSaveToUDir
+""" Command line utility wrapping check_in_u_dir. """
 
 import os
-import re
 import sys
-import time
 from argparse import ArgumentParser
 
-from xlattice import (Q, check_using_sha,
-                      parseUsingSHA, fix_using_sha, show_using_sha, check_u_path)
-from nlhtree import (__version__, __version_date__,
-                     NLHTree,
-                     )
+from xlattice import (check_using_sha,
+                      parseUsingSHA, fix_using_sha,
+                      show_using_sha, check_u_path)
+from nlhtree import (__version__, __version_date__, NLHTree)
 
 
 def main():
+    """  Collect parameters for checkInUDir. """
 
-    pathToInit = os.path.join('nlhtree', '__init__.py')
-    version = re.search("__version__\s*=\s*'(.*)'",
-                        open(pathToInit).read()).group(1)
-    versionDate = re.search("__version_date__\s*=\s*'(.*)'",
-                            open(pathToInit).read()).group(1)
-
-    appName = 'nlhSaveToUDir %s' % __version__
-    UDIR = os.environ['DVCZ_UDIR']
+    app_name = 'nlh_check_in_u_dir %s' % __version__
+    # u_dir = os.environ['DVCZ_UDIR']
 
     # parse the command line ----------------------------------------
-    DESC   =\
+    desc = \
         'given a project directory, write an NLHTree while backing the project up to U'
 
-    parser = ArgumentParser(description=DESC)
+    parser = ArgumentParser(description=desc)
 
-    parser.add_argument('-b', '--listFile', default='list.nlh',
+    parser.add_argument('-b', '--list_file', default='list.nlh',
                         help='where to write listing (default = list.nlh)')
 
-    parser.add_argument('-j', '--justShow', action='store_true',
+    parser.add_argument('-j', '--just_show', action='store_true',
                         help='show options and exit')
 
     parser.add_argument('-T', '--testing', action='store_true',
                         help='this is a test run')
 
-    parser.add_argument('-V', '--showVersion', action='store_true',
+    parser.add_argument('-V', '--show_version', action='store_true',
                         help='print the version number and exit')
 
     parseUsingSHA(parser)
     args = parser.parse_args()
 
-    if args.showVersion:
-        print(appName)
+    if args.show_version:
+        print(app_name)
         sys.exit(0)
 
     # fixups --------------------------------------------------------
@@ -59,39 +52,35 @@ def main():
         # XXX this should be fixed to interpose # a random directory name
         #   that is not already in use
         # XXX This behavior needs to be clearly documented.
-        args.listFile = os.path.join('tmp', args.listFile)
+        args.list_file = os.path.join('tmp', args.list_file)
         if args.u_path[0] == '/':
             args.u_path = args.u_path[1:]
         args.u_path = os.path.join('tmp', args.u_path)
 
     # sanity checks -------------------------------------------------
     check_using_sha(args.using_sha)
-    if not args.justShow:
+    if not args.just_show:
         check_u_path(parser, args, mustExist=True)
         os.makedirs(os.path.join(args.u_path, 'in'), mode=0o755, exist_ok=True)
         os.makedirs(
-            os.path.join(
-                args.u_path,
-                'tmp'),
-            mode=0o755,
-            exist_ok=True)
+            os.path.join(args.u_path, 'tmp'), mode=0o755, exist_ok=True)
 
     # complete setup ------------------------------------------------
 
-    if args.verbose or args.justShow:
-        print("%s %s" % (appName, __version_date__))
+    if args.verbose or args.just_show:
+        print("%s %s" % (app_name, __version_date__))
 
-    if args.verbose or args.justShow:
-        print('justShow         = ' + str(args.justShow))
-        print('listFile         = ' + str(args.listFile))
-        print('showVersion      = ' + str(args.showVersion))
+    if args.verbose or args.just_show:
+        print('just_show         = ' + str(args.just_show))
+        print('list_file         = ' + str(args.list_file))
+        print('show_version      = ' + str(args.show_version))
         print('testing          = ' + str(args.testing))
         show_using_sha(args)
 
     # do what's required --------------------------------------------
-    if not args.justShow:
-        tree = NLHTree.parseFile(args.listFile, args.using_sha)
-        tree.checkInUDir(args.u_path)
+    if not args.just_show:
+        tree = NLHTree.parse_file(args.list_file, args.using_sha)
+        tree.check_in_u_dir(args.u_path)
 
 if __name__ == '__main__':
     main()

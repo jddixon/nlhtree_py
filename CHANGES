@@ -1,6 +1,9 @@
 py/nlhtree_py/CHANGES
 
 
+v0.7.1
+    2016-10-21
+        * rename variables per PEP 8; some minor bug fixes          SLOC 2967
 v0.7.0
     2016-10-20
         * rename files and API per PEP 8                            SLOC 2875
@@ -156,6 +159,7 @@ v0.1.0
 v0.0.0
     2015-05-20
         * initial import                                            SLOC   47
+
 
 
 

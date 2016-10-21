@@ -1,58 +1,56 @@
 #!/usr/bin/python3
-
 # ~/dev/py/nlhtree_py/nlhCheckInDataDir
 
+"""
+Command line wrapper for the check_in_data_dir function, which verifies
+that the nodes of an NLHTree are present in a data directory.
+"""
+
 import os
-import re
 import sys
-import time
 from argparse import ArgumentParser
 
-from xlattice import (Q, check_using_sha,
-                      parseUsingSHA, fix_using_sha, show_using_sha, check_u_path)
-from nlhtree import (__version__, __version_date__,
-                     NLHTree,
-                     )
+from xlattice import (check_using_sha,
+                      parseUsingSHA, fix_using_sha, show_using_sha)
+from nlhtree import (__version__, __version_date__, NLHTree)
 
 
 def main():
+    """
+    Command line wrapper for the check_in_data_dir function, which verifies
+    that the nodes of an NLHTree are present in a data directory.
+    """
 
-    pathToInit = os.path.join('nlhtree', '__init__.py')
-    version = re.search("__version__\s*=\s*'(.*)'",
-                        open(pathToInit).read()).group(1)
-    versionDate = re.search("__version_date__\s*=\s*'(.*)'",
-                            open(pathToInit).read()).group(1)
-
-    appName = 'nlhSaveToUDir %s' % __version__
-    UDIR = os.environ['DVCZ_UDIR']
+    app_name = 'nlh_check_in_data_dir %s' % __version__
+    # UDIR = os.environ['DVCZ_UDIR']
 
     # parse the command line ----------------------------------------
     desc =\
-        'given an NLHTree listing and a data directory, list any files in the list not present in the directory, '
+        'list any files in the NLHTree not present in the directory, '
 
     parser = ArgumentParser(description=desc)
 
-    parser.add_argument('-b', '--listFile', default='list.nlh',
+    parser.add_argument('-b', '--list_file', default='list.nlh',
                         help='where to write listing (default = list.nlh)')
 
-    parser.add_argument('-d', '--dataDir', default='.',
+    parser.add_argument('-d', '--data_dir', default='.',
                         help='path to data directory')
 
-    parser.add_argument('-j', '--justShow', action='store_true',
+    parser.add_argument('-j', '--just_show', action='store_true',
                         help='show options and exit')
 
     parser.add_argument('-T', '--testing', action='store_true',
                         help='this is a test run')
 
-    parser.add_argument('-V', '--showVersion', action='store_true',
+    parser.add_argument('-V', '--show_version', action='store_true',
                         help='print the version number and exit')
 
     parseUsingSHA(parser)
 
     args = parser.parse_args()
 
-    if args.showVersion:
-        print(appName)
+    if args.show_version:
+        print(app_name)
         sys.exit(0)
 
     # fixups --------------------------------------------------------
@@ -63,33 +61,33 @@ def main():
         # XXX this should be fixed to interpose # a random directory name
         #   that is not already in use
         # XXX This behavior needs to be clearly documented.
-        args.listFile = os.path.join('tmp', args.listFile)
+        args.list_file = os.path.join('tmp', args.list_file)
 
     # sanity checks -------------------------------------------------
     check_using_sha(args.using_sha)
 
-    if not (args.testing or args.justShow):
-        if not os.path.exists(args.dataDir):
-            print("%s does not exist; cannot continue" % args.dataDir)
+    if not (args.testing or args.just_show):
+        if not os.path.exists(args.data_dir):
+            print("%s does not exist; cannot continue" % args.data_dir)
             sys.exit(1)
 
     # complete setup ------------------------------------------------
 
-    if args.verbose or args.justShow:
-        print("%s %s" % (appName, __version_date__))
+    if args.verbose or args.just_show:
+        print("%s %s" % (app_name, __version_date__))
 
-    if args.verbose or args.justShow:
-        print('dataDir          = ' + str(args.dataDir))
-        print('justShow         = ' + str(args.justShow))
-        print('listFile         = ' + str(args.listFile))
-        print('showVersion      = ' + str(args.showVersion))
+    if args.verbose or args.just_show:
+        print('data_dir          = ' + str(args.data_dir))
+        print('just_show         = ' + str(args.just_show))
+        print('list_file         = ' + str(args.list_file))
+        print('show_version      = ' + str(args.showVersion))
         print('testing          = ' + str(args.testing))
         show_using_sha(args)
 
     # do what's required --------------------------------------------
-    if not args.justShow:
-        tree = NLHTree.parseFile(args.listFile, args.using_sha)
-        tree.checkInDataDir(args.dataDir)
+    if not args.just_show:
+        tree = NLHTree.parse_file(args.list_file, args.using_sha)
+        tree.check_in_data_dir(args.data_dir)
 
 if __name__ == '__main__':
     main()

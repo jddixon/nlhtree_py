@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
+# test_walker.py
 
-# testWalker.py
+"""
+Walk the example data structures (directory tree, content-keyed store,
+and serialized NLHTree) verifying consistency.
+"""
 
-import sys
+# import sys
 import unittest
 
-import hashlib
-if sys.version_info < (3, 6):
-    # pylint: disable=unused-import
-    import sha3     # monkey-patches hashlib
-
+# import hashlib
 from xlattice import Q, check_using_sha
-from nlhtree import *
+from nlhtree import NLHTree, NLHLeaf
+
+# if sys.version_info < (3, 6):
+#     # pylint: disable=unused-import
+#     import sha3     # monkey-patches hashlib
 
 EXAMPLE1 = """dataDir
  data1 34463aa26c4d7214a96e6e42c3a9e8f55727c695
@@ -59,27 +63,40 @@ EXAMPLE3 = """dataDir
 """
 
 
-class TestWalker (unittest.TestCase):
+class TestWalker(unittest.TestCase):
+    """
+    Walk the example data structures (directory tree, content-keyed store,
+    and serialized NLHTree) verifying consistency.
+    """
 
-    def setUp(self): pass
+    def setUp(self):
+        pass
 
-    def tearDown(self): pass
+    def tearDown(self):
+        pass
 
-    def testSpotCheckTree(self):
+    def test_spot_check_tree(self):
+        """
+        Run spot checks on the example files for the supported range
+        of hash types.
+        """
         for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-            self.doTestSpotCheckTree(using)
+            self.do_test_spot_check_tree(using)
 
-    def doTestSpotCheckTree(self, using_sha):
+    def do_test_spot_check_tree(self, using_sha):
+        """
+        Run spot checks on the example files for the specified hash type.
+        """
         check_using_sha(using_sha)
 
         # DEBUG
         #print("\nSPOT CHECKS")
         # END
         if using_sha == Q.USING_SHA1:
-            REL_PATH_TO_DATA = 'example1/dataDir'
+            rel_path_to_data = 'example1/dataDir'
         else:
-            REL_PATH_TO_DATA = 'example2/dataDir'
-        tree = NLHTree.create_from_file_system(REL_PATH_TO_DATA, using_sha)
+            rel_path_to_data = 'example2/dataDir'
+        tree = NLHTree.create_from_file_system(rel_path_to_data, using_sha)
         self.assertIsNotNone(tree)
         self.assertEqual(len(tree.nodes), 6)
         self.assertEqual(tree.name, 'dataDir')
@@ -116,44 +133,48 @@ class TestWalker (unittest.TestCase):
         self.assertTrue(isinstance(node5000, NLHLeaf))
         self.assertEqual(node5000.name, 'data31')
 
-    def testWalkers(self):
+    def test_walkers(self):
+        """ Run the walker for a number of hash types. """
+
         for using in [Q.USING_SHA1, Q.USING_SHA2, ]:
-            self.doTestWalkers(using)
+            self.do_test_walkers(using)
 
-    def doTestWalkers(self, using_sha):
-
+    def do_test_walkers(self, using_sha):
+        """
+        Run the walker for a specific hash type.
+        """
         # DEBUG
-        # print("\ndoTestWalkers, %s" % using_sha)
+        # print("\ndo_test_walkers, %s" % using_sha)
         # END
 
         check_using_sha(using_sha)
         if using_sha == Q.USING_SHA1:
-            REL_PATH_TO_DATA = 'example1/dataDir'
-            REL_PATH_TO_NLH = 'example1/example.nlh'
-            EXAMPLE = EXAMPLE1
+            rel_path_to_data = 'example1/dataDir'
+            rel_path_to_nlh = 'example1/example.nlh'
+            example = EXAMPLE1
         elif using_sha == Q.USING_SHA2:
-            REL_PATH_TO_DATA = 'example2/dataDir'
-            REL_PATH_TO_NLH = 'example2/example.nlh'
-            EXAMPLE = EXAMPLE2
+            rel_path_to_data = 'example2/dataDir'
+            rel_path_to_nlh = 'example2/example.nlh'
+            example = EXAMPLE2
         elif using_sha == Q.USING_SHA3:
-            REL_PATH_TO_DATA = 'example3/dataDir'
-            REL_PATH_TO_NLH = 'example3/example.nlh'
-            EXAMPLE = EXAMPLE3
+            rel_path_to_data = 'example3/dataDir'
+            rel_path_to_nlh = 'example3/example.nlh'
+            example = EXAMPLE3
 
-        tree = NLHTree.create_from_file_system(REL_PATH_TO_DATA, using_sha)
+        tree = NLHTree.create_from_file_system(rel_path_to_data, using_sha)
         self.assertIsNotNone(tree)
         string = tree.__str__()
-        self.assertEqual(EXAMPLE, string)        # the serialized NLHTree
+        self.assertEqual(example, string)        # the serialized NLHTree
 
-        # The serialized NLHTree, the string s, is identical to the EXAMPLE1/2
-        # serialization above.  So we should be able to walk EXAMPLE1/2,
+        # The serialized NLHTree, the string s, is identical to the example1/2
+        # serialization above.  So we should be able to walk example1/2,
         # walk the disk file, and walk the in-memory object tree and get
         # the same result.
 
-        fromDisk = []
-        fromSS = []
-        fromStr = []
-        fromObj = []
+        from_disk = []
+        from_strings = []
+        from_str = []
+        from_obj = []
 
         # -- walk on-disk representation ----------------------------
 
@@ -163,19 +184,19 @@ class TestWalker (unittest.TestCase):
         # END
 
         # a couple is a 2-tuple
-        for couple in NLHTree.walkFile(REL_PATH_TO_NLH, using_sha):
+        for couple in NLHTree.walk_file(rel_path_to_nlh, using_sha):
             if len(couple) == 1:
                 # print("    DIR:  %s" % couple[0])       # DEBUG
-                fromDisk.append(couple)
+                from_disk.append(couple)
             elif len(couple) == 2:
                 # print('    FILE: %s %s' % (couple[0], couple[1])) # DEBUG
-                fromDisk.append(couple)
+                from_disk.append(couple)
             else:
                 print('    unexpected couple of length %d' % len(couple))
 
         # -- walk list-of-strings representation -------------------
 
-        lines = EXAMPLE.split('\n')
+        lines = example.split('\n')
         if lines[-1] == '':
             lines = lines[:-1]          # drop last line if blank
 
@@ -185,13 +206,13 @@ class TestWalker (unittest.TestCase):
         # sys.stdout.flush()
         # END
 
-        for couple in NLHTree.walkStrings(lines, using_sha):
+        for couple in NLHTree.walk_strings(lines, using_sha):
             if len(couple) == 1:
                 # print("    DIR:  %s" % couple[0])     # DEBUG
-                fromSS.append(couple)
+                from_strings.append(couple)
             elif len(couple) == 2:
                 # print('    FILE: %s %s' % (couple[0], couple[1])) # DEBUG
-                fromSS.append(couple)
+                from_strings.append(couple)
             else:
                 print('    unexpected couple of length %d' % len(couple))
 
@@ -202,13 +223,13 @@ class TestWalker (unittest.TestCase):
         # sys.stdout.flush()
         # END
 
-        for couple in NLHTree.walkString(EXAMPLE, using_sha):
+        for couple in NLHTree.walk_string(example, using_sha):
             if len(couple) == 1:
                 # print("    DIR:  %s" % couple[0])     # DEBUG
-                fromStr.append(couple)
+                from_str.append(couple)
             elif len(couple) == 2:
                 # print('    FILE: %s %s' % (couple[0], couple[1])) # DEBUG
-                fromStr.append(couple)
+                from_str.append(couple)
             else:
                 print('    unexpected couple of length %d' % len(couple))
 
@@ -224,10 +245,10 @@ class TestWalker (unittest.TestCase):
         for couple in tree:
             if len(couple) == 1:
                 # print("        DIR:  %s" % couple[0])     # DEBUG
-                fromObj.append(couple)
+                from_obj.append(couple)
             elif len(couple) == 2:
                 # print('        FILE: %s %s' % (couple[0], couple[1])) # DEBUG
-                fromObj.append(couple)
+                from_obj.append(couple)
             else:
                 print('        unexpected couple of length %d' % len(couple))
 
@@ -238,39 +259,40 @@ class TestWalker (unittest.TestCase):
         # sys.stdout.flush()
         # END
 
-        def compareLists(aVal, bVal):
-            # a and b are lists of tuples
-            self.assertEqual(len(aVal), len(bVal))
-            for n in range(len(aVal)):
-                self.assertEqual(aVal[n], bVal[n])
+        def compare_lists(a_list, b_list):
+            """ Verify that two lists of tuples are the same. """
+
+            self.assertEqual(len(a_list), len(b_list))
+            for ndx, a_val in enumerate(a_list):
+                self.assertEqual(a_val, b_list[ndx])
 
         # DEBUG
 #       #print("FROM_DISK:")
-#       for i in fromDisk:
+#       for i in from_disk:
 #           if len(i) == 1:
 #               print("  %s" % (i[0]))
 #           else:
 #               print("  %s %s" % (i[0], i[1]))
 
 #       print("FROM_SS:")
-#       for i in fromSS:
+#       for i in from_strings:
 #           if len(i) == 1:
 #               print("  %s" % (i[0]))
 #           else:
 #               print("  %s %s" % (i[0], i[1]))
         # END
 
-        compareLists(fromDisk, fromSS)
+        compare_lists(from_disk, from_strings)
 
         # DEBUG
-        #print("\ncomparing fromDisk, fromStr")
+        #print("\ncomparing from_disk, from_str")
         # END
-        compareLists(fromDisk, fromStr)
+        compare_lists(from_disk, from_str)
 
         # DEBUG
-        #print("\ncomparing fromDisk, fromObj")
+        #print("\ncomparing from_disk, from_obj")
         # END
-        compareLists(fromDisk, fromObj)
+        compare_lists(from_disk, from_obj)
 
         # -- verify that the operations are reversible, that you can
         # recover the dataDir from the listings ---------------------

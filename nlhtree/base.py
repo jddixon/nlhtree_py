@@ -1,16 +1,14 @@
 # nlhtree_py/nlhtree/base.py
 
-import binascii
-import fnmatch
-import os
-import re
-from stat import *
-from xlattice.crypto import SP   # for get_spaces()
+""" Test behavior of NLHBase. """
+
+# from stat import *
+# from xlattice.crypto import SP   # for get_spaces()
 from nlhtree import NLHTree
-from xlattice import (
-    SHA1_BIN_LEN, SHA2_BIN_LEN,
-    SHA1_HEX_LEN, SHA2_HEX_LEN,
-    SHA1_BIN_NONE, SHA2_BIN_NONE)
+# from xlattice import (
+#     SHA1_BIN_LEN, SHA2_BIN_LEN,
+#     SHA1_HEX_LEN, SHA2_HEX_LEN,
+#     SHA1_BIN_NONE, SHA2_BIN_NONE)
 
 __all__ = [
     'NLHBase',
@@ -18,6 +16,7 @@ __all__ = [
 
 
 class NLHBase(object):
+    """ Test behavior of NLHBase. """
 
     def __init__(self, name, using_sha):
         self._root = NLHTree(name, using_sha)   # immutable ref to a NLHTree
@@ -26,22 +25,36 @@ class NLHBase(object):
 
     @property
     def name(self):
+        """ Return the name of the tree. """
+
         return self._root.name
 
     @property
     def using_sha(self):
+        """ Return which hash type we are using. """
+
         return self._root.using_sha
 
     @property
     def root(self):
+        """ Return the root of the current tree. """
+
         return self._root
 
     @property
     def cur_tree(self):
+        """ Return the current tree. """
+
         return self._cur_tree
 
     @cur_tree.setter
     def cur_tree(self, path):
+        """
+        Make the given path the root of the tree.
+
+        XXX STUBBED
+        """
+
         if not path or path == '':
             raise RuntimeError('path may not be None or empty')
 
@@ -65,14 +78,17 @@ class NLHBase(object):
     # SYNONYMS ------------------------------------------------------
     @property
     def usingSHA(self):
+        """ SYNONYM """
         return self.using_sha
 
     @property
     def curTree(self):
+        """ SYNONYM """
         return self._cur_tree
 
     @curTree.setter
     def curTree(self, path):
+        """ SYNONYM """
         self.cur_tree = path
 
     # END SYN -------------------------------------------------------

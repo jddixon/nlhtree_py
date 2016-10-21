@@ -1,30 +1,22 @@
 #!/usr/bin/python3
-
 # ~/dev/py/nlhtree_py/nlhSaveToUDir
 
+""" Save an NLHTree into a content-keyed store. """
+
 import os
-import re
 import sys
-import time
 from argparse import ArgumentParser
 
-from xlattice import (Q, check_using_sha,
+from xlattice import (check_using_sha,
                       parseUsingSHA, fix_using_sha, show_using_sha, check_u_path)
-from nlhtree import (__version__, __version_date__,
-                     NLHTree,
-                     )
+from nlhtree import (__version__, __version_date__, NLHTree)
 
 
 def main():
+    """ Save an NLHTree into a content-keyed store. """
 
-    pathToInit = os.path.join('nlhtree', '__init__.py')
-    version = re.search("__version__\s*=\s*'(.*)'",
-                        open(pathToInit).read()).group(1)
-    versionDate = re.search("__version_date__\s*=\s*'(.*)'",
-                            open(pathToInit).read()).group(1)
-
-    appName = 'nlhSaveToUDir %s' % __version__
-    UDIR = os.environ['DVCZ_UDIR']
+    app_name = 'nlhSaveToUDir %s' % __version__
+    # UDIR = os.environ['DVCZ_UDIR']    # unused
 
     # parse the command line ----------------------------------------
     desc =\
@@ -53,7 +45,7 @@ def main():
     args = parser.parse_args()
 
     if args.showVersion:
-        print(appName)
+        print(app_name)
         sys.exit(0)
 
     # fixups --------------------------------------------------------
@@ -87,7 +79,7 @@ def main():
     # complete setup ------------------------------------------------
 
     if args.verbose or args.justShow:
-        print("%s %s" % (appName, __version_date__))
+        print("%s %s" % (app_name, __version_date__))
 
     if args.verbose or args.justShow:
         print('dataDir          = ' + str(args.dataDir))
@@ -104,7 +96,7 @@ def main():
             print("would be saving %s to %s and writing a listing to %s" % (
                 args.dataDir, args.u_path, args.listFile))
         else:
-            NLHTree.saveToUDir(
+            NLHTree.save_to_u_dir(
                 args.dataDir, args.u_path, args.listFile, args.using_sha)
 
 if __name__ == '__main__':

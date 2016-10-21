@@ -1,5 +1,8 @@
 py/nlhtree_py/TODO
 
+2016-10-21
+    * nlhtree/__init__.py functions need docstring
+
 2016-09-12
     * get rid of noisy DEBUG statements
 
@@ -50,8 +53,8 @@ py/nlhtree_py/TODO
     * get rid of isLeaf attribute                                       * DONE
 
 2016-05-11
-    * write python3 utilities that wrap the functions (
-        checkInDataDir, checkInUDir, populateUDir, saveToUDir)
+    * write python3 utilities that wrap the functions (                 * DONE
+        checkInDataDir, checkInUDir, populateUDir, saveToUDir)          * DONE
         - nlhCheckInDataDir         NEEDS FIXING
         - nlhCheckInUDir            NEEDS FIXING
         - nlhPopulateDataDir        NEEDS FIXING

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-
 # testCrossFunctions.py
+
+""" Test functions for cross-comparing data structures. """
 
 import os
 import shutil
@@ -13,7 +14,8 @@ from xlattice import Q, check_using_sha
 from xlattice.util import make_ex_re
 
 
-class TestCrossFunctions (unittest.TestCase):
+class TestCrossFunctions(unittest.TestCase):
+    """ Test functions for cross-comparing data structures. """
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
@@ -21,92 +23,101 @@ class TestCrossFunctions (unittest.TestCase):
     def tearDown(self):
         pass
 
-    def doTestCrossFunctions(self, using_sha):
+    def do_test_cross_functions(self, using_sha):
         """
+        Test cross functions for specific hash type.
+
         We assume that there is valid data in
             example/{example.nlh,dataDir,uDir}
         """
         check_using_sha(using_sha)
 
         if using_sha == Q.USING_SHA1:
-            GOLD_DATA = 'example1/dataDir'
-            GOLD_LIST_FILE = 'example1/example.nlh'
+            gold_data = 'example1/dataDir'
+            gold_list_file = 'example1/example.nlh'
         elif using_sha == Q.USING_SHA2:
-            GOLD_DATA = 'example2/dataDir'
-            GOLD_LIST_FILE = 'example2/example.nlh'
+            gold_data = 'example2/dataDir'
+            gold_list_file = 'example2/example.nlh'
         elif using_sha == Q.USING_SHA3:
-            GOLD_DATA = 'example3/dataDir'
-            GOLD_LIST_FILE = 'example3/example.nlh'
+            gold_data = 'example3/dataDir'
+            gold_list_file = 'example3/example.nlh'
         else:
             raise NotImplementedError
 
-        TARGET_DATA_DIR = 'tmp/dataDir'
-        TARGET_LIST_FILE = 'tmp/listing.nlh'
-        TARGET_UDIR = 'tmp/uDir'
+        target_data_dir = 'tmp/dataDir'
+        # target_list_file = 'tmp/listing.nlh'      # never used
+        target_u_dir = 'tmp/uDir'
 
         # clear the tmp/ directory entirely
         if os.path.exists('tmp'):
             shutil.rmtree('tmp')
 
-        os.makedirs(os.path.join(TARGET_UDIR, 'in'), mode=0o755, exist_ok=True)
         os.makedirs(
             os.path.join(
-                TARGET_UDIR,
+                target_u_dir,
+                'in'),
+            mode=0o755,
+            exist_ok=True)
+        os.makedirs(
+            os.path.join(
+                target_u_dir,
                 'tmp'),
             mode=0o755,
             exist_ok=True)
-        self.assertTrue(os.path.exists(os.path.join(TARGET_UDIR, 'in')))
+        self.assertTrue(os.path.exists(os.path.join(target_u_dir, 'in')))
 
         exclusions = ['build']
-        exRE = make_ex_re(exclusions)
+        ex_re = make_ex_re(exclusions)
 
         tree = NLHTree.create_from_file_system(
-            GOLD_DATA, using_sha, exRE, None)
-        tree.saveToUDir(GOLD_DATA, TARGET_UDIR, using_sha)
+            gold_data, using_sha, ex_re, None)
+        tree.save_to_u_dir(gold_data, target_u_dir, using_sha)
 
-        self.assertTrue(os.path.exists(GOLD_LIST_FILE))
-        with open(GOLD_LIST_FILE, 'r') as file:
-            goldListing = file.read()
+        self.assertTrue(os.path.exists(gold_list_file))
+        with open(gold_list_file, 'r') as file:
+            gold_listing = file.read()
 
-        outputListing = tree.__str__()
+        output_listing = tree.__str__()
         # DEBUG
-        #print("OUTPUT LISING for %s:\n%s" % (using_sha, outputListing))
+        #print("OUTPUT LISING for %s:\n%s" % (using_sha, output_listing))
         # END
-        self.assertEqual(goldListing, outputListing)
+        self.assertEqual(gold_listing, output_listing)
 
-        tree = NLHTree.create_from_file_system(GOLD_DATA, using_sha)
+        tree = NLHTree.create_from_file_system(gold_data, using_sha)
         self.assertIsNotNone(tree)
 
         # first iteration over tree
-        unmatched = tree.checkInDataDir(GOLD_DATA)
+        unmatched = tree.check_in_data_dir(gold_data)
         self.assertEqual(len(unmatched), 0)
 
         # second iteration over tree
-        unmatched = tree.checkInUDir(TARGET_UDIR)
+        unmatched = tree.check_in_u_dir(target_u_dir)
         if len(unmatched) > 0:
-            for u in unmatched:
+            for unm in unmatched:
                 # DEBUG
                 # print(u)
                 # END
-                print("not matched: ", u)
+                print("not matched: ", unm)
         self.assertEqual(len(unmatched), 0)
 
         # third iteration over tree - this should create the data directory
-        unmatched = tree.populateDataDir(TARGET_UDIR, 'tmp')
+        unmatched = tree.populate_data_dir(target_u_dir, 'tmp')
         self.assertEqual(len(unmatched), 0)
 
-        self.assertTrue(os.path.exists(TARGET_DATA_DIR),
+        self.assertTrue(os.path.exists(target_data_dir),
                         'data directory created')
 
-        unmatched = tree.checkInDataDir(TARGET_DATA_DIR)
+        unmatched = tree.check_in_data_dir(target_data_dir)
         self.assertEqual(len(unmatched), 0)
 
-        tree2 = NLHTree.create_from_file_system(TARGET_DATA_DIR, using_sha)
+        tree2 = NLHTree.create_from_file_system(target_data_dir, using_sha)
         self.assertEqual(tree, tree2)
 
-    def testSimplestConstructor(self):
+    def test_simplest_constructor(self):
+        """ Test cross functions for various hash types. """
+
         for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-            self.doTestCrossFunctions(using)
+            self.do_test_cross_functions(using)
 
 if __name__ == '__main__':
     unittest.main()

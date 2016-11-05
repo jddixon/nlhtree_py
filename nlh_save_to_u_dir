@@ -67,7 +67,7 @@ def main():
             print("%s does not exist; cannot continue" % args.dataDir)
             sys.exit(1)
     if not args.justShow:
-        check_u_path(parser, args, mustExist=False)
+        check_u_path(parser, args, must_exist=False)
         os.makedirs(os.path.join(args.u_path, 'in'), mode=0o755, exist_ok=True)
         os.makedirs(
             os.path.join(

@@ -1,5 +1,9 @@
 py/nlhtree_py/TODO
 
+2016-11-04
+    * add sections on utilities to README.md
+    * drop function synonyms                                            * DONE
+
 2016-10-21
     * nlhtree/__init__.py functions need docstring
 

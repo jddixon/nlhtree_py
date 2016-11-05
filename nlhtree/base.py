@@ -74,21 +74,3 @@ class NLHBase(object):
             # XXX if the path begins with a forward slash ('/'), then
             # tentatively set the current tree to the root and then
             # apply the normal relpath logic from there
-
-    # SYNONYMS ------------------------------------------------------
-    @property
-    def usingSHA(self):
-        """ SYNONYM """
-        return self.using_sha
-
-    @property
-    def curTree(self):
-        """ SYNONYM """
-        return self._cur_tree
-
-    @curTree.setter
-    def curTree(self, path):
-        """ SYNONYM """
-        self.cur_tree = path
-
-    # END SYN -------------------------------------------------------

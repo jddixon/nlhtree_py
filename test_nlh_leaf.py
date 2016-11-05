@@ -33,7 +33,7 @@ class TestNLHLeaf(unittest.TestCase):
         """ Test constructor for specific hash. """
 
         check_using_sha(using_sha)
-        # pylint:disable=redefine-variable-type
+        # pylint:disable=redefined-variable-type
         if using_sha == Q.USING_SHA1:
             sha = hashlib.sha1()
         elif using_sha == Q.USING_SHA2:

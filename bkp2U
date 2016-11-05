@@ -4,7 +4,7 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/nlhtree_py
   
-  blListGen \
+  bl_list_gen \
     -d ../nlhtree_py \
     -1L  \
     -u $DVCZ_UDIR \

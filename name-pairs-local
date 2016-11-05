@@ -1,11 +1,10 @@
-DESC        desc
-
-# nlhtree/base
-curTree     cur_tree
-
-# nlh_check_in_data_dir
-listFile    list_file
-
-# nlh_populate_data_dir
-
-# test_nlh_base.py
+binHash                     bin_hash
+checkHash                   check_hash
+createFromFileSystem        create_from_file_system
+createFromStringArray       create_from_string_array
+curTree                     cur_tree
+hexHash                     hex_hash
+parseFirstLine              parse_first_line
+parseOtherLine              parse_other_line
+toStrings                   to_strings
+usingSHA                    using_sha

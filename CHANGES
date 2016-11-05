@@ -1,6 +1,9 @@
 py/nlhtree_py/CHANGES
 
 
+v0.7.2
+    2016-11-05
+        * add utilities to web pages; more PEP 8; minor bug fixes   SLOC 2914
 v0.7.1
     2016-10-21
         * rename variables per PEP 8; some minor bug fixes          SLOC 2967
@@ -159,6 +162,7 @@ v0.1.0
 v0.0.0
     2015-05-20
         * initial import                                            SLOC   47
+
 
 
 

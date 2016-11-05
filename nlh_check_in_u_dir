@@ -20,7 +20,7 @@ def main():
     # u_dir = os.environ['DVCZ_UDIR']
 
     # parse the command line ----------------------------------------
-    desc = \
+    desc =\
         'given a project directory, write an NLHTree while backing the project up to U'
 
     parser = ArgumentParser(description=desc)
@@ -60,7 +60,7 @@ def main():
     # sanity checks -------------------------------------------------
     check_using_sha(args.using_sha)
     if not args.just_show:
-        check_u_path(parser, args, mustExist=True)
+        check_u_path(parser, args, must_exist=True)
         os.makedirs(os.path.join(args.u_path, 'in'), mode=0o755, exist_ok=True)
         os.makedirs(
             os.path.join(args.u_path, 'tmp'), mode=0o755, exist_ok=True)

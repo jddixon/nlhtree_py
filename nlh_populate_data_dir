@@ -25,7 +25,7 @@ def main():
     # UDIR = os.environ['DVCZ_UDIR']
 
     # parse the command line ----------------------------------------
-    desc = \
+    desc =\
         'given an NLHTree and U, recreate the corresponding data directory'
 
     parser = ArgumentParser(description=desc)
@@ -73,7 +73,7 @@ def main():
         if not os.path.exists(args.path):
             os.makedirs(args.path, mode=0o755)
     if not args.just_show:
-        check_u_path(parser, args, mustExist=True)
+        check_u_path(parser, args, must_exist=True)
         os.makedirs(os.path.join(args.u_path, 'in'), mode=0o755, exist_ok=True)
         os.makedirs(
             os.path.join(

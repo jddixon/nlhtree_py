@@ -97,7 +97,7 @@ class TestNLHTree3(unittest.TestCase):
         if using_sha == Q.USING_SHA1:
             match = NT.FILE_LINE_RE_1.match(strings[1])
         else:
-            # XXX This works for both SHA2 and SHA3
+            # This works for both SHA2 and SHA3
             match = NT.FILE_LINE_RE_2.match(strings[1])
         self.assertTrue(match)
         self.assertEqual(len(match.group(1)), 1)
@@ -110,7 +110,7 @@ class TestNLHTree3(unittest.TestCase):
         if using_sha == Q.USING_SHA1:
             self.assertEqual(len(hash_), SHA1_HEX_LEN)
         else:
-            # XXX This works for both SHA2 and SHA 3
+            # This works for both SHA2 and SHA 3
             self.assertEqual(len(hash_), SHA2_HEX_LEN)
 
         # subdirectory ------------------------------------
@@ -129,7 +129,7 @@ class TestNLHTree3(unittest.TestCase):
         if using_sha == Q.USING_SHA1:
             match = NT.FILE_LINE_RE_1.match(strings[12])
         else:
-            # XXX This works for both SHA2 and SHA 3
+            # This works for both SHA2 and SHA 3
             match = NT.FILE_LINE_RE_2.match(strings[12])
         self.assertTrue(match)
         self.assertEqual(len(match.group(1)), 4)
@@ -142,7 +142,7 @@ class TestNLHTree3(unittest.TestCase):
         if using_sha == Q.USING_SHA1:
             self.assertEqual(len(hash_), SHA1_HEX_LEN)
         else:
-            # XXX This works for both SHA2 and SHA 3
+            # This works for both SHA2 and SHA 3
             self.assertEqual(len(hash_), SHA2_HEX_LEN)
 
     def test_pattern_matching(self):

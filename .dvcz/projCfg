@@ -2,8 +2,8 @@
 project:nlhtree_py
 package:nlhtree
 mainlang:py
-version:0.7.0
-versionDate:2016-10-20
+version:0.7.2
+versionDate:2016-11-05
 :?dirs?:
 dir:std:ghpDoc
 dir:std:dist
@@ -57,4 +57,5 @@ py:test:test_nlh_tree3.py
 py:test:test_walker.py
 dunno:local:name-pairs-api
 dunno:local:name-pairs-local
+dunno:local:renameLocal
 dunno:local:renamePerXLattice

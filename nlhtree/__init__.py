@@ -20,11 +20,10 @@ from xlattice import (
     SHA3_BIN_LEN, SHA3_HEX_LEN, SHA3_BIN_NONE, SHA3_HEX_NONE)
 
 __all__ = ['__version__', '__version_date__',
-           'NLHNode', 'NLHLeaf', 'NLHTree',
-           ]
+           'NLHNode', 'NLHLeaf', 'NLHTree', ]
 
-__version__ = '0.7.2'
-__version_date__ = '2016-11-05'
+__version__ = '0.7.3'
+__version_date__ = '2016-12-12'
 
 
 class NLHError(RuntimeError):

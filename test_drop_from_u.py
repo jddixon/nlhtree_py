@@ -29,6 +29,57 @@ class TestDropFromU(unittest.TestCase):
     def tearDown(self):
         pass
 
+    def populate_tree(self, tree, data_path, u_dir, using_sha):
+        """
+        Generate nnn and nnn unique random values, where nnn is at least 16.
+        """
+        nnn = 16 + self.rng.nextInt16(16)
+        # DEBUG
+        #print("nnn = %d" % nnn)
+        # EnnnD
+
+        values = []
+        hashes = []
+        for count in range(nnn):
+            # generate datum ------------------------------
+            datum = self.rng.someBytes(32 + self.rng.nextInt16(32))
+            values.append(datum)
+
+            # generate hash = bin_key ----------------------
+            # pylint:disable=redefined-variable-type
+            if using_sha == Q.USING_SHA1:
+                sha = hashlib.sha1()
+            elif using_sha == Q.USING_SHA2:
+                sha = hashlib.sha256()
+            elif using_sha == Q.USING_SHA3:
+                sha = hashlib.sha3_256()
+            sha.update(datum)
+            bin_key = sha.digest()
+            hex_key = sha.hexdigest()
+            hashes.append(bin_key)
+
+            # write data file -----------------------------
+            file_name = 'value%04d' % count
+            path_to_file = os.path.join(data_path, file_name)
+            with open(path_to_file, 'wb') as file:
+                # DEBUG
+                #print("writing %s to %s" % (hex_key, path_to_file))
+                # END
+                file.write(datum)
+
+            # insert leaf into tree -----------------------
+            # path_from_top = os.path.join(top_name, file_name)
+            leaf = NLHLeaf(file_name, bin_key, using_sha)
+            tree.insert(leaf)
+
+            # DEBUG
+            #print("  inserting <%s %s>" % (leaf.name, leaf.hex_hash))
+            # END
+
+            # write data into uDir ------------------------
+            u_dir.put_data(datum, hex_key)
+        return values, hashes
+
     def generate_udt(self, struc, using_sha):
         """
         Generate under ./tmp a data directory with random content,
@@ -82,57 +133,10 @@ class TestDropFromU(unittest.TestCase):
         # END
 
         tree = NLHTree(top_name, using_sha)
-
-        # generate nnn and nnn unique random values, where nnn is at least 16
-        nnn = 16 + self.rng.nextInt16(16)
-        # DEBUG
-        #print("nnn = %d" % nnn)
-        # EnnnD
-
-        values = []
-        hashes = []
-        for count in range(nnn):
-            # generate datum ------------------------------
-            # length of value generated
-            v_len = 32 + self.rng.nextInt16(32)
-            datum = self.rng.someBytes(v_len)        # that many random bytes
-            values.append(datum)
-
-            # generate hash = bin_key ----------------------
-            # pylint:disable=redefined-variable-type
-            if using_sha == Q.USING_SHA1:
-                sha = hashlib.sha1()
-            elif using_sha == Q.USING_SHA2:
-                sha = hashlib.sha256()
-            elif using_sha == Q.USING_SHA3:
-                sha = hashlib.sha3_256()
-            sha.update(datum)
-            bin_key = sha.digest()
-            hex_key = sha.hexdigest()
-            hashes.append(bin_key)
-
-            # write data file -----------------------------
-            file_name = 'value%04d' % count
-            path_to_file = os.path.join(data_path, file_name)
-            with open(path_to_file, 'wb') as file:
-                # DEBUG
-                #print("writing %s to %s" % (hex_key, path_to_file))
-                # END
-                file.write(datum)
-
-            # insert leaf into tree -----------------------
-            # path_from_top = os.path.join(top_name, file_name)
-            leaf = NLHLeaf(file_name, bin_key, using_sha)
-            tree.insert(leaf)
-
-            # DEBUG
-            #print("  inserting <%s %s>" % (leaf.name, leaf.hex_hash))
-            # END
-
-            # write data into uDir ------------------------
-            u_dir.put_data(datum, hex_key)
-
+        values, hashes = self.populate_tree(tree, data_path, u_dir, using_sha)
         return u_path, data_path, tree, hashes, values
+
+    # ---------------------------------------------------------------
 
     def do_test_with_ephemeral_tree(self, struc, using_sha):
         """

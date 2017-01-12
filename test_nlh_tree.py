@@ -11,7 +11,7 @@ import hashlib
 
 from rnglib import SimpleRNG
 from nlhtree import NLHTree, NLHLeaf
-from xlattice import Q, check_using_sha
+from xlattice import HashTypes, check_hashtype
 
 if sys.version_info < (3, 6):
     # pylint: disable=unused-import
@@ -28,7 +28,7 @@ class TestNLHTree(unittest.TestCase):
         pass
 
     # utility functions #############################################
-    def make_leaf(self, names_so_far, using_sha):
+    def make_leaf(self, names_so_far, hashtype):
         """ Build a leaf with random name and data using specific hash. """
 
         while True:
@@ -38,44 +38,44 @@ class TestNLHTree(unittest.TestCase):
                 break
         nnn = self.rng.someBytes(8)        # 8 quasi-random bytes
         # pylint:disable=redefined-variable-type
-        if using_sha == Q.USING_SHA1:
+        if hashtype == HashTypes.SHA1:
             sha = hashlib.sha1()
-        elif using_sha == Q.USING_SHA2:
+        elif hashtype == HashTypes.SHA2:
             sha = hashlib.sha256()
-        elif using_sha == Q.USING_SHA3:
+        elif hashtype == HashTypes.SHA3:
             sha = hashlib.sha3_256()
         sha.update(nnn)
-        return NLHLeaf(name, sha.digest(), using_sha)
+        return NLHLeaf(name, sha.digest(), hashtype)
 
     # actual unit tests #############################################
     def test_simple_constructor(self):
         """ Build a tree with random name and data using various hashes. """
 
-        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
+        for using in [HashTypes.SHA1, HashTypes.SHA2, HashTypes.SHA3, ]:
             self.do_test_simple_constructor(using)
 
-    def do_test_simple_constructor(self, using_sha):
+    def do_test_simple_constructor(self, hashtype):
         """ Build a tree with random name and data using specific hash type. """
 
         name = self.rng.next_file_name(8)
-        tree = NLHTree(name, using_sha)
+        tree = NLHTree(name, hashtype)
         self.assertEqual(tree.name, name)
-        self.assertEqual(tree.using_sha, using_sha)
+        self.assertEqual(tree.hashtype, hashtype)
         self.assertEqual(len(tree.nodes), 0)
 
-    def do_test_insert_4_leafs(self, using_sha):
+    def do_test_insert_4_leafs(self, hashtype):
         """
         Create 4 leaf nodes with random but unique names.  Insert
         them into a tree, verifying that the resulting sort is correct.
         """
-        check_using_sha(using_sha)
+        check_hashtype(hashtype)
         name = self.rng.next_file_name(8)
-        tree = NLHTree(name, using_sha)
+        tree = NLHTree(name, hashtype)
         leaf_names = set()
-        a_leaf = self.make_leaf(leaf_names, using_sha)
-        b_leaf = self.make_leaf(leaf_names, using_sha)
-        c_leaf = self.make_leaf(leaf_names, using_sha)
-        d_leaf = self.make_leaf(leaf_names, using_sha)
+        a_leaf = self.make_leaf(leaf_names, hashtype)
+        b_leaf = self.make_leaf(leaf_names, hashtype)
+        c_leaf = self.make_leaf(leaf_names, hashtype)
+        d_leaf = self.make_leaf(leaf_names, hashtype)
         self.assertEqual(len(tree.nodes), 0)
         tree.insert(a_leaf)
         self.assertEqual(len(tree.nodes), 1)
@@ -101,7 +101,7 @@ class TestNLHTree(unittest.TestCase):
         """
         Test inserting 4 leafs into a tree using various hash types.
         """
-        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
+        for using in [HashTypes.SHA1, HashTypes.SHA2, HashTypes.SHA3, ]:
             self.do_test_insert_4_leafs(using)
 
 

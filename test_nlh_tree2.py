@@ -12,7 +12,7 @@ import unittest
 
 # import hashlib          # unused
 from rnglib import SimpleRNG
-from xlattice import (Q, check_using_sha)
+from xlattice import (HashTypes, check_hashtype)
 from nlhtree import NLHTree
 
 # if sys.version_info < (3, 6):
@@ -76,22 +76,22 @@ class TestNLHTree2(unittest.TestCase):
     def test_pathless_unbound(self):
         """ Test the constructor using various hash types. """
 
-        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-            self.do_test_pathless_unbound(using)
+        for hashtype in [HashTypes.SHA1, HashTypes.SHA2, HashTypes.SHA3, ]:
+            self.do_test_pathless_unbound(hashtype)
 
-    def do_test_pathless_unbound(self, using_sha):
+    def do_test_pathless_unbound(self, hashtype):
         """ Test constructor using two directories and a specific hash type. """
 
         (dir_name1, dir_name2) = self.get_two_unique_directory_names()
 
-        check_using_sha(using_sha)
-        tree1 = NLHTree(dir_name1, using_sha)
+        check_hashtype(hashtype)
+        tree1 = NLHTree(dir_name1, hashtype)
         self.assertEqual(dir_name1, tree1.name)
-        self.assertEqual(tree1.using_sha, using_sha)
+        self.assertEqual(tree1.hashtype, hashtype)
 
-        tree2 = NLHTree(dir_name2, using_sha)
+        tree2 = NLHTree(dir_name2, hashtype)
         self.assertEqual(dir_name2, tree2.name)
-        self.assertEqual(tree2.using_sha, using_sha)
+        self.assertEqual(tree2.hashtype, hashtype)
 
         self.assertTrue(tree1 == tree1)
         self.assertFalse(tree1 == tree2)
@@ -105,10 +105,10 @@ class TestNLHTree2(unittest.TestCase):
         Test directory is single level, with four data files, using
         various hash types.
         """
-        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-            self.do_test_bound_flat_dirs(using)
+        for hashtype in HashTypes:
+            self.do_test_bound_flat_dirs(hashtype)
 
-    def do_test_bound_flat_dirs(self, using_sha):
+    def do_test_bound_flat_dirs(self, hashtype):
         """
         Test directory is single level, with four data files, using
         specific hash type.
@@ -116,13 +116,13 @@ class TestNLHTree2(unittest.TestCase):
 
         (dir_name1, dir_path1, dir_name2, dir_path2) =\
             self.make_two_test_directories(ONE, FOUR)
-        tree1 = NLHTree.create_from_file_system(dir_path1, using_sha)
+        tree1 = NLHTree.create_from_file_system(dir_path1, hashtype)
         self.assertEqual(dir_name1, tree1.name, True)
         nodes1 = tree1.nodes
         self.assertTrue(nodes1 is not None)
         self.assertEqual(FOUR, len(nodes1))
 
-        tree2 = NLHTree.create_from_file_system(dir_path2, using_sha)
+        tree2 = NLHTree.create_from_file_system(dir_path2, hashtype)
         self.assertEqual(dir_name2, tree2.name)
         nodes2 = tree2.nodes
         self.assertTrue(nodes2 is not None)
@@ -140,24 +140,24 @@ class TestNLHTree2(unittest.TestCase):
         Test directories four deep with one data file at the lowest level
         using various hash types.
         """
-        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-            self.do_test_bound_needle_dirs(using)
+        for hashtype in HashTypes:
+            self.do_test_bound_needle_dirs(hashtype)
 
-    def do_test_bound_needle_dirs(self, using_sha):
+    def do_test_bound_needle_dirs(self, hashtype):
         """
         Test directories four deep with one data file at the lowest level
         using specific hash type.
         """
         (dir_name1, dir_path1, dir_name2, dir_path2) =\
             self.make_two_test_directories(FOUR, ONE)
-        tree1 = NLHTree.create_from_file_system(dir_path1, using_sha)
+        tree1 = NLHTree.create_from_file_system(dir_path1, hashtype)
 
         self.assertEqual(dir_name1, tree1.name)
         nodes1 = tree1.nodes
         self.assertTrue(nodes1 is not None)
         self.assertEqual(ONE, len(nodes1))
 
-        tree2 = NLHTree.create_from_file_system(dir_path2, using_sha)
+        tree2 = NLHTree.create_from_file_system(dir_path2, hashtype)
         self.assertEqual(dir_name2, tree2.name)
         nodes2 = tree2.nodes
         self.assertTrue(nodes2 is not None)

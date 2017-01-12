@@ -12,7 +12,7 @@ from rnglib import SimpleRNG
 from nlhtree.base import NLHBase
 # from nlhtree import *
 
-from xlattice import Q  # , check_using_sha
+from xlattice import HashTypes  # , check_hashtype
 
 if sys.version_info < (3, 6):
     # pylint: disable=unused-import
@@ -28,13 +28,13 @@ class TestNLHBase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def do_test_constructor(self, using_sha):
+    def do_test_constructor(self, hashtype):
         """ Check functionality of NLHBase constructor for specifc hash. """
 
         name = self.rng.next_file_name(8)
-        base = NLHBase(name, using_sha)
+        base = NLHBase(name, hashtype)
         self.assertEqual(base.name, name)
-        self.assertEqual(base.using_sha, using_sha)
+        self.assertEqual(base.hashtype, hashtype)
         root = base.root
         curt = base.cur_tree
         self.assertEqual(root.name, curt.name)
@@ -42,18 +42,18 @@ class TestNLHBase(unittest.TestCase):
     def test_constructor(self):
         """ Check functionality of NLHBase constructor.  """
 
-        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-            self.do_test_constructor(using)
+        for hashtype in HashTypes:
+            self.do_test_constructor(hashtype)
 
-    def do_test_with_simple_tree(self, using_sha):
+    def do_test_with_simple_tree(self, hashtype):
         """ XXX STUB: test simple tree with specific hash. """
 
         # pylint:disable=redefined-variable-type
-        if using_sha == Q.USING_SHA1:
+        if hashtype == HashTypes.SHA1:
             sha = hashlib.sha1()
-        elif using_sha == Q.USING_SHA2:
+        elif hashtype == HashTypes.SHA2:
             sha = hashlib.sha256()
-        elif using_sha == Q.USING_SHA3:
+        elif hashtype == HashTypes.SHA3:
             sha = hashlib.sha3_256()
 
         # XXX WORKING HERE
@@ -61,8 +61,8 @@ class TestNLHBase(unittest.TestCase):
 
     def test_simple_tree(self):
         """ XXX STUB: test building simple tree. """
-        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-            self.do_test_with_simple_tree(using)
+        for hashtype in HashTypes:
+            self.do_test_with_simple_tree(hashtype)
 
 
 if __name__ == '__main__':

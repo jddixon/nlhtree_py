@@ -8,7 +8,7 @@ import unittest
 
 from rnglib import SimpleRNG
 from nlhtree import NLHTree as NT
-from xlattice import (Q, check_using_sha,
+from xlattice import (HashTypes, check_hashtype,
                       SHA1_HEX_LEN, SHA2_HEX_LEN)
 
 
@@ -71,16 +71,16 @@ class TestNLHTree3(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def do_test_pattern_matching(self, using_sha):
+    def do_test_pattern_matching(self, hashtype):
         """
         Check pattern matching functions using a specific hash type.
         """
-        check_using_sha(using_sha)
-        if using_sha == Q.USING_SHA1:
+        check_hashtype(hashtype)
+        if hashtype == HashTypes.SHA1:
             strings = self.EXAMPLE1
-        elif using_sha == Q.USING_SHA2:
+        elif hashtype == HashTypes.SHA2:
             strings = self.EXAMPLE2
-        elif using_sha == Q.USING_SHA3:
+        elif hashtype == HashTypes.SHA3:
             strings = self.EXAMPLE3
 
         # first line --------------------------------------
@@ -94,7 +94,7 @@ class TestNLHTree3(unittest.TestCase):
         self.assertEqual(name, 'dataDir')
 
         # file with indent of 1 ---------------------------
-        if using_sha == Q.USING_SHA1:
+        if hashtype == HashTypes.SHA1:
             match = NT.FILE_LINE_RE_1.match(strings[1])
         else:
             # This works for both SHA2 and SHA3
@@ -107,7 +107,7 @@ class TestNLHTree3(unittest.TestCase):
         indent, name, hash_ = NT.parse_other_line(strings[1])
         self.assertEqual(indent, 1)
         self.assertEqual(name, 'data1')
-        if using_sha == Q.USING_SHA1:
+        if hashtype == HashTypes.SHA1:
             self.assertEqual(len(hash_), SHA1_HEX_LEN)
         else:
             # This works for both SHA2 and SHA 3
@@ -126,7 +126,7 @@ class TestNLHTree3(unittest.TestCase):
         self.assertEqual(hash_, None)
 
         # lower level file ----------------------
-        if using_sha == Q.USING_SHA1:
+        if hashtype == HashTypes.SHA1:
             match = NT.FILE_LINE_RE_1.match(strings[12])
         else:
             # This works for both SHA2 and SHA 3
@@ -139,7 +139,7 @@ class TestNLHTree3(unittest.TestCase):
         indent, name, hash_ = NT.parse_other_line(strings[12])
         self.assertEqual(indent, 4)
         self.assertEqual(name, 'data41')
-        if using_sha == Q.USING_SHA1:
+        if hashtype == HashTypes.SHA1:
             self.assertEqual(len(hash_), SHA1_HEX_LEN)
         else:
             # This works for both SHA2 and SHA 3
@@ -148,31 +148,31 @@ class TestNLHTree3(unittest.TestCase):
     def test_pattern_matching(self):
         """ Check pattern matching functions using various hash types. """
 
-        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-            self.do_test_pattern_matching(using)
+        for hashtype in [HashTypes.SHA1, HashTypes.SHA2, HashTypes.SHA3, ]:
+            self.do_test_pattern_matching(hashtype)
 
-    def do_test_serialization(self, using_sha):
+    def do_test_serialization(self, hashtype):
         """
         Verify that the serialization of the NLHTree is correct
         using a specific hash type.
         """
-        check_using_sha(using_sha)
-        if using_sha == Q.USING_SHA1:
-            tree = NT.create_from_string_array(self.EXAMPLE1, using_sha)
-        elif using_sha == Q.USING_SHA2:
-            tree = NT.create_from_string_array(self.EXAMPLE2, using_sha)
-        elif using_sha == Q.USING_SHA3:
-            tree = NT.create_from_string_array(self.EXAMPLE3, using_sha)
-        self.assertEqual(tree.using_sha, using_sha)
+        check_hashtype(hashtype)
+        if hashtype == HashTypes.SHA1:
+            tree = NT.create_from_string_array(self.EXAMPLE1, hashtype)
+        elif hashtype == HashTypes.SHA2:
+            tree = NT.create_from_string_array(self.EXAMPLE2, hashtype)
+        elif hashtype == HashTypes.SHA3:
+            tree = NT.create_from_string_array(self.EXAMPLE3, hashtype)
+        self.assertEqual(tree.hashtype, hashtype)
 
         strings = []
         tree.to_strings(strings, 0)
 
-        tree2 = NT.create_from_string_array(strings, using_sha)
+        tree2 = NT.create_from_string_array(strings, hashtype)
         self.assertEqual(tree, tree2)
 
         string = '\n'.join(strings) + '\n'
-        tree3 = NT.parse(string, using_sha)
+        tree3 = NT.parse(string, hashtype)
         serial3 = tree3.__str__()
 
         self.assertEqual(serial3, string)
@@ -186,8 +186,8 @@ class TestNLHTree3(unittest.TestCase):
         Verify that the serialization of the NLHTree is correct
         using various hash types.
         """
-        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-            self.do_test_serialization(using)
+        for hashtype in [HashTypes.SHA1, HashTypes.SHA2, HashTypes.SHA3, ]:
+            self.do_test_serialization(hashtype)
 
 
 if __name__ == '__main__':

@@ -10,7 +10,7 @@ and serialized NLHTree) verifying consistency.
 import unittest
 
 # import hashlib
-from xlattice import Q, check_using_sha
+from xlattice import HashTypes, check_hashtype
 from nlhtree import NLHTree, NLHLeaf
 
 # if sys.version_info < (3, 6):
@@ -80,23 +80,23 @@ class TestWalker(unittest.TestCase):
         Run spot checks on the example files for the supported range
         of hash types.
         """
-        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-            self.do_test_spot_check_tree(using)
+        for hashtype in HashTypes:
+            self.do_test_spot_check_tree(hashtype)
 
-    def do_test_spot_check_tree(self, using_sha):
+    def do_test_spot_check_tree(self, hashtype):
         """
         Run spot checks on the example files for the specified hash type.
         """
-        check_using_sha(using_sha)
+        check_hashtype(hashtype)
 
         # DEBUG
         #print("\nSPOT CHECKS")
         # END
-        if using_sha == Q.USING_SHA1:
+        if hashtype == HashTypes.SHA1:
             rel_path_to_data = 'example1/dataDir'
         else:
             rel_path_to_data = 'example2/dataDir'
-        tree = NLHTree.create_from_file_system(rel_path_to_data, using_sha)
+        tree = NLHTree.create_from_file_system(rel_path_to_data, hashtype)
         self.assertIsNotNone(tree)
         self.assertEqual(len(tree.nodes), 6)
         self.assertEqual(tree.name, 'dataDir')
@@ -136,32 +136,32 @@ class TestWalker(unittest.TestCase):
     def test_walkers(self):
         """ Run the walker for a number of hash types. """
 
-        for using in [Q.USING_SHA1, Q.USING_SHA2, ]:
-            self.do_test_walkers(using)
+        for hashtype in HashTypes:
+            self.do_test_walkers(hashtype)
 
-    def do_test_walkers(self, using_sha):
+    def do_test_walkers(self, hashtype):
         """
         Run the walker for a specific hash type.
         """
         # DEBUG
-        # print("\ndo_test_walkers, %s" % using_sha)
+        # print("\ndo_test_walkers, %s" % hashtype)
         # END
 
-        check_using_sha(using_sha)
-        if using_sha == Q.USING_SHA1:
+        check_hashtype(hashtype)
+        if hashtype == HashTypes.SHA1:
             rel_path_to_data = 'example1/dataDir'
             rel_path_to_nlh = 'example1/example.nlh'
             example = EXAMPLE1
-        elif using_sha == Q.USING_SHA2:
+        elif hashtype == HashTypes.SHA2:
             rel_path_to_data = 'example2/dataDir'
             rel_path_to_nlh = 'example2/example.nlh'
             example = EXAMPLE2
-        elif using_sha == Q.USING_SHA3:
+        elif hashtype == HashTypes.SHA3:
             rel_path_to_data = 'example3/dataDir'
             rel_path_to_nlh = 'example3/example.nlh'
             example = EXAMPLE3
 
-        tree = NLHTree.create_from_file_system(rel_path_to_data, using_sha)
+        tree = NLHTree.create_from_file_system(rel_path_to_data, hashtype)
         self.assertIsNotNone(tree)
         string = tree.__str__()
         self.assertEqual(example, string)        # the serialized NLHTree
@@ -184,7 +184,7 @@ class TestWalker(unittest.TestCase):
         # END
 
         # a couple is a 2-tuple
-        for couple in NLHTree.walk_file(rel_path_to_nlh, using_sha):
+        for couple in NLHTree.walk_file(rel_path_to_nlh, hashtype):
             if len(couple) == 1:
                 # print("    DIR:  %s" % couple[0])       # DEBUG
                 from_disk.append(couple)
@@ -202,11 +202,11 @@ class TestWalker(unittest.TestCase):
 
         # DEBUG
         # print("\nWALK LIST OF STRINGS; %s; there are %d lines" % (
-        #    using_sha, len(lines)))
+        #    hashtype, len(lines)))
         # sys.stdout.flush()
         # END
 
-        for couple in NLHTree.walk_strings(lines, using_sha):
+        for couple in NLHTree.walk_strings(lines, hashtype):
             if len(couple) == 1:
                 # print("    DIR:  %s" % couple[0])     # DEBUG
                 from_strings.append(couple)
@@ -223,7 +223,7 @@ class TestWalker(unittest.TestCase):
         # sys.stdout.flush()
         # END
 
-        for couple in NLHTree.walk_string(example, using_sha):
+        for couple in NLHTree.walk_string(example, hashtype):
             if len(couple) == 1:
                 # print("    DIR:  %s" % couple[0])     # DEBUG
                 from_str.append(couple)
@@ -255,7 +255,7 @@ class TestWalker(unittest.TestCase):
         # -- verify the lists are identical -------------------------
 
         # DEBUG
-        #print("\nIDENTITY CHECKS %s" % using_sha)
+        #print("\nIDENTITY CHECKS %s" % hashtype)
         # sys.stdout.flush()
         # END
 

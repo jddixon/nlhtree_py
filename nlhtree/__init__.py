@@ -10,7 +10,7 @@ import re
 import sys
 from stat import S_ISDIR
 
-from xlattice import Q, check_using_sha
+from xlattice import HashTypes, check_hashtype
 from xlattice.crypto import SP   # for get_spaces()
 from xlattice.u import (file_sha1hex, file_sha2hex, file_sha3hex, UDir)
 
@@ -22,8 +22,8 @@ from xlattice import (
 __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree', ]
 
-__version__ = '0.7.3'
-__version_date__ = '2016-12-12'
+__version__ = '0.7.4'
+__version_date__ = '2017-01-11'
 
 
 class NLHError(RuntimeError):
@@ -39,10 +39,10 @@ class NLHParseError(NLHError):
 class NLHNode(object):
     """ Parent class for nodes in an NLH tree. """
 
-    def __init__(self, name, using_sha=Q.USING_SHA2):
-        check_using_sha(using_sha)
+    def __init__(self, name, hashtype=HashTypes.SHA2):
+        check_hashtype(hashtype)
         self._name = name.strip()
-        self._using_sha = using_sha
+        self._hashtype = hashtype
         self._bin_hash = None
 
     @property
@@ -50,17 +50,17 @@ class NLHNode(object):
         return self._name
 
     @property
-    def using_sha(self):
-        return self._using_sha
+    def hashtype(self):
+        return self._hashtype
 
     @property
     def hex_hash(self):
         if self._bin_hash is None:
-            if self._using_sha == Q.USING_SHA1:
+            if self._hashtype == HashTypes.SHA1:
                 return SHA1_HEX_NONE
-            elif self._using_sha == Q.USING_SHA2:
+            elif self._hashtype == HashTypes.SHA2:
                 return SHA2_HEX_NONE
-            elif self._using_sha == Q.USING_SHA3:
+            elif self._hashtype == HashTypes.SHA3:
                 return SHA3_HEX_NONE
         else:
             return str(binascii.b2a_hex(self._bin_hash), 'ascii')
@@ -82,28 +82,28 @@ class NLHNode(object):
         self._bin_hash = value
 
     @staticmethod
-    def check_hash(bin_hash, using_sha):
+    def check_hash(bin_hash, hashtype):
         """ raise if inappropriate bin_hash length"""
 
         if bin_hash is None:
             raise NLHError('binary hash cannot be None')
         bin_hash_len = len(bin_hash)
         len_ok = True
-        if using_sha == Q.USING_SHA1:
+        if hashtype == HashTypes.SHA1:
             if bin_hash_len != SHA1_BIN_LEN:
                 len_ok = False
-        elif using_sha == Q.USING_SHA2:
+        elif hashtype == HashTypes.SHA2:
             if bin_hash_len != SHA2_BIN_LEN:
                 len_ok = False
-        elif using_sha == Q.USING_SHA3:
+        elif hashtype == HashTypes.SHA3:
             if bin_hash_len != SHA3_BIN_LEN:
                 len_ok = False
         else:
-            raise NLHError("invalid sha hash type ", using_sha)
+            raise NLHError("invalid sha hash type ", hashtype)
         if not len_ok:
             raise NLHError(
                 '%s: not a valid SHA binary hash length: %d' % (
-                    using_sha, bin_hash_len))
+                    hashtype, bin_hash_len))
 
     def __eq__(self, other):
         raise NotImplementedError
@@ -120,10 +120,10 @@ class NLHNode(object):
 
 class NLHLeaf(NLHNode):
 
-    def __init__(self, name, bin_hash, using_sha):
+    def __init__(self, name, bin_hash, hashtype):
         # exception if check fails
-        NLHNode.check_hash(bin_hash, using_sha)
-        super().__init__(name, using_sha)
+        NLHNode.check_hash(bin_hash, hashtype)
+        super().__init__(name, hashtype)
 
         if bin_hash:
             self._bin_hash = bin_hash
@@ -152,13 +152,13 @@ class NLHLeaf(NLHNode):
         hash_len = len(self._bin_hash)
         # pylint:disable=redefined-variable-type
         if hash_len == SHA1_BIN_LEN:
-            using_sha = Q.USING_SHA1
+            hashtype = HashTypes.SHA1
         elif hash_len == SHA2_BIN_LEN:
-            using_sha = Q.USING_SHA2
+            hashtype = HashTypes.SHA2
         elif hash_len == SHA3_BIN_LEN:
-            using_sha = Q.USING_SHA3
+            hashtype = HashTypes.SHA3
 
-        return NLHLeaf(self._name, self._bin_hash, using_sha)
+        return NLHLeaf(self._name, self._bin_hash, hashtype)
 
     # ITERABLE ############################################
 
@@ -175,21 +175,21 @@ class NLHLeaf(NLHNode):
     # END ITERABLE ########################################
 
     @staticmethod
-    def create_from_file_system(path, name, using_sha=Q.USING_SHA2):
+    def create_from_file_system(path, name, hashtype=HashTypes.SHA2):
         """
         Create an NLHLeaf from the contents of the file at **path**.
         The name is part of the path but is passed to simplify the code.
         Returns None if the file cannot be found.
         """
         if os.path.exists(path):
-            if using_sha == Q.USING_SHA1:
+            if hashtype == HashTypes.SHA1:
                 hash_ = file_sha1hex(path)
-            elif using_sha == Q.USING_SHA2:
+            elif hashtype == HashTypes.SHA2:
                 hash_ = file_sha2hex(path)
-            elif using_sha == Q.USING_SHA3:
+            elif hashtype == HashTypes.SHA3:
                 hash_ = file_sha3hex(path)
             b_hash = binascii.a2b_hex(hash_)
-            return NLHLeaf(name, b_hash, using_sha)
+            return NLHLeaf(name, b_hash, hashtype)
         else:
             return None
 
@@ -208,8 +208,8 @@ class NLHTree(NLHNode):
     FILE_LINE_RE_3 = re.compile(r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{64})$',
                                 re.IGNORECASE)
 
-    def __init__(self, name, using_sha=Q.USING_SHA2):
-        super().__init__(name, using_sha)
+    def __init__(self, name, hashtype=HashTypes.SHA2):
+        super().__init__(name, hashtype)
         self._nodes = []
         self._nn = -1            # duplication seems necessary
         self._prefix = ''       # ditto
@@ -239,7 +239,7 @@ class NLHTree(NLHNode):
             return False
         if self.name != other.name:
             return False
-        if self.using_sha != other.using_sha:
+        if self.hashtype != other.hashtype:
             return False
         if len(self.nodes) != len(other.nodes):
             return False
@@ -250,7 +250,7 @@ class NLHTree(NLHNode):
 
     def clone(self):
         """ return a deep copy of the tree """
-        tree = NLHTree(self._name, self.using_sha)
+        tree = NLHTree(self._name, self.hashtype)
         for node in self._nodes:
             tree.insert(node)
         return tree
@@ -286,7 +286,7 @@ class NLHTree(NLHNode):
         sort order.  If a node with the same name already exists, an
         exception will be raised.
         """
-        if node.using_sha != self.using_sha:
+        if node.hashtype != self.hashtype:
             raise NLHError("incompatible SHA types")
         # XXX need checks
         len_nodes = len(self._nodes)
@@ -342,7 +342,7 @@ class NLHTree(NLHNode):
                 node.to_strings(strings, indent + 1)
 
     @staticmethod
-    def create_from_file_system(path_to_dir, using_sha=Q.USING_SHA2,
+    def create_from_file_system(path_to_dir, hashtype=HashTypes.SHA2,
                                 ex_re=None, match_re=None):
         """
         Create an NLHTree based on the information in the directory
@@ -358,7 +358,7 @@ class NLHTree(NLHNode):
         if path == '':
             raise NLHError("cannot parse path " + path_to_dir)
 
-        tree = NLHTree(name, using_sha)
+        tree = NLHTree(name, hashtype)
 
         # Create data structures for constituent files and subdirectories
         # These are sorted by the bare name
@@ -379,12 +379,12 @@ class NLHTree(NLHNode):
                 # pylint:disable=redefined-variable-type
                 if S_ISDIR(mode):
                     node = NLHTree.create_from_file_system(
-                        path_to_file, using_sha, ex_re, match_re)
+                        path_to_file, hashtype, ex_re, match_re)
                 # S_ISLNK(mode) is true if symbolic link
                 # isfile(path) follows symbolic links
                 elif os.path.isfile(path_to_file):        # S_ISREG(mode):
                     node = NLHLeaf.create_from_file_system(
-                        path_to_file, file, using_sha)
+                        path_to_file, file, hashtype)
                 # otherwise, just ignore it ;-)
 
                 if node:
@@ -426,7 +426,7 @@ class NLHTree(NLHNode):
         raise NLHParseError("can't parse line: '%s'" % string)
 
     @staticmethod
-    def create_from_string_array(lines, using_sha=Q.USING_SHA2):
+    def create_from_string_array(lines, hashtype=HashTypes.SHA2):
         # at entry, we don't know whether the string array uses
         # SHA1 or SHA256
 
@@ -434,7 +434,7 @@ class NLHTree(NLHNode):
             return None
 
         name = NLHTree.parse_first_line(lines[0])
-        cur_level = NLHTree(name, using_sha)     # our first push
+        cur_level = NLHTree(name, hashtype)     # our first push
         root = cur_level
         stack = [root]
         depth = 0
@@ -450,20 +450,20 @@ class NLHTree(NLHNode):
                 print("IMPOSSIBLE: indent %d, depth %d" % (indent, depth))
                 # END
                 if hash_:
-                    leaf = NLHLeaf(name, b_hash, using_sha)
+                    leaf = NLHLeaf(name, b_hash, hashtype)
                     stack[depth].insert(leaf)
                 else:
-                    sub_tree = NLHTree(name, using_sha)
+                    sub_tree = NLHTree(name, hashtype)
                     stack.append(sub_tree)
                     depth += 1
             elif indent == depth + 1:
                 if hash_ is None:
-                    sub_tree = NLHTree(name, using_sha)
+                    sub_tree = NLHTree(name, hashtype)
                     stack[depth].insert(sub_tree)
                     stack.append(sub_tree)
                     depth += 1
                 else:
-                    leaf = NLHLeaf(name, b_hash, using_sha)
+                    leaf = NLHLeaf(name, b_hash, hashtype)
                     stack[depth].insert(leaf)
 
             else:
@@ -471,30 +471,30 @@ class NLHTree(NLHNode):
                     stack.pop()
                     depth -= 1
                 if hash_ is None:
-                    sub_tree = NLHTree(name, using_sha)
+                    sub_tree = NLHTree(name, hashtype)
                     stack[depth].insert(sub_tree)
                     stack.append(sub_tree)
                     depth += 1
                 else:
-                    leaf = NLHLeaf(name, b_hash, using_sha)
+                    leaf = NLHLeaf(name, b_hash, hashtype)
                     stack[depth].insert(leaf)
 
         return root
 
     @staticmethod
-    def parse_file(path_to_file, using_sha):
+    def parse_file(path_to_file, hashtype):
         with open(path_to_file, 'r') as file:
             string = file.read()
-        return NLHTree.parse(string, using_sha)
+        return NLHTree.parse(string, hashtype)
 
     @staticmethod
-    def parse(string, using_sha):
+    def parse(string, hashtype):
         if not string or string == '':
             raise NLHParseError('cannot parse an empty string')
         strings = string.split('\n')
         if strings[-1] == '':
             strings = strings[:-1]
-        return NLHTree.create_from_string_array(strings, using_sha)
+        return NLHTree.create_from_string_array(strings, hashtype)
 
     # DATA_DIR/U_DIR INTERACTION ------------------------------------
 
@@ -534,7 +534,7 @@ class NLHTree(NLHNode):
         files in u_dir, files with the same content key.
         """
 
-        u_dir = UDir.discover(u_path, using_sha=self.using_sha)
+        u_dir = UDir.discover(u_path, hashtype=self.hashtype)
 
         unmatched = []
         for couple in self:
@@ -551,7 +551,7 @@ class NLHTree(NLHNode):
     def drop_from_u_dir(self, u_path):
         """ Remove all leaf nodes in this NLHTree from u_dir """
 
-        u_dir = UDir.discover(u_path, using_sha=self.using_sha)
+        u_dir = UDir.discover(u_path, hashtype=self.hashtype)
 
         unmatched = []
         for couple in self:
@@ -575,7 +575,7 @@ class NLHTree(NLHNode):
             raise NLHError(
                 "populate_data_dir: u_path '%s' does not exist" % u_path)
 
-        u_dir = UDir.discover(u_path, using_sha=self.using_sha)
+        u_dir = UDir.discover(u_path, hashtype=self.hashtype)
 
         unmatched = []
         for couple in self:
@@ -588,7 +588,7 @@ class NLHTree(NLHNode):
                 if not u_dir.exists(hash_):
                     unmatched.append(hash_)
                 else:
-                    data = u_dir.getData(hash_)
+                    data = u_dir.get_data(hash_)
 
                     path_to_file = os.path.join(path, couple[0])
                     with open(path_to_file, 'wb') as file:
@@ -599,7 +599,7 @@ class NLHTree(NLHNode):
         return unmatched
 
     def save_to_u_dir(self, data_dir,
-                      u_path=os.environ['DVCZ_UDIR'], using_sha=Q.USING_SHA2):
+                      u_path=os.environ['DVCZ_UDIR'], hashtype=HashTypes.SHA2):
         """
         Given an NLHTree for the data directory, walk the tree, copying
         all files present in data_dir into u_path by content key.  We assume
@@ -616,7 +616,7 @@ class NLHTree(NLHNode):
         #print("  path => '%s'" % path)
         # END
 
-        u_dir = UDir.discover(u_path, using_sha=self.using_sha)
+        u_dir = UDir.discover(u_path, hashtype=self.hashtype)
 
         unmatched = []
         for couple in self:
@@ -630,7 +630,7 @@ class NLHTree(NLHNode):
                 if not os.path.exists(path_to_file):
                     unmatched.append(path)
                 else:
-                    u_dir.copyAndPut(path_to_file, hash_)
+                    u_dir.copy_and_put(path_to_file, hash_)
             else:
                 string = []
                 for part in couple:
@@ -645,7 +645,7 @@ class NLHTree(NLHNode):
     # ITERATORS #####################################################
 
     @staticmethod
-    def walk_file(path_to_file, using_sha):
+    def walk_file(path_to_file, hashtype):
         """
         For each line in the NLHTree listing, return either the
         relative path to a directory (including the directory name)
@@ -689,11 +689,11 @@ class NLHTree(NLHNode):
 
                 # -- file -------------------------------------------
                 if not done:
-                    if using_sha == Q.USING_SHA1:
+                    if hashtype == HashTypes.SHA1:
                         match = NLHTree.FILE_LINE_RE_1.match(line)
-                    elif using_sha == Q.USING_SHA2:
+                    elif hashtype == HashTypes.SHA2:
                         match = NLHTree.FILE_LINE_RE_2.match(line)
-                    elif using_sha == Q.USING_SHA3:
+                    elif hashtype == HashTypes.SHA3:
                         match = NLHTree.FILE_LINE_RE_3.match(line)
                     if match:
                         cur_depth = len(match.group(1))
@@ -710,7 +710,7 @@ class NLHTree(NLHNode):
                 line_nbr += 1
 
     @staticmethod
-    def _walk_strings(strings, using_sha=Q.USING_SHA2):
+    def _walk_strings(strings, hashtype=HashTypes.SHA2):
         cur_depth = 0
         path = ''
         parts = []
@@ -739,11 +739,11 @@ class NLHTree(NLHNode):
 
             # -- file -------------------------------------------
             if not done:
-                if using_sha == Q.USING_SHA1:
+                if hashtype == HashTypes.SHA1:
                     match = NLHTree.FILE_LINE_RE_1.match(line)
-                elif using_sha == Q.USING_SHA2:
+                elif hashtype == HashTypes.SHA2:
                     match = NLHTree.FILE_LINE_RE_2.match(line)
-                elif using_sha == Q.USING_SHA3:
+                elif hashtype == HashTypes.SHA3:
                     match = NLHTree.FILE_LINE_RE_3.match(line)
                 else:
                     raise NotImplementedError()
@@ -760,20 +760,20 @@ class NLHTree(NLHNode):
                 done = True
 
     @staticmethod
-    def walk_string(string, using_sha=Q.USING_SHA2):
+    def walk_string(string, hashtype=HashTypes.SHA2):
         """
         string is an NLHTree listing in the form of a single string with
         lines ending with newlines.  There is a newline at the end of
         the listing.
         """
-        check_using_sha(using_sha)
+        check_hashtype(hashtype)
         lines = string.split('\n')
         if lines[-1] == '':
             lines = lines[:-1]          # drop the last line if empty
-        return NLHTree._walk_strings(lines, using_sha)
+        return NLHTree._walk_strings(lines, hashtype)
 
     @staticmethod
-    def walk_strings(strings, using_sha=Q.USING_SHA2):
+    def walk_strings(strings, hashtype=HashTypes.SHA2):
         """
         For each line in the NLHTree listing, return either the
         relative path to a directory (including the directory name)
@@ -785,8 +785,8 @@ class NLHTree(NLHNode):
 
         COMMENTS AND BLANK LINES ARE NOT YET SUPPORTED.
         """
-        check_using_sha(using_sha)
-        return NLHTree._walk_strings(strings, using_sha)
+        check_hashtype(hashtype)
+        return NLHTree._walk_strings(strings, hashtype)
 
     # ITERABLE ############################################
 

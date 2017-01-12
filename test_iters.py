@@ -7,7 +7,7 @@
 import unittest
 
 # import hashlib
-from xlattice import Q, check_using_sha
+from xlattice import HashTypes, check_hashtype
 from nlhtree import NLHTree, NLHLeaf
 
 # if sys.version_info < (3, 6):
@@ -72,31 +72,31 @@ class TestIters(unittest.TestCase):
     def test_iters(self):
         """ Test iteration using various hash types. """
 
-        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-            self.do_test_iters(using)
+        for hashtype in HashTypes:
+            self.do_test_iters(hashtype)
 
-    def do_test_iters(self, using_sha):
+    def do_test_iters(self, hashtype):
         """ Test iteration using specific hash type. """
 
-        check_using_sha(using_sha)
-        if using_sha == Q.USING_SHA1:
+        check_hashtype(hashtype)
+        if hashtype == HashTypes.SHA1:
             rel_path_to_data = 'example1/dataDir'
             # rel_path_to_nlh = 'example1/example.nlh'
-        elif using_sha == Q.USING_SHA2:
+        elif hashtype == HashTypes.SHA2:
             rel_path_to_data = 'example2/dataDir'
             # rel_path_to_nlh = 'example2/example.nlh'
-        elif using_sha == Q.USING_SHA3:
+        elif hashtype == HashTypes.SHA3:
             rel_path_to_data = 'example3/dataDir'
             # rel_path_to_nlh = 'example3/example.nlh'
 
-        tree = NLHTree.create_from_file_system(rel_path_to_data, using_sha)
+        tree = NLHTree.create_from_file_system(rel_path_to_data, hashtype)
         self.assertIsNotNone(tree)
         string = tree.__str__()
-        if using_sha == Q.USING_SHA1:
+        if hashtype == HashTypes.SHA1:
             self.assertEqual(EXAMPLE1, string)        # the serialized NLHTree
-        elif using_sha == Q.USING_SHA2:
+        elif hashtype == HashTypes.SHA2:
             self.assertEqual(EXAMPLE2, string)        # the serialized NLHTree
-        elif using_sha == Q.USING_SHA3:
+        elif hashtype == HashTypes.SHA3:
             self.assertEqual(EXAMPLE3, string)        # the serialized NLHTree
         else:
             raise NotImplementedError

@@ -7,8 +7,8 @@ import os
 import sys
 from argparse import ArgumentParser
 
-from xlattice import (check_using_sha,
-                      parseUsingSHA, fix_using_sha, show_using_sha, check_u_path)
+from xlattice import(check_hashtype, parse_hashtype_etc, fix_hashtype,
+                     show_hashtype_etc, check_u_path)
 from nlhtree import (__version__, __version_date__, NLHTree)
 
 
@@ -41,7 +41,7 @@ def main():
 
     parser.add_argument('-z', '--dontDoIt', action='store_true',
                         help="don't actually do anything, just say what you would do")
-    parseUsingSHA(parser)
+    parse_hashtype_etc(parser)
     args = parser.parse_args()
 
     if args.showVersion:
@@ -49,7 +49,7 @@ def main():
         sys.exit(0)
 
     # fixups --------------------------------------------------------
-    fix_using_sha(args)
+    fix_hashtype(args)
     if args.testing:
         # output appears under tmp/
         # XXX this should be fixed to interpose # a random directory name
@@ -61,7 +61,7 @@ def main():
         args.u_path = os.path.join('tmp', args.u_path)
 
     # sanity checks -------------------------------------------------
-    check_using_sha(args.using_sha)
+    check_hashtype(args.hashtype)
     if not (args.testing or args.justShow):
         if not os.path.exists(args.dataDir):
             print("%s does not exist; cannot continue" % args.dataDir)
@@ -88,7 +88,7 @@ def main():
         print('listFile         = ' + str(args.listFile))
         print('showVersion      = ' + str(args.showVersion))
         print('testing          = ' + str(args.testing))
-        show_using_sha(args)
+        show_hashtype_etc(args)
 
     # do what's required --------------------------------------------
     if not args.justShow:
@@ -97,7 +97,7 @@ def main():
                 args.dataDir, args.u_path, args.listFile))
         else:
             NLHTree.save_to_u_dir(
-                args.dataDir, args.u_path, args.listFile, args.using_sha)
+                args.dataDir, args.u_path, args.listFile, args.hashtype)
 
 if __name__ == '__main__':
     main()

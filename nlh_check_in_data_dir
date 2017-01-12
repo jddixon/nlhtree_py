@@ -10,8 +10,8 @@ import os
 import sys
 from argparse import ArgumentParser
 
-from xlattice import (check_using_sha,
-                      parseUsingSHA, fix_using_sha, show_using_sha)
+from xlattice import (check_hashtype,
+                      parse_hashtype_etc, fix_hashtype, show_hashtype_etc)
 from nlhtree import (__version__, __version_date__, NLHTree)
 
 
@@ -45,7 +45,7 @@ def main():
     parser.add_argument('-V', '--show_version', action='store_true',
                         help='print the version number and exit')
 
-    parseUsingSHA(parser)
+    parse_hashtype_etc(parser)
 
     args = parser.parse_args()
 
@@ -54,7 +54,7 @@ def main():
         sys.exit(0)
 
     # fixups --------------------------------------------------------
-    fix_using_sha(args)
+    fix_hashtype(args)
 
     if args.testing:
         # output appears under tmp/
@@ -64,7 +64,7 @@ def main():
         args.list_file = os.path.join('tmp', args.list_file)
 
     # sanity checks -------------------------------------------------
-    check_using_sha(args.using_sha)
+    check_hashtype(args.hashtype)
 
     if not (args.testing or args.just_show):
         if not os.path.exists(args.data_dir):
@@ -80,13 +80,13 @@ def main():
         print('data_dir          = ' + str(args.data_dir))
         print('just_show         = ' + str(args.just_show))
         print('list_file         = ' + str(args.list_file))
-        print('show_version      = ' + str(args.showVersion))
+        print('show_version      = ' + str(args.show_version))
         print('testing          = ' + str(args.testing))
-        show_using_sha(args)
+        show_hashtype_etc(args)
 
     # do what's required --------------------------------------------
     if not args.just_show:
-        tree = NLHTree.parse_file(args.list_file, args.using_sha)
+        tree = NLHTree.parse_file(args.list_file, args.hashtype)
         tree.check_in_data_dir(args.data_dir)
 
 if __name__ == '__main__':

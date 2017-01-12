@@ -7,9 +7,9 @@ import os
 import sys
 from argparse import ArgumentParser
 
-from xlattice import (check_using_sha,
-                      parseUsingSHA, fix_using_sha,
-                      show_using_sha, check_u_path)
+from xlattice import (check_hashtype,
+                      parse_hashtype_etc, fix_hashtype,
+                      show_hashtype_etc, check_u_path)
 from nlhtree import (__version__, __version_date__, NLHTree)
 
 
@@ -37,7 +37,7 @@ def main():
     parser.add_argument('-V', '--show_version', action='store_true',
                         help='print the version number and exit')
 
-    parseUsingSHA(parser)
+    parse_hashtype_etc(parser)
     args = parser.parse_args()
 
     if args.show_version:
@@ -45,7 +45,7 @@ def main():
         sys.exit(0)
 
     # fixups --------------------------------------------------------
-    fix_using_sha(args)
+    fix_hashtype(args)
 
     if args.testing:
         # output appears under tmp/
@@ -58,7 +58,7 @@ def main():
         args.u_path = os.path.join('tmp', args.u_path)
 
     # sanity checks -------------------------------------------------
-    check_using_sha(args.using_sha)
+    check_hashtype(args.hashtype)
     if not args.just_show:
         check_u_path(parser, args, must_exist=True)
         os.makedirs(os.path.join(args.u_path, 'in'), mode=0o755, exist_ok=True)
@@ -74,12 +74,12 @@ def main():
         print('just_show         = ' + str(args.just_show))
         print('list_file         = ' + str(args.list_file))
         print('show_version      = ' + str(args.show_version))
-        print('testing          = ' + str(args.testing))
-        show_using_sha(args)
+        print('testing           = ' + str(args.testing))
+        show_hashtype_etc(args)
 
     # do what's required --------------------------------------------
     if not args.just_show:
-        tree = NLHTree.parse_file(args.list_file, args.using_sha)
+        tree = NLHTree.parse_file(args.list_file, args.hashtype)
         tree.check_in_u_dir(args.u_path)
 
 if __name__ == '__main__':

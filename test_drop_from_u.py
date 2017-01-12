@@ -12,7 +12,7 @@ from binascii import hexlify
 import hashlib
 from rnglib import SimpleRNG
 from nlhtree import NLHTree, NLHLeaf
-from xlattice import Q  # , check_using_sha
+from xlattice import HashTypes
 from xlattice.u import UDir
 
 if sys.version_info < (3, 6):
@@ -29,7 +29,7 @@ class TestDropFromU(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def populate_tree(self, tree, data_path, u_dir, using_sha):
+    def populate_tree(self, tree, data_path, u_dir, hashtype):
         """
         Generate nnn and nnn unique random values, where nnn is at least 16.
         """
@@ -47,11 +47,11 @@ class TestDropFromU(unittest.TestCase):
 
             # generate hash = bin_key ----------------------
             # pylint:disable=redefined-variable-type
-            if using_sha == Q.USING_SHA1:
+            if hashtype == HashTypes.SHA1:
                 sha = hashlib.sha1()
-            elif using_sha == Q.USING_SHA2:
+            elif hashtype == HashTypes.SHA2:
                 sha = hashlib.sha256()
-            elif using_sha == Q.USING_SHA3:
+            elif hashtype == HashTypes.SHA3:
                 sha = hashlib.sha3_256()
             sha.update(datum)
             bin_key = sha.digest()
@@ -69,7 +69,7 @@ class TestDropFromU(unittest.TestCase):
 
             # insert leaf into tree -----------------------
             # path_from_top = os.path.join(top_name, file_name)
-            leaf = NLHLeaf(file_name, bin_key, using_sha)
+            leaf = NLHLeaf(file_name, bin_key, hashtype)
             tree.insert(leaf)
 
             # DEBUG
@@ -80,7 +80,7 @@ class TestDropFromU(unittest.TestCase):
             u_dir.put_data(datum, hex_key)
         return values, hashes
 
-    def generate_udt(self, struc, using_sha):
+    def generate_udt(self, struc, hashtype):
         """
         Generate under ./tmp a data directory with random content,
         a uDir containing the same data, and an NLHTree that matches.
@@ -111,7 +111,7 @@ class TestDropFromU(unittest.TestCase):
         # END
 
         # create uDir and the NLHTree
-        u_dir = UDir(u_path, struc, using_sha)
+        u_dir = UDir(u_path, struc, hashtype)
         self.assertTrue(os.path.exists(u_path))
 
         # make a unique data directory under tmp/
@@ -132,29 +132,29 @@ class TestDropFromU(unittest.TestCase):
         #print('data_path = %s' % data_path)
         # END
 
-        tree = NLHTree(top_name, using_sha)
-        values, hashes = self.populate_tree(tree, data_path, u_dir, using_sha)
+        tree = NLHTree(top_name, hashtype)
+        values, hashes = self.populate_tree(tree, data_path, u_dir, hashtype)
         return u_path, data_path, tree, hashes, values
 
     # ---------------------------------------------------------------
 
-    def do_test_with_ephemeral_tree(self, struc, using_sha):
+    def do_test_with_ephemeral_tree(self, struc, hashtype):
         """
         Generate a tmp/ subdirectory containing a quasi-random data
         directory and corresponding uDir and NLHTree serialization.
 
-        We use the directory strucure (struc) and hash type (using_sha)
+        We use the directory strucure (struc) and hash type (hashtype)
         indicated, running various consistency tests on the three.
         """
 
         u_path, data_path, tree, hashes, values = self.generate_udt(
-            struc, using_sha)
+            struc, hashtype)
 
         # DEBUG
         #print("TREE:\n%s" % tree)
         # END
         # verify that the dataDir matches the nlhTree
-        tree2 = NLHTree.create_from_file_system(data_path, using_sha)
+        tree2 = NLHTree.create_from_file_system(data_path, hashtype)
         # DEBUG
         #print("TREE2:\n%s" % tree2)
         # END
@@ -206,7 +206,7 @@ class TestDropFromU(unittest.TestCase):
         # END
         # self.assertEqual( len(unmatched), 0)      ### XXX
 
-        u_dir = UDir(u_path, struc, using_sha)
+        u_dir = UDir(u_path, struc, hashtype)
         self.assertTrue(os.path.exists(u_path))
 
         # these values should still be present in uDir
@@ -226,8 +226,8 @@ class TestDropFromU(unittest.TestCase):
         using various directory structures and hash types.
         """
         for struc in [UDir.DIR_FLAT, UDir.DIR16x16, UDir.DIR256x256, ]:
-            for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-                self.do_test_with_ephemeral_tree(struc, using)
+            for hashtype in HashTypes:
+                self.do_test_with_ephemeral_tree(struc, hashtype)
 
 if __name__ == '__main__':
     unittest.main()

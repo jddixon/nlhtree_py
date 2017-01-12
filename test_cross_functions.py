@@ -10,7 +10,7 @@ import unittest
 
 from rnglib import SimpleRNG
 from nlhtree import NLHTree
-from xlattice import Q, check_using_sha
+from xlattice import HashTypes, check_hashtype
 from xlattice.util import make_ex_re
 
 
@@ -23,22 +23,22 @@ class TestCrossFunctions(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def do_test_cross_functions(self, using_sha):
+    def do_test_cross_functions(self, hashtype):
         """
         Test cross functions for specific hash type.
 
         We assume that there is valid data in
             example/{example.nlh,dataDir,uDir}
         """
-        check_using_sha(using_sha)
+        check_hashtype(hashtype)
 
-        if using_sha == Q.USING_SHA1:
+        if hashtype == HashTypes.SHA1:
             gold_data = 'example1/dataDir'
             gold_list_file = 'example1/example.nlh'
-        elif using_sha == Q.USING_SHA2:
+        elif hashtype == HashTypes.SHA2:
             gold_data = 'example2/dataDir'
             gold_list_file = 'example2/example.nlh'
-        elif using_sha == Q.USING_SHA3:
+        elif hashtype == HashTypes.SHA3:
             gold_data = 'example3/dataDir'
             gold_list_file = 'example3/example.nlh'
         else:
@@ -70,8 +70,8 @@ class TestCrossFunctions(unittest.TestCase):
         ex_re = make_ex_re(exclusions)
 
         tree = NLHTree.create_from_file_system(
-            gold_data, using_sha, ex_re, None)
-        tree.save_to_u_dir(gold_data, target_u_dir, using_sha)
+            gold_data, hashtype, ex_re, None)
+        tree.save_to_u_dir(gold_data, target_u_dir, hashtype)
 
         self.assertTrue(os.path.exists(gold_list_file))
         with open(gold_list_file, 'r') as file:
@@ -79,11 +79,11 @@ class TestCrossFunctions(unittest.TestCase):
 
         output_listing = tree.__str__()
         # DEBUG
-        #print("OUTPUT LISING for %s:\n%s" % (using_sha, output_listing))
+        #print("OUTPUT LISING for %s:\n%s" % (hashtype, output_listing))
         # END
         self.assertEqual(gold_listing, output_listing)
 
-        tree = NLHTree.create_from_file_system(gold_data, using_sha)
+        tree = NLHTree.create_from_file_system(gold_data, hashtype)
         self.assertIsNotNone(tree)
 
         # first iteration over tree
@@ -110,14 +110,14 @@ class TestCrossFunctions(unittest.TestCase):
         unmatched = tree.check_in_data_dir(target_data_dir)
         self.assertEqual(len(unmatched), 0)
 
-        tree2 = NLHTree.create_from_file_system(target_data_dir, using_sha)
+        tree2 = NLHTree.create_from_file_system(target_data_dir, hashtype)
         self.assertEqual(tree, tree2)
 
     def test_simplest_constructor(self):
         """ Test cross functions for various hash types. """
 
-        for using in [Q.USING_SHA1, Q.USING_SHA2, Q.USING_SHA3, ]:
-            self.do_test_cross_functions(using)
+        for hashtype in HashTypes:
+            self.do_test_cross_functions(hashtype)
 
 if __name__ == '__main__':
     unittest.main()

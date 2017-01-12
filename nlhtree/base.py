@@ -18,10 +18,10 @@ __all__ = [
 class NLHBase(object):
     """ Test behavior of NLHBase. """
 
-    def __init__(self, name, using_sha):
-        self._root = NLHTree(name, using_sha)   # immutable ref to a NLHTree
+    def __init__(self, name, hashtype):
+        self._root = NLHTree(name, hashtype)   # immutable ref to a NLHTree
         self._cur_tree = self._root              # the current tree; mutable
-        self._using_sha = using_sha
+        self._hashtype = hashtype
 
     @property
     def name(self):
@@ -30,10 +30,10 @@ class NLHBase(object):
         return self._root.name
 
     @property
-    def using_sha(self):
+    def hashtype(self):
         """ Return which hash type we are using. """
 
-        return self._root.using_sha
+        return self._root.hashtype
 
     @property
     def root(self):

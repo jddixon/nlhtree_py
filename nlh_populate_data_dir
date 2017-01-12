@@ -7,8 +7,8 @@ import os
 import sys
 from argparse import ArgumentParser
 
-from xlattice import (parse_using_sha, fix_using_sha,
-                      show_using_sha, check_u_path)
+from xlattice import (parse_hashtype_etc, fix_hashtype,
+                      show_hashtype_etc, check_u_path)
 from nlhtree import (__version__, __version_date__, NLHTree)
 
 
@@ -48,7 +48,7 @@ def main():
     parser.add_argument('-z', '--dont_do_it', action='store_true',
                         help="don't actually do anything, just say what you would do")
 
-    parse_using_sha(parser)
+    parse_hashtype_etc(parser)
     args = parser.parse_args()
 
     if args.show_version:
@@ -56,7 +56,7 @@ def main():
         sys.exit(0)
 
     # fixups --------------------------------------------------------
-    fix_using_sha(args)
+    fix_hashtype(args)
     if args.testing:
         # output appears under tmp/
         # XXX this should be fixed to interpose # a random directory name
@@ -89,12 +89,12 @@ def main():
 
     if args.verbose or args.just_show:
         print('dont_do_it       = ' + str(args.dont_do_it))
-        print('just_show        = ' + str(args.justShow))
+        print('just_show        = ' + str(args.just_show))
         print('list_file        = ' + str(args.list_file))
         print('path             = ' + str(args.path))
-        print('show_version     = ' + str(args.showVersion))
+        print('show_version     = ' + str(args.show_version))
         print('testing          = ' + str(args.testing))
-        show_using_sha(args)
+        show_hashtype_etc(args)
 
     # do what's required --------------------------------------------
     if not args.just_show:
@@ -102,7 +102,7 @@ def main():
             print("would be saving %s to %s and writing a listing to %s" % (
                 args.path, args.u_path, args.list_file))
         else:
-            tree = NLHTree.parse_file(args.list_file, args.using_sha)
+            tree = NLHTree.parse_file(args.list_file, args.hashtype)
             tree.populate_data_dir(args.u_path, args.path)
 
 if __name__ == '__main__':

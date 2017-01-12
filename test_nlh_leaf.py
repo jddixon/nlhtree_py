@@ -9,7 +9,7 @@ import unittest
 
 import hashlib
 from rnglib import SimpleRNG
-from xlattice import Q, check_using_sha
+from xlattice import HashTypes, check_hashtype
 from nlhtree import NLHLeaf
 
 if sys.version_info < (3, 6):
@@ -29,16 +29,16 @@ class TestNLHLeaf(unittest.TestCase):
     # utility functions #############################################
 
     # actual unit tests #############################################
-    def do_test_simple_constructor(self, using_sha):
+    def do_test_simple_constructor(self, hashtype):
         """ Test constructor for specific hash. """
 
-        check_using_sha(using_sha)
+        check_hashtype(hashtype)
         # pylint:disable=redefined-variable-type
-        if using_sha == Q.USING_SHA1:
+        if hashtype == HashTypes.SHA1:
             sha = hashlib.sha1()
-        elif using_sha == Q.USING_SHA2:
+        elif hashtype == HashTypes.SHA2:
             sha = hashlib.sha256()
-        elif using_sha == Q.USING_SHA3:
+        elif hashtype == HashTypes.SHA3:
             sha = hashlib.sha3_256()
 
         name = self.rng.next_file_name(8)
@@ -47,7 +47,7 @@ class TestNLHLeaf(unittest.TestCase):
         sha.update(nnn)
         hash0 = sha.digest()
 
-        leaf0 = NLHLeaf(name, hash0, using_sha)
+        leaf0 = NLHLeaf(name, hash0, hashtype)
         self.assertEqual(name, leaf0.name)
         self.assertEqual(hash0, leaf0.bin_hash)
 
@@ -58,7 +58,7 @@ class TestNLHLeaf(unittest.TestCase):
         self.rng.next_bytes(nnn)
         sha.update(nnn)
         hash1 = sha.digest()
-        leaf1 = NLHLeaf(name2, hash1, using_sha)
+        leaf1 = NLHLeaf(name2, hash1, hashtype)
         self.assertEqual(name2, leaf1.name)
         self.assertEqual(hash1, leaf1.bin_hash)
 
@@ -75,8 +75,8 @@ class TestNLHLeaf(unittest.TestCase):
     def test_simplest_constructor(self):
         """ Test simple constructor for various hashes. """
 
-        for using in [Q.USING_SHA1, Q.USING_SHA2, ]:
-            self.do_test_simple_constructor(using)
+        for hashtype in HashTypes:
+            self.do_test_simple_constructor(hashtype)
 
 if __name__ == '__main__':
     unittest.main()

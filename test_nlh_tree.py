@@ -36,7 +36,7 @@ class TestNLHTree(unittest.TestCase):
             if name not in names_so_far:
                 names_so_far.add(name)
                 break
-        nnn = self.rng.someBytes(8)        # 8 quasi-random bytes
+        nnn = self.rng.some_bytes(8)        # 8 quasi-random bytes
         # pylint:disable=redefined-variable-type
         if hashtype == HashTypes.SHA1:
             sha = hashlib.sha1()

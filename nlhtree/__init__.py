@@ -22,8 +22,8 @@ from xlattice import (
 __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree', ]
 
-__version__ = '0.7.4'
-__version_date__ = '2017-01-11'
+__version__ = '0.7.5'
+__version_date__ = '2017-01-18'
 
 
 class NLHError(RuntimeError):

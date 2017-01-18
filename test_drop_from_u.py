@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # nlhtree_py/testDropFromU.py
 
-""" Test the dropFromU functionality. """
+""" Test the drop_from_u_dir functionality. """
 
 import os
 import sys
@@ -13,7 +13,7 @@ import hashlib
 from rnglib import SimpleRNG
 from nlhtree import NLHTree, NLHLeaf
 from xlattice import HashTypes
-from xlattice.u import UDir
+from xlattice.u import UDir, DirStruc
 
 if sys.version_info < (3, 6):
     # pylint: disable=unused-import
@@ -21,7 +21,7 @@ if sys.version_info < (3, 6):
 
 
 class TestDropFromU(unittest.TestCase):
-    """ Test the dropFromUDir functionality. """
+    """ Test the drop_from_u_dir functionality. """
 
     def setUp(self):
         self.rng = SimpleRNG(time.time())
@@ -33,7 +33,7 @@ class TestDropFromU(unittest.TestCase):
         """
         Generate nnn and nnn unique random values, where nnn is at least 16.
         """
-        nnn = 16 + self.rng.nextInt16(16)
+        nnn = 16 + self.rng.next_int16(16)
         # DEBUG
         #print("nnn = %d" % nnn)
         # EnnnD
@@ -42,7 +42,7 @@ class TestDropFromU(unittest.TestCase):
         hashes = []
         for count in range(nnn):
             # generate datum ------------------------------
-            datum = self.rng.someBytes(32 + self.rng.nextInt16(32))
+            datum = self.rng.some_bytes(32 + self.rng.next_int16(32))
             values.append(datum)
 
             # generate hash = bin_key ----------------------
@@ -100,10 +100,10 @@ class TestDropFromU(unittest.TestCase):
 
         # make a unique U directory under ./tmp/
         os.makedirs('tmp', mode=0o755, exist_ok=True)
-        u_root_name = self.rng.nextFileName(8)
+        u_root_name = self.rng.next_file_name(8)
         u_path = os.path.join('tmp', u_root_name)
         while os.path.exists(u_path):
-            u_root_name = self.rng.nextFileName(8)
+            u_root_name = self.rng.next_file_name(8)
             u_path = os.path.join('tmp', u_root_name)
 
         # DEBUG
@@ -115,14 +115,14 @@ class TestDropFromU(unittest.TestCase):
         self.assertTrue(os.path.exists(u_path))
 
         # make a unique data directory under tmp/
-        data_tmp = self.rng.nextFileName(8)
+        data_tmp = self.rng.next_file_name(8)
         tmp_path = os.path.join('tmp', data_tmp)
         while os.path.exists(tmp_path):
-            data_tmp = self.rng.nextFileName(8)
+            data_tmp = self.rng.next_file_name(8)
             tmp_path = os.path.join('tmp', data_tmp)
 
         # dataDir must have same base name as NLHTree
-        top_name = self.rng.nextFileName(8)
+        top_name = self.rng.next_file_name(8)
         data_path = os.path.join(tmp_path, top_name)
         os.makedirs(data_path, mode=0o755)
 
@@ -168,7 +168,7 @@ class TestDropFromU(unittest.TestCase):
         ndxes = [ndx for ndx in range(nnn)]  # indexes into lists
         self.rng.shuffle(ndxes)         # shuffled
 
-        kkk = self.rng.nextInt16(nnn)   # we will drop this many indexes
+        kkk = self.rng.next_int16(nnn)   # we will drop this many indexes
 
         # DEBUG
         # print("dropping %d from %d elements" % (kkk, nnn))
@@ -225,7 +225,7 @@ class TestDropFromU(unittest.TestCase):
         directory and corresponding uDir and NLHTree serialization,
         using various directory structures and hash types.
         """
-        for struc in [UDir.DIR_FLAT, UDir.DIR16x16, UDir.DIR256x256, ]:
+        for struc in DirStruc:
             for hashtype in HashTypes:
                 self.do_test_with_ephemeral_tree(struc, hashtype)
 

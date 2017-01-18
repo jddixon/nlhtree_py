@@ -42,7 +42,7 @@ class TestNLHLeaf(unittest.TestCase):
             sha = hashlib.sha3_256()
 
         name = self.rng.next_file_name(8)
-        nnn = self.rng.someBytes(8)
+        nnn = self.rng.some_bytes(8)
         self.rng.next_bytes(nnn)
         sha.update(nnn)
         hash0 = sha.digest()
@@ -54,7 +54,7 @@ class TestNLHLeaf(unittest.TestCase):
         name2 = name
         while name2 == name:
             name2 = self.rng.next_file_name(8)
-        nnn = self.rng.someBytes(8)
+        nnn = self.rng.some_bytes(8)
         self.rng.next_bytes(nnn)
         sha.update(nnn)
         hash1 = sha.digest()

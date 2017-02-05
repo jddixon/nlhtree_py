@@ -22,8 +22,8 @@ from xlattice import (
 __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree', ]
 
-__version__ = '0.7.5'
-__version_date__ = '2017-01-18'
+__version__ = '0.7.6'
+__version_date__ = '2017-02-05'
 
 
 class NLHError(RuntimeError):
@@ -822,8 +822,7 @@ class NLHTree(NLHNode):
         next_node = self._nodes[self._nn]
         if isinstance(next_node, NLHLeaf):
             self._nn += 1
-            return (os.path.join(self._prefix,
-                                 os.path.join(self._name, next_node.name)),
+            return (os.path.join(self._prefix, self._name, next_node.name),
                     next_node.hex_hash,)
         else:
             self._sub_tree = next_node.__iter__()

@@ -1,5 +1,13 @@
 py/nlhtree_py/TODO
 
+2017-02-04
+    * NLHTree.save_to_u_dir acquires a -I/--using_indir option
+    * save_to_u_dir only writes if file is not already present in UDir
+        at u_path
+    * if using_indir we write to DIR_FLAT UDir at U_PATH/in/USER_ID
+        where we get USER_ID from $HOME/.dvcz/id
+    * otherwise we write to UDir at U_PATH
+
 2016-11-04
     * add sections on utilities to README.md
     * drop function synonyms                                            * DONE

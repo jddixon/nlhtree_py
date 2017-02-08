@@ -10,7 +10,6 @@ import unittest
 
 from rnglib import SimpleRNG
 from nlhtree.base import NLHBase
-# from nlhtree import *
 
 from xlattice import HashTypes  # , check_hashtype
 

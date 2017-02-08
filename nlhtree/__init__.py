@@ -22,8 +22,8 @@ from xlattice import (
 __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree', ]
 
-__version__ = '0.7.6'
-__version_date__ = '2017-02-05'
+__version__ = '0.7.7'
+__version_date__ = '2017-07-08'
 
 
 class NLHError(RuntimeError):
@@ -47,14 +47,17 @@ class NLHNode(object):
 
     @property
     def name(self):
+        """ Return the name of the node. """
         return self._name
 
     @property
     def hashtype(self):
+        """ Return the hashtype of the node. """
         return self._hashtype
 
     @property
     def hex_hash(self):
+        """ Return the hexadecimal hash of the node. """
         if self._bin_hash is None:
             if self._hashtype == HashTypes.SHA1:
                 return SHA1_HEX_NONE
@@ -67,16 +70,19 @@ class NLHNode(object):
 
     @hex_hash.setter
     def hex_hash(self, value):
+        """ Set the hexadecimal hash of the node. """
         if self._bin_hash:
             raise NLHError('attempt to set non-null hash')
         self._bin_hash = bytes(binascii.a2b_hex(value))
 
     @property
     def bin_hash(self):
+        """ Return the binary hash of the node. """
         return self._bin_hash
 
     @bin_hash.setter
     def bin_hash(self, value):
+        """ Set the binary hash of the node. """
         if self._bin_hash:
             raise NLHError('attempt to set non-null hash')
         self._bin_hash = value
@@ -106,15 +112,19 @@ class NLHNode(object):
                     hashtype, bin_hash_len))
 
     def __eq__(self, other):
+        """ Whether this node equals another. """
         raise NotImplementedError
 
     def clone(self):
+        """ Return a deep copy of this node. """
         raise NotImplementedError
 
     def __iter__(self):
+        """ Return an iterator over this node. """
         raise NotImplementedError
 
     def __next__(self):
+        """ Return the node 'next' to this one. """
         raise NotImplementedError
 
 
@@ -133,6 +143,7 @@ class NLHLeaf(NLHNode):
         self.iter_used = False
 
     def __eq__(self, other):
+        """ Whether this leaf node equals another. """
         if other is None:
             return False
         if not isinstance(other, NLHLeaf):
@@ -141,13 +152,14 @@ class NLHLeaf(NLHNode):
             self.bin_hash == other.bin_hash)
 
     def to_string(self, indent):
+        """ Serialize this node as a string. """
         return "%s%s %s" % (
             SP.get_spaces(indent),
             self._name,
             self.hex_hash)
 
     def clone(self):
-        """ make a deep copy """
+        """ Return a deep copy of this node. """
 
         hash_len = len(self._bin_hash)
         # pylint:disable=redefined-variable-type
@@ -163,9 +175,11 @@ class NLHLeaf(NLHNode):
     # ITERABLE ############################################
 
     def __iter__(self):
+        """ Return an iterator over the leaf node. """
         return self
 
     def __next__(self):
+        """ Return the next leaf. """
         if self.iter_used:
             raise StopIteration
         else:
@@ -195,6 +209,14 @@ class NLHLeaf(NLHNode):
 
 
 class NLHTree(NLHNode):
+    """
+    A name-hash list used to collect information about a directory structure.
+
+    Each node in the tree represents either a directory or or a file.  If
+    a directory, only the name appears at the node.  Otherwise both a hash
+    and a name appear, where the hash is the hash of the contents of the
+    file.  Nodes below an NLHTree node are sorted.
+    """
 
     # notice the terminating forward slash and lack of newlines or CR-LF
     DIR_LINE_RE = re.compile(r'^( *)([a-z0-9_\$\+\-\.~]+/?)$',
@@ -211,28 +233,32 @@ class NLHTree(NLHNode):
     def __init__(self, name, hashtype=HashTypes.SHA2):
         super().__init__(name, hashtype)
         self._nodes = []
-        self._nn = -1            # duplication seems necessary
+        self._nn = -1           # duplication seems necessary
         self._prefix = ''       # ditto
-        self._sub_tree = None    # for iterators
+        self._sub_tree = None   # for iterators
 
     @property
     def nodes(self):
+        """ Return a list of the nodes immediately below this tree node. """
         return self._nodes
 
     @property
     def prefix(self):
+        """ Return the 'prefix' used in iteration. """
         return self._prefix
 
     @prefix.setter
     def prefix(self, value):
+        """ Set the 'prefix' used in iteration. """
         self._prefix = value
 
     @property
     def sub_tree(self):
+        """ Return the 'sub_tree' used in iteration. """
         return self._sub_tree
 
     def __eq__(self, other):
-
+        """ Whether this tree equals another. """
         if other is None:
             return False
         if not isinstance(other, NLHTree):
@@ -249,7 +275,7 @@ class NLHTree(NLHNode):
         return True
 
     def clone(self):
-        """ return a deep copy of the tree """
+        """ Return a deep copy of the tree """
         tree = NLHTree(self._name, self.hashtype)
         for node in self._nodes:
             tree.insert(node)
@@ -334,6 +360,8 @@ class NLHTree(NLHNode):
         return string
 
     def to_strings(self, strings, indent=0):
+        """ Serialize an NLHTree as a single string. """
+
         strings.append("%s%s" % (SP.get_spaces(indent), self._name))
         for node in self._nodes:
             if isinstance(node, NLHLeaf):
@@ -427,6 +455,10 @@ class NLHTree(NLHNode):
 
     @staticmethod
     def create_from_string_array(lines, hashtype=HashTypes.SHA2):
+        """
+        Given an arrays of strings representing a serialized NLHTree,
+        return the NLHTRee.
+        """
         # at entry, we don't know whether the string array uses
         # SHA1 or SHA256
 
@@ -483,12 +515,16 @@ class NLHTree(NLHNode):
 
     @staticmethod
     def parse_file(path_to_file, hashtype):
+        """
+        Read a serialized NLHTree, parse the resulting string, return NLHTree.
+        """
         with open(path_to_file, 'r') as file:
             string = file.read()
         return NLHTree.parse(string, hashtype)
 
     @staticmethod
     def parse(string, hashtype):
+        """ Parse a string, yielding an NLHTree. """
         if not string or string == '':
             raise NLHParseError('cannot parse an empty string')
         strings = string.split('\n')
@@ -599,7 +635,7 @@ class NLHTree(NLHNode):
         return unmatched
 
     def save_to_u_dir(self, data_dir,
-                      u_path=os.environ['DVCZ_UDIR'], hashtype=HashTypes.SHA2):
+                      u_path=os.environ['DVCZ_UDIR'], using_indir=True):
         """
         Given an NLHTree for the data directory, walk the tree, copying
         all files present in data_dir into u_path by content key.  We assume
@@ -661,7 +697,6 @@ class NLHTree(NLHNode):
         cur_depth = 0
         path = ''
         parts = []
-        hash_len = -1
 
         with open(path_to_file, 'r') as file:
             line = file.readline()
@@ -714,9 +749,8 @@ class NLHTree(NLHNode):
         cur_depth = 0
         path = ''
         parts = []
-        hash_len = -1
 
-        for line_nbr, line in enumerate(strings):
+        for line in strings:
             done = False
 
             # -- dir --------------------------------------------

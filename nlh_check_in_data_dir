@@ -10,8 +10,9 @@ import os
 import sys
 from argparse import ArgumentParser
 
+from optionz import dump_options
 from xlattice import (check_hashtype,
-                      parse_hashtype_etc, fix_hashtype, show_hashtype_etc)
+                      parse_hashtype_etc, fix_hashtype)
 from nlhtree import (__version__, __version_date__, NLHTree)
 
 
@@ -75,14 +76,7 @@ def main():
 
     if args.verbose or args.just_show:
         print("%s %s" % (app_name, __version_date__))
-
-    if args.verbose or args.just_show:
-        print('data_dir          = ' + str(args.data_dir))
-        print('just_show         = ' + str(args.just_show))
-        print('list_file         = ' + str(args.list_file))
-        print('show_version      = ' + str(args.show_version))
-        print('testing          = ' + str(args.testing))
-        show_hashtype_etc(args)
+        print(dump_options(args))
 
     # do what's required --------------------------------------------
     if not args.just_show:

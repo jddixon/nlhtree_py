@@ -1,5 +1,22 @@
 py/nlhtree_py/TODO
 
+2017-02-08
+    * need test of iterator(s) over xl_testData
+    * save_to_u_dir loses the hashtype parameter, using the tree's      * DONE
+        hashtype instead.                                               * DONE
+    * save_to_u_dir needs to be tested
+    * since uDir may not exist, save_to_u_dir() needs to be able 
+        to supply all parameters to UDir.discover(), so needs optional
+        dir_struc and mode parameters
+
+2017-02-04
+    * NLHTree.save_to_u_dir acquires a -I/--using_indir option
+    * save_to_u_dir only writes if file is not already present in UDir
+        at u_path
+    * if using_indir we write to DIR_FLAT UDir at U_PATH/in/USER_ID
+        where we get USER_ID from $HOME/.dvcz/id
+    * otherwise we write to UDir at U_PATH
+
 2016-11-04
     * add sections on utilities to README.md
     * drop function synonyms                                            * DONE
@@ -8,11 +25,11 @@ py/nlhtree_py/TODO
     * nlhtree/__init__.py functions need docstring
 
 2016-09-12
-    * get rid of noisy DEBUG statements
+    * get rid of noisy DEBUG statements                                 * DONE
 
 2016-09-07
     * NLHTree.insert params must include relPath; otherwise don't know
-        where to put the node in the tre
+        where to put the node in the tree
     * NLHTree.clone() relies upon insert without relPath, so just
         won't work in its current form
     * dropFromU() needs further thought: there can be more than more 

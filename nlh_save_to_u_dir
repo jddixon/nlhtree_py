@@ -7,9 +7,10 @@ import os
 import sys
 from argparse import ArgumentParser
 
+from optionz import dump_options
+from nlhtree import (__version__, __version_date__, NLHTree)
 from xlattice import(check_hashtype, parse_hashtype_etc, fix_hashtype,
                      show_hashtype_etc, check_u_path)
-from nlhtree import (__version__, __version_date__, NLHTree)
 
 
 def main():
@@ -29,6 +30,9 @@ def main():
 
     parser.add_argument('-d', '--dataDir', default='.',
                         help='path to data directory')
+
+    parser.add_argument('-I', '--using_indir', action='store_true',
+                        help='show options and exit')
 
     parser.add_argument('-j', '--justShow', action='store_true',
                         help='show options and exit')
@@ -82,13 +86,7 @@ def main():
         print("%s %s" % (app_name, __version_date__))
 
     if args.verbose or args.justShow:
-        print('dataDir          = ' + str(args.dataDir))
-        print('dontDoIt         = ' + str(args.dontDoIt))
-        print('justShow         = ' + str(args.justShow))
-        print('listFile         = ' + str(args.listFile))
-        print('showVersion      = ' + str(args.showVersion))
-        print('testing          = ' + str(args.testing))
-        show_hashtype_etc(args)
+        print(dump_options(args))
 
     # do what's required --------------------------------------------
     if not args.justShow:
@@ -97,7 +95,7 @@ def main():
                 args.dataDir, args.u_path, args.listFile))
         else:
             NLHTree.save_to_u_dir(
-                args.dataDir, args.u_path, args.listFile, args.hashtype)
+                args.dataDir, args.u_path, args.listFile, args.using_indir)
 
 if __name__ == '__main__':
     main()

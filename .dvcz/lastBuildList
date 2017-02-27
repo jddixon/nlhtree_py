@@ -7,23 +7,23 @@ Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END RSA PUBLIC KEY-----
-nlhtree_py v0.7.8
-2017-02-10 18:48:11
+nlhtree_py v0.7.9
+2017-02-27 01:32:01
 # BEGIN CONTENT #
 nlhtree_py
  .dvcz
-  builds 74a1abad548f09afe42e916fc05a50df7d449a73
+  builds f217563ac58505d10192487f600f8a12c464427c
   copyright 304c14d702dff7c6c2c39729ff62aed7203b3427
-  lastBuildList 60d842863c3e9a22c9d7d683b284712258423f2b
+  lastBuildList 937661a0789583a48f118fbf4c4df84ad62f87e8
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
   projCfg ff1d05dc476807e00c2f43ab83f296fe466622ee
   projCfg.local 2ba7cb1ce7612606ea2a9524caef6ecbeb2b20df
-  version b178c3f0e42b372091770583eb346cb0d974f11b
+  version 1920e0b2a6fb856404e1493b8989e18d19075192
  .gitignore b2cc5fa149056ba0a01449dcdb19409728483a5c
- CHANGES 6ffe821c5a64e0f46d30a4b5558a4093d47bc03c
+ CHANGES 278b0b0e53d4614ebbb2a624ef5f31428e0c8747
  LICENSE-MIT.md ef87ef0aafe2bb3dc3b3ab29651c52e8add097b4
  MANIFEST.in 49f3fa12c06539c2c9e09f4ead7f121c41b6586c
- README.md 6f5deee300696d9b487b755861b663d833d877d5
+ README.md 732bda78588f73f206d1dce073a5857cea96055c
  TODO 901b560f99c892fc55559701c6de98889e064057
  bkp2U 4bc5e565fcc140f4e28fa6f42cf4f7925e4d512d
  checkCoverage fbe3521b3f6ffd4661519a7a589819bfb85288f8
@@ -84,6 +84,7 @@ nlhtree_py
   nlhtree_py-0.7.6.tar.gz 282e40e69ef9f5781f6796eaa50e7e969faab47d
   nlhtree_py-0.7.7.tar.gz 0aff981c397d3f80b879b4fc5aa6777c79bccaeb
   nlhtree_py-0.7.8.tar.gz aadbf8e0ddd4df1003b08fde48870dc08723c2b4
+  nlhtree_py-0.7.9.tar.gz 99c48c4065f43433de2071596abec3e97d6b3d7e
  doPyLint 7ae98dd0493b338960afc467551b5e2ece88f2dd
  example1
   dataDir
@@ -195,7 +196,7 @@ nlhtree_py
    simple-cluster.jpg 6b223ddd25937c1ef75ef328f36fc3436f10bd62
    xl-registration.jpg 15cbf951f9db173a45428b32dcec87aca83bbdf0
    xlattice-2014.jpg f185aaad06db71acd9454f31054c62c56d36f37f
-  index.md 3a7c848408b22ba94a1def4261789e4fc66fab8d
+  index.md 2ebd7525e3b231a3acb97f33160e966fd92c8ed4
  installit fabcb17eafffd9bf015bdda55306ddb39968f43a
  name-pairs-api c00d301510d0911b959e6e5d2d56f6de8f2d4848
  name-pairs-local 07f1a3dd6622b70f68ca2fa996c53ad6dab5985f
@@ -204,14 +205,13 @@ nlhtree_py
  nlh_populate_data_dir d92d4645b26e37278636d3fc3ba9921d8077eb5a
  nlh_save_to_u_dir e83f327bf853ed4790b1ecc8924ad9e6326d9f97
  nlhtree
-  __init__.py bf7fcf145df56dd7d4e79211c96368a2cc04f6e0
+  __init__.py 8bf20b9d27b44bb567c6f212cef5213d2b94dbf8
   base.py 36461e5089dfe4fdd58144fbd119ce7bf42fd7c2
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
  renameLocal 195cfaae57c20e8574c62b1f971c6eaf18dec93c
  renamePerXLattice ffc3c93106bd5ddf6fa1f383bca761a6912f0a37
  setup.py c886d6d77e3510837476f82f26480478ef2dcfb8
  styleit 527d9259534526bd5154a77745f2b82df5fd7060
- test
  test.all d7fd9d943c06f93993559126acf690d3a76c8977
  test_cross_functions.py 675ee2ef0b227d953621095e337122cd62fccbf5
  test_drop_from_u.py 85074b2f33176e6e69833c5b9d208227baf7b303
@@ -224,4 +224,4 @@ nlhtree_py
  test_walker.py f67408f109fc7d9100a3bd8574a711ca81c0aca2
 # END CONTENT #
 
-kqf4klgBuJL+wl6KBNuGuuh9UNxr4n/4Efc/Hb0p2xPdlfRhJvAS39/q9/jk/PbJX4N1XelT267nlurSWBWMHPwBtWl1okFDY1YiyOBmwjgaCa1BxRAwBo36CwEqkbLWbr2bcc4QX5pKDvX00m5MQX+wVkfBSHXUP0CEwcg3c55ou/ITu8Hjh5/n6R7w3VZjKt5VD6L1pQV/uajwXOa3cyb0GMUtgFLqzdwscBWwDzVFuLiqgRphlNNX+pnG4IoPCRSqQwiKCNY4abHkl4ocGLZFIfTIA1EY1af7SfIpCqbkcTWPGtzY+tRkE5prtChcqIMif1iUXeeTIKKSz1gHKw==
+jfxZ2reHCSSm5ozns0i8ZmA4rYTtxQuRzZmukBCt8l3JpSZnUOA0WAWwAKuEY0SVqVK7DFKBowHTVosqWWprL4y6L2QxCb486ejFZMSkTgID21UIWTMFHWcqOqdsRT+c1dEjGP4lR56L5ydYJuNyG3KpHUU5V8wXYv/JzVEWuOKUMTI+L5e1PxXsjq9lijYii4vj/ey014cyAIBflsQPDjqIf9tpTAfWs2GmBtnn9e1aPcTaAJPX5CMzS/au51MyBZksgJ3GrIVNre47YzFFO3hRn9EsJe1WcKfL4cik5NF4A256XYGGBtWGa0Va9ly4TGdGosxM/VvwqDWl1ow7aQ==

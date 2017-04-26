@@ -78,5 +78,6 @@ class TestNLHLeaf(unittest.TestCase):
         for hashtype in HashTypes:
             self.do_test_simple_constructor(hashtype)
 
+
 if __name__ == '__main__':
     unittest.main()

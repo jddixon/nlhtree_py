@@ -299,5 +299,6 @@ class TestWalker(unittest.TestCase):
 
         # XXX NOT YET IMPLEMENTED XXX
 
+
 if __name__ == '__main__':
     unittest.main()

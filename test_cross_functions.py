@@ -119,5 +119,6 @@ class TestCrossFunctions(unittest.TestCase):
         for hashtype in HashTypes:
             self.do_test_cross_functions(hashtype)
 
+
 if __name__ == '__main__':
     unittest.main()

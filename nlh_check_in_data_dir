@@ -83,5 +83,6 @@ def main():
         tree = NLHTree.parse_file(args.list_file, args.hashtype)
         tree.check_in_data_dir(args.data_dir)
 
+
 if __name__ == '__main__':
     main()

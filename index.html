@@ -9,17 +9,13 @@
 </head>
 <body>
 <div class="content">
-<h1>
-<a id="user-content-nlhtree_py" class="anchor" href="#nlhtree_py" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>nlhtree_py</h1>
+<h1 class="libTop">nlhtree_py</h1>
 
-<h2>
-<a id="user-content-data-structure" class="anchor" href="#data-structure" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Data Structure</h2>
-
+<h2>Data Structure</h2>
 <p>This project is a Python3 implementation of the NLHTree, a data structure
 defined
 <a href="https://jddixon.github.io/xlattice/nlhTree.html">here</a>
 in some detail.</p>
-
 <p>The NLHTree represents a directory structure as
 an indented list.  Directory names appear alone on a line; files
 in a given directory are listed at an indent of one space below
@@ -29,9 +25,7 @@ Secure Hash Algoritm hash of the file contents,
 <a href="https://en.wikipedia.org/wiki/SHA-2">SHA256</a>
 as appropriate.  These are printed as 40 or 64 hexadecimal digits
 respectively.</p>
-
 <p>What follows is an NLHTree representing the directory <code>dataDir</code>.</p>
-
 <pre><code>dataDir
  data1 34463aa26c4d7214a96e6e42c3a9e8f55727c695
  data2 14193743b265973e5824ca5257eef488094e19e9
@@ -46,18 +40,13 @@ respectively.</p>
    subDir411
     data31 0b57d3ab229a69ce5f7fad62f9fe654fe96c51bb
 </code></pre>
-
 <p>This has two data files in <code>dataDir/</code>, <code>data1</code> and <code>data2</code>.  Each
 of these is followed by its 20-byte/160-bit SHA1 hash in hexadecimal form.
 The file names are indented one space more than the directory name.</p>
-
 <p>There are also four subdirectories, <code>subDir1</code>, <code>subDir2</code>, <code>subDir3</code>,
 and <code>subDir4</code>.  These are at the same indent as the two data files.
 Files with the subdirectories and indented one space more.</p>
-
-<h2>
-<a id="user-content-use-in-buildlists" class="anchor" href="#use-in-buildlists" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Use in BuildLists</h2>
-
+<h2>Use in BuildLists</h2>
 <p>The NLHTree is used in the
 <a href="https://jddixon.github.com/xlattice/buildList.html">BuildList</a>;
 it this context it is prefixed with a title, RSA public key, and
@@ -68,9 +57,7 @@ structure.  Alternatively, it can be used to reconstruct a file
 system in systems such as distributed version control systems,
 with the content key used to guarantee that the files retrieved
 are identical to those in the original form of the directory structure.</p>
-
 <p>As an example, this is the BuildList of a similar directory structure:</p>
-
 <p>-----BEGIN RSA PUBLIC KEY-----
 MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCzxJ0l1e898G/gBB9zBWUoQ7uw
 8C2Z6OTMJeXrNcTR2ZW7IIMevzYHeR26w+k54Roiv4Oec1uGGom4I7TSxF1QCmfG
@@ -79,10 +66,7 @@ P3aQwEB1RNVW8r+SIQIDAQAB
 -----END RSA PUBLIC KEY-----
 sample build list
 2016-09-11 23:13:36</p>
-
-<h1>
-<a id="user-content-begin-content" class="anchor" href="#begin-content" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>BEGIN CONTENT</h1>
-
+<h1>BEGIN CONTENT</h1>
 <p>dataDir
  data1 32056bdf38bed17ab7f2bfb37421fa5f4caade71
  data2 80b3b965bdfde312a4eeacc87c42f2a68ad1c7d8
@@ -96,24 +80,15 @@ sample build list
   subDir41
    subDir411
     data31 c4d1f005f36404cf15a00ce00d9a136a35409bc4</p>
-
-<h1>
-<a id="user-content-end-content" class="anchor" href="#end-content" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>END CONTENT</h1>
-
+<h1>END CONTENT</h1>
 <p>SuJvEG5zYe5SAnYEHynZXvjIPdY/Fr792ltnwJyPxyg2QO+GCrSfepXnNeIUMJtG5c4zamqsijFZYuAuuhIHCxM1sLcEM5PVNmU/cJT9BLWI952bAqqcB+qaWRcDdSt/tQKZCvzeujZTCa9MsbygN2Wo+ToaIv6dkB21WufyRSs=</p>
-
 <p>The RSA private key corresponding to the public part of the key at the
 top of the BuildList is used to generate the digital signature at the
 bottom.  Given these two bits of information, the public key and the
 digital signature, anyone can verify that the BuildList has not been
 tampered with.</p>
-
-<h2>
-<a id="user-content-utilities" class="anchor" href="#utilities" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Utilities</h2>
-
-<h3>
-<a id="user-content-nlh_check_in_data_dir" class="anchor" href="#nlh_check_in_data_dir" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>nlh_check_in_data_dir</h3>
-
+<h2>Utilities</h2>
+<h3>nlh_check_in_data_dir</h3>
 <pre><code>usage: nlh_check_in_data_dir [-h] [-b LIST_FILE] [-d DATA_DIR] [-j] [-T] [-V]
                              [-1] [-2] [-3] [-u U_PATH] [-v]
 
@@ -135,10 +110,7 @@ optional arguments:
                         path to uDir
   -v, --verbose         be chatty
 </code></pre>
-
-<h3>
-<a id="user-content-nlh_check_in_u_dir" class="anchor" href="#nlh_check_in_u_dir" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>nlh_check_in_u_dir</h3>
-
+<h3>nlh_check_in_u_dir</h3>
 <pre><code>usage: nlh_check_in_u_dir [-h] [-b LIST_FILE] [-j] [-T] [-V] [-1] [-2] [-3]
                           [-u U_PATH] [-v]
 
@@ -158,10 +130,7 @@ optional arguments:
                         path to uDir
   -v, --verbose         be chatty
 </code></pre>
-
-<h3>
-<a id="user-content-nlh_populate_data_dir" class="anchor" href="#nlh_populate_data_dir" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>nlh_populate_data_dir</h3>
-
+<h3>nlh_populate_data_dir</h3>
 <pre><code>usage: nlh_populate_data_dir [-h] [-b LIST_FILE] [-j] [-p PATH] [-T] [-V] [-z]
                              [-1] [-2] [-3] [-u U_PATH] [-v]
 
@@ -183,10 +152,7 @@ optional arguments:
                         path to uDir
   -v, --verbose         be chatty
 </code></pre>
-
-<h3>
-<a id="user-content-nlh_save_to_u_dir" class="anchor" href="#nlh_save_to_u_dir" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>nlh_save_to_u_dir</h3>
-
+<h3>nlh_save_to_u_dir</h3>
 <pre><code>usage: nlh_save_to_u_dir [-h] [-b LISTFILE] [-d DATADIR] [-j] [-T] [-V] [-z]
                          [-1] [-2] [-3] [-u U_PATH] [-v]
 
@@ -209,12 +175,8 @@ optional arguments:
                         path to uDir
   -v, --verbose         be chatty
 </code></pre>
-
-<h2>
-<a id="user-content-project-status" class="anchor" href="#project-status" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Project Status</h2>
-
+<h2>Project Status</h2>
 <p>A good beta.  All tests succeed.</p>
-
 <h2>Licensing</h2>
 <p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />The material on this github.io website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</p>
 <p>Project software is licensed under an MIT license.

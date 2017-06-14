@@ -6,19 +6,19 @@
 import re
 from distutils.core import setup
 __version__ = re.search(r"__version__\s*=\s*'(.*)'",
-                        open('nlhtree/__init__.py').read()).group(1)
+                        open('src/nlhtree/__init__.py').read()).group(1)
 
 setup(name='nlhtree_py',
       version=__version__,
       author='Jim Dixon',
       author_email='jddixon@gmail.com',
       py_modules=[],
-      packages=['nlhtree', ],
+      packages=['src/nlhtree', ],
       scripts=[
-          'nlh_check_in_data_dir',
-          'nlh_check_in_u_dir',
-          'nlh_populate_data_dir',
-          'nlh_save_to_u_dir',
+          'src/nlh_check_in_data_dir',
+          'src/nlh_check_in_u_dir',
+          'src/nlh_populate_data_dir',
+          'src/nlh_save_to_u_dir',
       ],
       description='data structure for representing directory and contents',
       url='https://jddixon.github.io/nlhtree_py',

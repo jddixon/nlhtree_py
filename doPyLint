@@ -1,6 +1,6 @@
-pylint setup.py test*.py    \
-    nlh_check_in_data_dir   \
-    nlh_check_in_u_dir      \
-    nlh_populate_data_dir   \
-    nlh_save_to_u_dir       \
-    nlhtree
+pylint setup.py tests/test*.py    \
+    src/nlh_check_in_data_dir   \
+    src/nlh_check_in_u_dir      \
+    src/nlh_populate_data_dir   \
+    src/nlh_save_to_u_dir       \
+    src/nlhtree

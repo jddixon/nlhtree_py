@@ -5,7 +5,8 @@ include CHANGES MANIFEST.in README* TODO
 
 recursive-include ghpDocs *
 recursive-include scripts/  *
-recursive-include nlhtree/ *.py
+recursive-include src
+recursive-include tests
 
 global-exclude junk* .*swp *.pyc
 

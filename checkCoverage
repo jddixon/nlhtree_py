@@ -10,4 +10,4 @@ nosetests \
     --cover-branches \
     --cover-inclusive  \
     --cover-package=nlhtree \
-    test*.py 
+    tests/test*.py 

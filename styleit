@@ -4,7 +4,9 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/nlhtree_py
   
-  autopep8 -ai -r nlhtree nlh_check_in_data_dir nlh_check_in_u_dir nlh_populate_data_dir nlh_save_to_u_dir *.py
+  autopep8 -air src/nlhtree tests
+  autopep8 -ai src/nlh_check_in_data_dir src/nlh_check_in_u_dir \
+               src/nlh_populate_data_dir src/nlh_save_to_u_dir 
   echo "not styling example1/ subdir"
   echo "not styling example2/ subdir"
   echo "not styling example3/ subdir"

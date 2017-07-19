@@ -1,6 +1,8 @@
-pylint setup.py tests/test*.py    \
-    src/nlh_check_in_data_dir   \
-    src/nlh_check_in_u_dir      \
-    src/nlh_populate_data_dir   \
-    src/nlh_save_to_u_dir       \
-    src/nlhtree
+#!/usr/bin/env bash
+
+if [ ! -z "${DEV_BASE// }" ]
+then
+  pylint setup.py src/* tests/*
+else
+  echo "DEV_BASE is not defined"
+fi

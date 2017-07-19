@@ -229,5 +229,6 @@ class TestDropFromU(unittest.TestCase):
             for hashtype in HashTypes:
                 self.do_test_with_ephemeral_tree(struc, hashtype)
 
+
 if __name__ == '__main__':
     unittest.main()

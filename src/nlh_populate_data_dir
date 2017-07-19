@@ -1,28 +1,33 @@
 #!/usr/bin/python3
-# ~/dev/py/nlhtree_py/nlh_check_in_u_dir
+# ~/dev/py/nlhtree_py/nlh_populate_data_dir
 
-""" Command line utility wrapping check_in_u_dir. """
+""" Given an NLHTree and a content-keyed store, populate a data directory. """
 
 import os
 import sys
 from argparse import ArgumentParser
 
 from optionz import dump_options
-from xlattice import (check_hashtype,
-                      parse_hashtype_etc, fix_hashtype,
+from xlattice import (parse_hashtype_etc, fix_hashtype,
                       check_u_path)
 from nlhtree import (__version__, __version_date__, NLHTree)
 
 
 def main():
-    """  Collect parameters for checkInUDir. """
+    """
+    Given an NLHTree and a content-keyed store, populate a data directory.
 
-    app_name = 'nlh_check_in_u_dir %s' % __version__
-    # u_dir = os.environ['DVCZ_UDIR']
+    That is, the files and subdirectories in the serialized NLHTree are
+    recreated under the data directory, using the data in the content-
+    keyed store.
+    """
+
+    app_name = 'nlh_populate_data_dir %s' % __version__
+    # UDIR = os.environ['DVCZ_UDIR']
 
     # parse the command line ----------------------------------------
     desc =\
-        'given a project directory, write an NLHTree while backing the project up to U'
+        'given an NLHTree and U, recreate the corresponding data directory'
 
     parser = ArgumentParser(description=desc)
 
@@ -32,11 +37,17 @@ def main():
     parser.add_argument('-j', '--just_show', action='store_true',
                         help='show options and exit')
 
+    parser.add_argument('-p', '--path', default='.',
+                        help='path to data directory')
+
     parser.add_argument('-T', '--testing', action='store_true',
                         help='this is a test run')
 
     parser.add_argument('-V', '--show_version', action='store_true',
                         help='print the version number and exit')
+
+    parser.add_argument('-z', '--dont_do_it', action='store_true',
+                        help="don't actually do anything, just say what you would do")
 
     parse_hashtype_etc(parser)
     args = parser.parse_args()
@@ -47,7 +58,6 @@ def main():
 
     # fixups --------------------------------------------------------
     fix_hashtype(args)
-
     if args.testing:
         # output appears under tmp/
         # XXX this should be fixed to interpose # a random directory name
@@ -59,12 +69,19 @@ def main():
         args.u_path = os.path.join('tmp', args.u_path)
 
     # sanity checks -------------------------------------------------
-    check_hashtype(args.hashtype)
+
+    if not (args.testing or args.just_show):
+        if not os.path.exists(args.path):
+            os.makedirs(args.path, mode=0o755)
     if not args.just_show:
         check_u_path(parser, args, must_exist=True)
         os.makedirs(os.path.join(args.u_path, 'in'), mode=0o755, exist_ok=True)
         os.makedirs(
-            os.path.join(args.u_path, 'tmp'), mode=0o755, exist_ok=True)
+            os.path.join(
+                args.u_path,
+                'tmp'),
+            mode=0o755,
+            exist_ok=True)
 
     # complete setup ------------------------------------------------
 
@@ -74,8 +91,13 @@ def main():
 
     # do what's required --------------------------------------------
     if not args.just_show:
-        tree = NLHTree.parse_file(args.list_file, args.hashtype)
-        tree.check_in_u_dir(args.u_path)
+        if args.dont_do_it:
+            print("would be saving %s to %s and writing a listing to %s" % (
+                args.path, args.u_path, args.list_file))
+        else:
+            tree = NLHTree.parse_file(args.list_file, args.hashtype)
+            tree.populate_data_dir(args.u_path, args.path)
+
 
 if __name__ == '__main__':
     main()

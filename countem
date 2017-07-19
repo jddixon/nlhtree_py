@@ -6,7 +6,7 @@ then
   
   rm -rf build/* 
   
-  pySloc -L py nlh_check_in_data_dir nlh_check_in_u_dir nlh_populate_data_dir nlh_save_to_u_dir  -X cover -X htmlcov -X dist -X tmp -v $@
+  pySloc -L py  -X cover -X htmlcov -X dist -X tmp -v $@ nlhtree src/nlh_check_in_data_dir src/nlh_check_in_u_dir src/nlh_populate_data_dir src/nlh_save_to_u_dir tests/test_cross_functions.py tests/test_drop_from_u.py tests/test_iters.py tests/test_nlh_base.py tests/test_nlh_leaf.py tests/test_nlh_tree.py tests/test_nlh_tree2.py tests/test_nlh_tree3.py tests/test_walker.py setup.py
 else
   echo "DEV_BASE is not defined"
 fi

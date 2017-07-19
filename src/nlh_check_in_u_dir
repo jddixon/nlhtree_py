@@ -1,10 +1,7 @@
 #!/usr/bin/python3
-# ~/dev/py/nlhtree_py/nlhCheckInDataDir
+# ~/dev/py/nlhtree_py/nlh_check_in_u_dir
 
-"""
-Command line wrapper for the check_in_data_dir function, which verifies
-that the nodes of an NLHTree are present in a data directory.
-"""
+""" Command line utility wrapping check_in_u_dir. """
 
 import os
 import sys
@@ -12,30 +9,25 @@ from argparse import ArgumentParser
 
 from optionz import dump_options
 from xlattice import (check_hashtype,
-                      parse_hashtype_etc, fix_hashtype)
+                      parse_hashtype_etc, fix_hashtype,
+                      check_u_path)
 from nlhtree import (__version__, __version_date__, NLHTree)
 
 
 def main():
-    """
-    Command line wrapper for the check_in_data_dir function, which verifies
-    that the nodes of an NLHTree are present in a data directory.
-    """
+    """  Collect parameters for checkInUDir. """
 
-    app_name = 'nlh_check_in_data_dir %s' % __version__
-    # UDIR = os.environ['DVCZ_UDIR']
+    app_name = 'nlh_check_in_u_dir %s' % __version__
+    # u_dir = os.environ['DVCZ_UDIR']
 
     # parse the command line ----------------------------------------
     desc =\
-        'list any files in the NLHTree not present in the directory, '
+        'given a project directory, write an NLHTree while backing the project up to U'
 
     parser = ArgumentParser(description=desc)
 
     parser.add_argument('-b', '--list_file', default='list.nlh',
                         help='where to write listing (default = list.nlh)')
-
-    parser.add_argument('-d', '--data_dir', default='.',
-                        help='path to data directory')
 
     parser.add_argument('-j', '--just_show', action='store_true',
                         help='show options and exit')
@@ -47,7 +39,6 @@ def main():
                         help='print the version number and exit')
 
     parse_hashtype_etc(parser)
-
     args = parser.parse_args()
 
     if args.show_version:
@@ -63,14 +54,17 @@ def main():
         #   that is not already in use
         # XXX This behavior needs to be clearly documented.
         args.list_file = os.path.join('tmp', args.list_file)
+        if args.u_path[0] == '/':
+            args.u_path = args.u_path[1:]
+        args.u_path = os.path.join('tmp', args.u_path)
 
     # sanity checks -------------------------------------------------
     check_hashtype(args.hashtype)
-
-    if not (args.testing or args.just_show):
-        if not os.path.exists(args.data_dir):
-            print("%s does not exist; cannot continue" % args.data_dir)
-            sys.exit(1)
+    if not args.just_show:
+        check_u_path(parser, args, must_exist=True)
+        os.makedirs(os.path.join(args.u_path, 'in'), mode=0o755, exist_ok=True)
+        os.makedirs(
+            os.path.join(args.u_path, 'tmp'), mode=0o755, exist_ok=True)
 
     # complete setup ------------------------------------------------
 
@@ -81,7 +75,8 @@ def main():
     # do what's required --------------------------------------------
     if not args.just_show:
         tree = NLHTree.parse_file(args.list_file, args.hashtype)
-        tree.check_in_data_dir(args.data_dir)
+        tree.check_in_u_dir(args.u_path)
+
 
 if __name__ == '__main__':
     main()

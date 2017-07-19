@@ -1,25 +1,31 @@
 #!/usr/bin/python3
-# 'apt-get install python-dev' may be necessary to get .core
+# nlhtree_py/setup.py
 
-""" Set up distutils for nlhtree_py. """
+""" Setuptools project configuration for nlhtree_py. """
 
-import re
-from distutils.core import setup
-__version__ = re.search(r"__version__\s*=\s*'(.*)'",
-                        open('nlhtree/__init__.py').read()).group(1)
+from os.path import exists
+from setuptools import setup
+
+long_desc = None
+if exists('README.md'):
+    with open('README.md', 'r') as file:
+        long_desc = file.read()
 
 setup(name='nlhtree_py',
-      version=__version__,
+      version='0.7.12',
       author='Jim Dixon',
       author_email='jddixon@gmail.com',
+      long_description=long_desc,
+      packages=['nlhtree'],
+      package_dir={'': 'src'},
       py_modules=[],
-      packages=['nlhtree', ],
+      include_package_data=False,
+      zip_safe=False,
       scripts=[
-          'nlh_check_in_data_dir',
-          'nlh_check_in_u_dir',
-          'nlh_populate_data_dir',
-          'nlh_save_to_u_dir',
-      ],
+          'src/nlh_check_in_data_dir',
+          'src/nlh_check_in_u_dir',
+          'src/nlh_populate_data_dir',
+          'src/nlh_save_to_u_dir'],
       description='data structure for representing directory and contents',
       url='https://jddixon.github.io/nlhtree_py',
       classifiers=[

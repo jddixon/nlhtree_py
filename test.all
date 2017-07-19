@@ -4,15 +4,7 @@ if [ ! -z "${DEV_BASE// }" ]
 then
   cd $DEV_BASE/py/nlhtree_py
   
-  ./test_cross_functions.py
-  ./test_drop_from_u.py
-  ./test_iters.py
-  ./test_nlh_base.py
-  ./test_nlh_leaf.py
-  ./test_nlh_tree.py
-  ./test_nlh_tree2.py
-  ./test_nlh_tree3.py
-  ./test_walker.py
+  PYTHONPATH=".:src:test" pytest
   
 else
   echo "DEV_BASE is not defined"

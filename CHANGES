@@ -1,6 +1,15 @@
 py/nlhtree_py/CHANGES
 
 
+v0.7.12
+    2017-07-19
+        * rewrite setup.py, MANIFEST.in; edit cfg files             SLOC 2865
+v0.7.11
+    2017-06-14
+        * restructure for pytest                                    SLOC 2877
+v0.7.10
+    2017-04-26
+        * drop dist/* from repos; plus minor edits                  SLOC 2938
 v0.7.9
     2017-02-26
         * improved docs                                             SLOC 2961
@@ -183,6 +192,9 @@ v0.1.0
 v0.0.0
     2015-05-20
         * initial import                                            SLOC   47
+
+
+
 
 
 

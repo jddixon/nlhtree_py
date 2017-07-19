@@ -169,5 +169,6 @@ class TestNLHTree2(unittest.TestCase):
         tree1c = tree1.clone()
         self.assertEqual(tree1c, tree1)
 
+
 if __name__ == '__main__':
     unittest.main()

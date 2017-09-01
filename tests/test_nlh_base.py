@@ -16,6 +16,7 @@ from xlattice import HashTypes  # , check_hashtype
 if sys.version_info < (3, 6):
     # pylint: disable=unused-import
     import sha3     # monkey-patches hashlib
+    assert sha3     # suppress warning
 
 
 class TestNLHBase(unittest.TestCase):
@@ -56,7 +57,7 @@ class TestNLHBase(unittest.TestCase):
             sha = hashlib.sha3_256()
 
         # XXX WORKING HERE
-        _ = sha
+        assert sha          # suppress warning
 
     def test_simple_tree(self):
         """ XXX STUB: test building simple tree. """

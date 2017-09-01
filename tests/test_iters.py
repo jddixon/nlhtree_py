@@ -3,7 +3,6 @@
 
 """ Test iteration over NLHTree instances. """
 
-#import sys
 import unittest
 
 # import hashlib

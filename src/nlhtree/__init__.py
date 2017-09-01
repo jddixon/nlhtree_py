@@ -4,10 +4,8 @@
 
 import binascii
 import fnmatch
-import itertools
 import os
 import re
-import sys
 from stat import S_ISDIR
 
 from xlattice import HashTypes, check_hashtype
@@ -15,15 +13,15 @@ from xlattice.crypto import SP   # for get_spaces()
 from xlattice.u import (file_sha1hex, file_sha2hex, file_sha3hex, UDir)
 
 from xlattice import (
-    SHA1_BIN_LEN, SHA1_HEX_LEN, SHA1_BIN_NONE, SHA1_HEX_NONE,
-    SHA2_BIN_LEN, SHA2_HEX_LEN, SHA2_BIN_NONE, SHA2_HEX_NONE,
-    SHA3_BIN_LEN, SHA3_HEX_LEN, SHA3_BIN_NONE, SHA3_HEX_NONE)
+    SHA1_BIN_LEN, SHA1_HEX_NONE,
+    SHA2_BIN_LEN, SHA2_HEX_NONE,
+    SHA3_BIN_LEN, SHA3_HEX_NONE)
 
 __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree', ]
 
-__version__ = '0.7.12'
-__version_date__ = '2017-07-19'
+__version__ = '0.7.13'
+__version_date__ = '2017-09-01'
 
 
 class NLHError(RuntimeError):
@@ -219,16 +217,16 @@ class NLHTree(NLHNode):
     """
 
     # notice the terminating forward slash and lack of newlines or CR-LF
-    DIR_LINE_RE = re.compile(r'^( *)([a-z0-9_\$\+\-\.~]+/?)$',
-                             re.IGNORECASE)
-    FILE_LINE_RE_1 = re.compile(r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{40})$',
-                                re.IGNORECASE)
+    DIR_LINE_RE = re.compile(
+        r'^( *)([a-z0-9_\$\+\-\.~]+/?)$', re.IGNORECASE)
+    FILE_LINE_RE_1 = re.compile(
+        r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{40})$', re.IGNORECASE)
 
-    FILE_LINE_RE_2 = re.compile(r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{64})$',
-                                re.IGNORECASE)
+    FILE_LINE_RE_2 = re.compile(
+        r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{64})$', re.IGNORECASE)
 
-    FILE_LINE_RE_3 = re.compile(r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{64})$',
-                                re.IGNORECASE)
+    FILE_LINE_RE_3 = re.compile(
+        r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{64})$', re.IGNORECASE)
 
     def __init__(self, name, hashtype=HashTypes.SHA2):
         super().__init__(name, hashtype)
@@ -381,7 +379,8 @@ class NLHTree(NLHNode):
             raise NLHError("cannot create a NLHTree, no path set")
         if not os.path.exists(path_to_dir):
             raise NLHError(
-                "NLHTree.create_from_file_system: directory '%s' does not exist" % path_to_dir)
+                ("NLHTree.create_from_file_system: directory '%s' " +
+                 "does not exist") % path_to_dir)
         (path, _, name) = path_to_dir.rpartition('/')
         if path == '':
             raise NLHError("cannot parse path " + path_to_dir)
@@ -648,8 +647,8 @@ class NLHTree(NLHNode):
             raise "name of directory (%s) does not match name of tree (%s)"
 
         # DEBUG
-        #print("save_to_u_dir %s ==> %s" % (data_dir, u_path))
-        #print("  path => '%s'" % path)
+        # print("save_to_u_dir %s ==> %s" % (data_dir, u_path))
+        # print("  path => '%s'" % path)
         # END
 
         u_dir = UDir.discover(u_path, hashtype=self.hashtype)

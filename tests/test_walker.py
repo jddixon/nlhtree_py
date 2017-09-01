@@ -90,7 +90,7 @@ class TestWalker(unittest.TestCase):
         check_hashtype(hashtype)
 
         # DEBUG
-        #print("\nSPOT CHECKS")
+        # print("\nSPOT CHECKS")
         # END
         if hashtype == HashTypes.SHA1:
             rel_path_to_data = 'example1/dataDir'
@@ -219,7 +219,7 @@ class TestWalker(unittest.TestCase):
         # -- walk string representation -----------------------------
 
         # DEBUG
-        #print("\nWALK STRING")
+        # print("\nWALK STRING")
         # sys.stdout.flush()
         # END
 
@@ -236,10 +236,10 @@ class TestWalker(unittest.TestCase):
         # -- walk NLHTree object ------------------------------------
 
         # DEBUG
-        #print("\nWALK OBJECT")
+        # print("\nWALK OBJECT")
         # sys.stdout.flush()
-        #hasattr(tree, '__iter__')
-        #hasattr(tree, '__next__')
+        # hasattr(tree, '__iter__')
+        # hasattr(tree, '__next__')
         # END
 
         for couple in tree:
@@ -255,7 +255,7 @@ class TestWalker(unittest.TestCase):
         # -- verify the lists are identical -------------------------
 
         # DEBUG
-        #print("\nIDENTITY CHECKS %s" % hashtype)
+        # print("\nIDENTITY CHECKS %s" % hashtype)
         # sys.stdout.flush()
         # END
 
@@ -267,7 +267,7 @@ class TestWalker(unittest.TestCase):
                 self.assertEqual(a_val, b_list[ndx])
 
         # DEBUG
-#       #print("FROM_DISK:")
+#       # print("FROM_DISK:")
 #       for i in from_disk:
 #           if len(i) == 1:
 #               print("  %s" % (i[0]))
@@ -285,12 +285,12 @@ class TestWalker(unittest.TestCase):
         compare_lists(from_disk, from_strings)
 
         # DEBUG
-        #print("\ncomparing from_disk, from_str")
+        # print("\ncomparing from_disk, from_str")
         # END
         compare_lists(from_disk, from_str)
 
         # DEBUG
-        #print("\ncomparing from_disk, from_obj")
+        # print("\ncomparing from_disk, from_obj")
         # END
         compare_lists(from_disk, from_obj)
 

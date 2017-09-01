@@ -7,27 +7,31 @@ Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END PUBLIC KEY-----
-nlhtree_py v0.7.12
-2017-07-19 18:44:53
+nlhtree_py v0.7.13
+2017-09-01 21:55:47
 # BEGIN CONTENT #
 nlhtree_py
+ .cache
+  v
+   cache
+    lastfailed 2c3a5a5c060941b5ba22930a21551a64b33b05fc
  .dvcz
-  builds d3e61e2e5a6cf1281869bd3656c6188d1baea4ae
+  builds 09a1add94b753e4c2d36d881d416d2d0a6be237f
   copyright 1e260b42471827b63297135ea88f5f793cced7ab
-  lastBuildList da6d856dcb6778b5a1fc8d64357e6ac72242f23c
+  lastBuildList aa031213d2550b0225e8804b205e2dfc0bd82577
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
-  projCfg e773aa44e657b1f3ce5497eadc42b943b1789021
+  projCfg 177f4bf363b27d3d57cbad30aba2fd85099b07cc
   projCfg.local 2ba7cb1ce7612606ea2a9524caef6ecbeb2b20df
-  version 1bf4a8e8388484880f9148a98e54ea00c583f7e6
- .gitignore 5185a3cb0539828e50edfc25d60c80ae291197fa
- CHANGES f7c615dea4265e391314ee4e3addf826c1e6a8a5
+  version 75c5adde15250c447aaaa8de766494e2299897d1
+ .gitignore c8129c7133b7a7755cefd3dfc62a9af7bc306aa0
+ CHANGES da65f8098fece38aa20a1f8f8f9f7964d73ceaa1
  LICENSE-MIT.md b36c6fcddc299aa108eaa19eab76680adc8a7698
- MANIFEST.in ab66c4ba9f7b7352eb828e32839a387bf990125b
+ MANIFEST.in ee87ecf6928c0c4c69376734eba9cf532ce748b1
  README.md 732bda78588f73f206d1dce073a5857cea96055c
  TODO 901b560f99c892fc55559701c6de98889e064057
  bkp2U 4bc5e565fcc140f4e28fa6f42cf4f7925e4d512d
  checkCoverage 60680f29981b45448aea18433b9ee5aba0aba927
- countem d206c5156e74c67e1025af3acb1f716732ff9457
+ countem b4c9b790b72f996dbbc76a800e424aee3bc0a0ee
  doPyLint 31321ad99eb3b9ac0928a68c29a8b5b88c9472fb
  example1
   dataDir
@@ -142,16 +146,30 @@ nlhtree_py
   index.md 2ebd7525e3b231a3acb97f33160e966fd92c8ed4
  installit fabcb17eafffd9bf015bdda55306ddb39968f43a
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
- setup.py a2fce5f21282689afbe89b430d0c141de62bb046
+ requirements.txt a8db609eafc2659568e21dce309dad34d1d87178
+ setup.py d780c25216032f2d9b6b3c16b996946aa8dab7e6
  src
   nlh_check_in_data_dir 068f9c2847405caf608a880028686c42f36ae0cf
   nlh_check_in_u_dir f0832bcb881fd24837c2ecf4f41c5fa2fee338bb
   nlh_populate_data_dir fcc1c7ba5c890a2d587bde85243b714f625ec4ba
   nlh_save_to_u_dir a31bcc4d72959c1a9bec50398d8f57ff1c56f008
   nlhtree
-<<<<<<< HEAD
-   __init__.py 6a540fb9834f02a2f547d6949987b0f5d834af40
+   __init__.py e73387a2da5e2810f60bb90291b227e4c409d420
    base.py 36461e5089dfe4fdd58144fbd119ce7bf42fd7c2
- styleit cfb20adad4781f8e8ab2cbbe1a714c3568b5e898
- test.all ed0e3f4fa7ce6d53c66a9fd70c02f13835435902
-BknXGwJII62C6unz8QAjZQ8Q9FQgt5JwPJm6lL8XDjxuiDxHl0F9mCd6/ij7doqjpvyXPpy0wpaP5e04wIRoaB9wqnB/iLsTo66slZiU09x3oK4w7EKlRWtcsTvW8E6/PSS6XltzNHKeMSDaD8vl1C3fIroPmi3JB+XSo0ap6Yms/lcq8aPFflma54g8PbULawgEHgmOfQ5Fl2e61JlnO1lBRap4YajQIEvtyrZYkHzzQw6HLd3Xni16b5iRy+/p+7mKe07VUlaYv2nJTNWWfHTYfhjrTuBx/lcv1IV8X3+Cli3vSh56IxWpcDOrsSQ3C+V/S01XSB+bVubjdjex8g==
+ styleit bac7343a891cc8e4bcfd413173b2936fd29134d8
+ test.all de45116ffe98121a95428fb4b422242d74669e9d
+ test_requirements.txt 98df685f9a9d2dcdbb65f509e6c72a7ad5a97e71
+ tests
+  test_cross_functions.py 59cc2c1d54907d533d6551b778e5fa03ad2e5483
+  test_drop_from_u.py 5186bbb4bfa24aa639b7dcfbbf4a1470a0e4bfed
+  test_iters.py f3d4c73daae76bc0949c01f40afedd3c0feb7365
+  test_nlh_base.py f46b6250ae9ba1e7b09e30cf801b40602f0948a0
+  test_nlh_leaf.py cae66ab5df26a896e2e7ff5d7056ebb77166cd82
+  test_nlh_tree.py 143d84c3f0d19ecb2daf03ff55fd34dc5b2633bd
+  test_nlh_tree2.py 7c90be100e06fb23c5c93912475192925343694a
+  test_nlh_tree3.py d292fe5d894fcb36d91b7f3c472cf4ff4407e1b3
+  test_walker.py ecb1a671dd602128c42fb8446cb19a78260e0977
+ tox.ini e2d03d6dc8bbb2dfc697fae13d3da5177e89fd79
+# END CONTENT #
+
+EKvWQBfEU94UF8+lnuHgdMmcwf9XLQIjZCaqkzfB4fCZzsoRyGhRKWO5tvA9/jtdJOZUn9MLCqR4y4G3fOJQSuPFXmtWTZTSA5vTECFcmsXlk+xmjLSPcvRfgA/qJax7WvhRlOX1pZQcjyFAD5FH5KSzVlOnw5GyqzTUQKnOxJE56s0LtcLjPGTfH6oZ6FGsJwdyIytcY6gaDb6YLqtjJbz+o1vDkKeQKXyAepgvS0eNJssOLfojZAUMEbx8sGsc5XzhI0XZ+FjwqznbGo7EHijDFQd6skQ20dfa//501xN1cZO5M5U8aTvM4NWuGKioAnJ4vgQL3B9f34JZDHUdrA==

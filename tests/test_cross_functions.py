@@ -79,7 +79,7 @@ class TestCrossFunctions(unittest.TestCase):
 
         output_listing = tree.__str__()
         # DEBUG
-        #print("OUTPUT LISING for %s:\n%s" % (hashtype, output_listing))
+        # print("OUTPUT LISING for %s:\n%s" % (hashtype, output_listing))
         # END
         self.assertEqual(gold_listing, output_listing)
 

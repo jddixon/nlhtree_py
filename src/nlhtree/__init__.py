@@ -20,8 +20,8 @@ from xlattice import (
 __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree', ]
 
-__version__ = '0.7.13'
-__version_date__ = '2017-09-01'
+__version__ = '0.7.14'
+__version_date__ = '2017-09-10'
 
 
 class NLHError(RuntimeError):

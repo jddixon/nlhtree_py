@@ -1,2 +1,3 @@
 # nlhtree_py/test_requirements.txt
+pysha3
 

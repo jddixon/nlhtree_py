@@ -16,6 +16,7 @@ from xlattice import HashTypes, check_hashtype
 if sys.version_info < (3, 6):
     # pylint: disable=unused-import
     import sha3     # monkey-patches hashlib
+    assert sha3     # suppresses warning
 
 
 class TestNLHTree(unittest.TestCase):
@@ -55,7 +56,9 @@ class TestNLHTree(unittest.TestCase):
             self.do_test_simple_constructor(using)
 
     def do_test_simple_constructor(self, hashtype):
-        """ Build a tree with random name and data using specific hash type. """
+        """
+        Build a tree with random name and data using specific hash type.
+        """
 
         name = self.rng.next_file_name(8)
         tree = NLHTree(name, hashtype)

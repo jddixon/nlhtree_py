@@ -15,6 +15,7 @@ from nlhtree import NLHLeaf
 if sys.version_info < (3, 6):
     # pylint: disable=unused-import
     import sha3     # monkey-patches hashlib
+    assert sha3     # suppress warning
 
 
 class TestNLHLeaf(unittest.TestCase):

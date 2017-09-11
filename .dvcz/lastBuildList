@@ -7,27 +7,31 @@ Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END PUBLIC KEY-----
-nlhtree_py v0.7.12
-2017-07-19 18:44:53
+nlhtree_py v0.7.14
+2017-09-11 01:30:55
 # BEGIN CONTENT #
 nlhtree_py
+ .cache
+  v
+   cache
+    lastfailed 46b16fbbdccc9d2ae5e7246ff99eb9a1f1ae4ea0
  .dvcz
-  builds d3e61e2e5a6cf1281869bd3656c6188d1baea4ae
+  builds 852c69567fa735fe2a3c0d9a902789e8019c4ac7
   copyright 1e260b42471827b63297135ea88f5f793cced7ab
-  lastBuildList da6d856dcb6778b5a1fc8d64357e6ac72242f23c
+  lastBuildList 9cd6511730e2735954d13920f04d2607a8cfb75e
   license 5977a55c75bb4612004451a56b0b4c22d9d3311d
-  projCfg e773aa44e657b1f3ce5497eadc42b943b1789021
+  projCfg 177f4bf363b27d3d57cbad30aba2fd85099b07cc
   projCfg.local 2ba7cb1ce7612606ea2a9524caef6ecbeb2b20df
-  version 1bf4a8e8388484880f9148a98e54ea00c583f7e6
- .gitignore 5185a3cb0539828e50edfc25d60c80ae291197fa
- CHANGES f7c615dea4265e391314ee4e3addf826c1e6a8a5
+  version 8db8704cbd6f769314b52576d0b67c21c0592274
+ .gitignore c8129c7133b7a7755cefd3dfc62a9af7bc306aa0
+ CHANGES dda54923a5279065b6cfe41d2d4c09dc66a50df7
  LICENSE-MIT.md b36c6fcddc299aa108eaa19eab76680adc8a7698
- MANIFEST.in ab66c4ba9f7b7352eb828e32839a387bf990125b
+ MANIFEST.in ee87ecf6928c0c4c69376734eba9cf532ce748b1
  README.md 732bda78588f73f206d1dce073a5857cea96055c
  TODO 901b560f99c892fc55559701c6de98889e064057
  bkp2U 4bc5e565fcc140f4e28fa6f42cf4f7925e4d512d
  checkCoverage 60680f29981b45448aea18433b9ee5aba0aba927
- countem d206c5156e74c67e1025af3acb1f716732ff9457
+ countem b4c9b790b72f996dbbc76a800e424aee3bc0a0ee
  doPyLint 31321ad99eb3b9ac0928a68c29a8b5b88c9472fb
  example1
   dataDir
@@ -142,27 +146,30 @@ nlhtree_py
   index.md 2ebd7525e3b231a3acb97f33160e966fd92c8ed4
  installit fabcb17eafffd9bf015bdda55306ddb39968f43a
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
- setup.py a2fce5f21282689afbe89b430d0c141de62bb046
+ requirements.txt f2cb8dd550fefced9af7c1beceffbb95fdd50fe7
+ setup.py d780c25216032f2d9b6b3c16b996946aa8dab7e6
  src
   nlh_check_in_data_dir 068f9c2847405caf608a880028686c42f36ae0cf
   nlh_check_in_u_dir f0832bcb881fd24837c2ecf4f41c5fa2fee338bb
   nlh_populate_data_dir fcc1c7ba5c890a2d587bde85243b714f625ec4ba
   nlh_save_to_u_dir a31bcc4d72959c1a9bec50398d8f57ff1c56f008
   nlhtree
-   __init__.py 1dfc97a3f02b63f03605fdead9294ed78474359f
+   __init__.py d7b0005dbaaabe100577a07421c4d4c4e310665a
    base.py 36461e5089dfe4fdd58144fbd119ce7bf42fd7c2
  styleit bac7343a891cc8e4bcfd413173b2936fd29134d8
  test.all de45116ffe98121a95428fb4b422242d74669e9d
+ test_requirements.txt e043a8947b82d3eb297242df0b2c9f74092592bc
  tests
-  test_cross_functions.py 750b09c892388741d1b349951ca7d5b0033666df
-  test_drop_from_u.py 4e006f7c15244f7107add9dda93c89b7ec00965b
-  test_iters.py 21c8e625a872b26bd87a907edd3e5440ba440227
-  test_nlh_base.py 08be28d079d16fb2a7fd07c7a1819abb35a1472a
-  test_nlh_leaf.py 16ecd85296e665378fc60a0aa2fe95942b31e95f
-  test_nlh_tree.py f5bc5b1e96df83ba512b31c7073a007b143b2280
-  test_nlh_tree2.py e520b8ed08710bc591a01555114f5c899642d3c8
+  test_cross_functions.py 59cc2c1d54907d533d6551b778e5fa03ad2e5483
+  test_drop_from_u.py 5186bbb4bfa24aa639b7dcfbbf4a1470a0e4bfed
+  test_iters.py f3d4c73daae76bc0949c01f40afedd3c0feb7365
+  test_nlh_base.py f46b6250ae9ba1e7b09e30cf801b40602f0948a0
+  test_nlh_leaf.py cae66ab5df26a896e2e7ff5d7056ebb77166cd82
+  test_nlh_tree.py 143d84c3f0d19ecb2daf03ff55fd34dc5b2633bd
+  test_nlh_tree2.py 7c90be100e06fb23c5c93912475192925343694a
   test_nlh_tree3.py d292fe5d894fcb36d91b7f3c472cf4ff4407e1b3
-  test_walker.py 2cda169ac07ecf0782a25010558f4d52a3d8140a
+  test_walker.py ecb1a671dd602128c42fb8446cb19a78260e0977
+ tox.ini e287f12ae7dde279fb8ac1b07c8a2ff66e518bba
 # END CONTENT #
 
-BknXGwJII62C6unz8QAjZQ8Q9FQgt5JwPJm6lL8XDjxuiDxHl0F9mCd6/ij7doqjpvyXPpy0wpaP5e04wIRoaB9wqnB/iLsTo66slZiU09x3oK4w7EKlRWtcsTvW8E6/PSS6XltzNHKeMSDaD8vl1C3fIroPmi3JB+XSo0ap6Yms/lcq8aPFflma54g8PbULawgEHgmOfQ5Fl2e61JlnO1lBRap4YajQIEvtyrZYkHzzQw6HLd3Xni16b5iRy+/p+7mKe07VUlaYv2nJTNWWfHTYfhjrTuBx/lcv1IV8X3+Cli3vSh56IxWpcDOrsSQ3C+V/S01XSB+bVubjdjex8g==
+gxNLF4Xi9TlnZ/dJqaIguPtkv7pRA0BXKxKi9l4Ux4GqQOHMuK3lkubSA/uJKpSSBnonaWorvqT2CqIqQuevk08JMN1bok5IeUYfF2L89UQ6egFuItAWk8zqyzmra78ScrUD6pGKwPjGwzAqIGDckcp9e8512df1lwEAmQY2FK5z9cODIJTF+mR/cyQbs08arVaOvyhUqkVuf49E1KwSUeQKK5oigawahcxPn6HeBjfpDo5PadeNFxgm4LhdTcLmRLzmya65281rogk0DTYefK6V8cbnfw3EJ3qxAy/8+hlqJVnAiI8U6RQ8xM3TnYdQSchjctXI5ks/yNbmJKlZrg==

@@ -4,7 +4,6 @@
 """ Test trees derived from various quasi-random directory structures. """
 
 import os
-#import re
 import shutil
 # import sys
 import time
@@ -80,7 +79,9 @@ class TestNLHTree2(unittest.TestCase):
             self.do_test_pathless_unbound(hashtype)
 
     def do_test_pathless_unbound(self, hashtype):
-        """ Test constructor using two directories and a specific hash type. """
+        """
+        Test constructor using two directories and a specific hash type.
+        """
 
         (dir_name1, dir_name2) = self.get_two_unique_directory_names()
 

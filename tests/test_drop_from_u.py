@@ -18,6 +18,7 @@ from xlattice.u import UDir, DirStruc
 if sys.version_info < (3, 6):
     # pylint: disable=unused-import
     import sha3     # monkey-patches hashlib
+    assert sha3     # prevent flakes warning
 
 
 class TestDropFromU(unittest.TestCase):
@@ -35,7 +36,7 @@ class TestDropFromU(unittest.TestCase):
         """
         nnn = 16 + self.rng.next_int16(16)
         # DEBUG
-        #print("nnn = %d" % nnn)
+        # print("nnn = %d" % nnn)
         # EnnnD
 
         values = []
@@ -63,7 +64,7 @@ class TestDropFromU(unittest.TestCase):
             path_to_file = os.path.join(data_path, file_name)
             with open(path_to_file, 'wb') as file:
                 # DEBUG
-                #print("writing %s to %s" % (hex_key, path_to_file))
+                # print("writing %s to %s" % (hex_key, path_to_file))
                 # END
                 file.write(datum)
 
@@ -73,7 +74,7 @@ class TestDropFromU(unittest.TestCase):
             tree.insert(leaf)
 
             # DEBUG
-            #print("  inserting <%s %s>" % (leaf.name, leaf.hex_hash))
+            # print("  inserting <%s %s>" % (leaf.name, leaf.hex_hash))
             # END
 
             # write data into uDir ------------------------
@@ -107,7 +108,7 @@ class TestDropFromU(unittest.TestCase):
             u_path = os.path.join('tmp', u_root_name)
 
         # DEBUG
-        #print("u_root_name = %s" % u_root_name)
+        # print("u_root_name = %s" % u_root_name)
         # END
 
         # create uDir and the NLHTree
@@ -127,9 +128,9 @@ class TestDropFromU(unittest.TestCase):
         os.makedirs(data_path, mode=0o755)
 
         # DEBUG
-        #print("data_tmp = %s" % data_tmp)
-        #print("top_name = %s" % top_name)
-        #print('data_path = %s' % data_path)
+        # print("data_tmp = %s" % data_tmp)
+        # print("top_name = %s" % top_name)
+        # print('data_path = %s' % data_path)
         # END
 
         tree = NLHTree(top_name, hashtype)
@@ -151,12 +152,12 @@ class TestDropFromU(unittest.TestCase):
             struc, hashtype)
 
         # DEBUG
-        #print("TREE:\n%s" % tree)
+        # print("TREE:\n%s" % tree)
         # END
         # verify that the dataDir matches the nlhTree
         tree2 = NLHTree.create_from_file_system(data_path, hashtype)
         # DEBUG
-        #print("TREE2:\n%s" % tree2)
+        # print("TREE2:\n%s" % tree2)
         # END
         self.assertEqual(tree2, tree)
 
@@ -198,7 +199,7 @@ class TestDropFromU(unittest.TestCase):
 
         # the clone subtree contains those elements which will be dropped
         # from uDir
-        _ = clone.drop_from_u_dir(u_path)      # was unmatched
+        clone.drop_from_u_dir(u_path)               # was unmatched
 
         # DEBUG
         # for x in unmatched:  # (relPath, hash)

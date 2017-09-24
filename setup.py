@@ -12,7 +12,7 @@ if exists('README.md'):
         long_desc = file.read()
 
 setup(name='nlhtree_py',
-      version='0.7.13',
+      version='0.7.15',
       author='Jim Dixon',
       author_email='jddixon@gmail.com',
       long_description=long_desc,

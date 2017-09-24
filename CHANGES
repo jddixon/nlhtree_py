@@ -1,6 +1,9 @@
 py/nlhtree_py/CHANGES
 
 
+v0.7.15
+    2017-09-23
+        * pep8 etc; add projConfig.toml                             SLOC 2962
 v0.7.14
     2017-09-10
         * correct tox.ini, *requirements.txt                        SLOC 2920
@@ -230,7 +233,5 @@ v0.0.0
 
 
 
-<<<<<<< HEAD
-=======
 
->>>>>>> devel
+

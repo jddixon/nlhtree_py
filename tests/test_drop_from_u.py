@@ -47,7 +47,6 @@ class TestDropFromU(unittest.TestCase):
             values.append(datum)
 
             # generate hash = bin_key ----------------------
-            # pylint:disable=redefined-variable-type
             if hashtype == HashTypes.SHA1:
                 sha = hashlib.sha1()
             elif hashtype == HashTypes.SHA2:
@@ -199,13 +198,13 @@ class TestDropFromU(unittest.TestCase):
 
         # the clone subtree contains those elements which will be dropped
         # from uDir
-        clone.drop_from_u_dir(u_path)               # was unmatched
+        unmatched = clone.drop_from_u_dir(u_path)               # was unmatched
 
         # DEBUG
         # for x in unmatched:  # (relPath, hash)
         #    print("unmatched: %s %s" % (x[0], x[1]))
         # END
-        # self.assertEqual( len(unmatched), 0)      ### XXX
+        self.assertEqual(len(unmatched), 0)
 
         u_dir = UDir(u_path, struc, hashtype)
         self.assertTrue(os.path.exists(u_path))

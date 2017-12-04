@@ -34,7 +34,6 @@ class TestNLHLeaf(unittest.TestCase):
         """ Test constructor for specific hash. """
 
         check_hashtype(hashtype)
-        # pylint:disable=redefined-variable-type
         if hashtype == HashTypes.SHA1:
             sha = hashlib.sha1()
         elif hashtype == HashTypes.SHA2:

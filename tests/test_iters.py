@@ -80,13 +80,10 @@ class TestIters(unittest.TestCase):
         check_hashtype(hashtype)
         if hashtype == HashTypes.SHA1:
             rel_path_to_data = 'example1/dataDir'
-            # rel_path_to_nlh = 'example1/example.nlh'
         elif hashtype == HashTypes.SHA2:
             rel_path_to_data = 'example2/dataDir'
-            # rel_path_to_nlh = 'example2/example.nlh'
         elif hashtype == HashTypes.SHA3:
             rel_path_to_data = 'example3/dataDir'
-            # rel_path_to_nlh = 'example3/example.nlh'
 
         tree = NLHTree.create_from_file_system(rel_path_to_data, hashtype)
         self.assertIsNotNone(tree)

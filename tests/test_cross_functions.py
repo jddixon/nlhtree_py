@@ -92,7 +92,7 @@ class TestCrossFunctions(unittest.TestCase):
 
         # second iteration over tree
         unmatched = tree.check_in_u_dir(target_u_dir)
-        if len(unmatched) > 0:
+        if unmatched:
             for unm in unmatched:
                 # DEBUG
                 # print(u)

@@ -1,38 +1,29 @@
-# projConfig.toml for nlhtree_py
-
 [meta]
-    version= '0.1.0'
+version = "0.1.0"
 
 [project]
-    name = 'nlhtree_py'             # external name = distribution name
-    package = 'nlhtree'             # internal name
-    main_lang = 'py'
-    version = '0.7.14'
-    version_date = '2017-09-23'
-    author = 'Jim Dixon'
-    author_email = 'jdd@gmail.com'
-    copyright = '2015-2017'
-    description='data structure for representing directory and contents'
-    dev_status = 'beta'
-    license = 'mit'
-    relpath = 'py/nlhtree_py'
-    state = 'shared'
-    url = 'https://jddixon.github.io/nlhtree_py'
+name = "nlhtree_py"
+package = "nlhtree"
+main_lang = "py"
+version = "0.7.16"
+version_date = "2017-12-04"
+author = "Jim Dixon"
+author_email = "jdd@gmail.com"
+copyright = "2015-2017"
+description = "data structure for representing directory and contents"
+dev_status = "beta"
+license = "mit"
+relpath = "py/nlhtree_py"
+state = "shared"
+url = "https://jddixon.github.io/nlhtree_py"
 
 [py]
-    packages = ['nlhtree']
-    package_dir = ['src']
-    test_dir = 'tests'
-    py_modules = []
-    scripts=['src/nlh_check_in_data_dir', 'src/nlh_check_in_u_dir',
-             'src/nlh_populate_data_dir', 'src/nlh_save_to_u_dir']
-    ext_modules = []
-
-    # sdReq output
-    distshare = ['options', 'rnglib']
-    requirements=['cryptography', 'pycrypt', 'pysha3', 'scandir', 'setuptools']
-    test_requirements=['pyev']
-
-    # trove stuff is TBD
-
-
+packages = [ "nlhtree",]
+package_dir = [ "src",]
+test_dir = "tests"
+py_modules = []
+scripts = [ "src/nlh_check_in_data_dir", "src/nlh_check_in_u_dir", "src/nlh_populate_data_dir", "src/nlh_save_to_u_dir",]
+ext_modules = []
+distshare = [ "options", "rnglib",]
+requirements = [ "cryptography", "pycrypt", "pysha3", "scandir", "setuptools",]
+test_requirements = [ "pyev",]

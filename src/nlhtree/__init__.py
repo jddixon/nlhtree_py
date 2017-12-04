@@ -20,8 +20,8 @@ from xlattice import (
 __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree', ]
 
-__version__ = '0.7.15'
-__version_date__ = '2017-09-23'
+__version__ = '0.7.16'
+__version_date__ = '2017-12-04'
 
 
 class NLHError(RuntimeError):
@@ -127,6 +127,7 @@ class NLHNode(object):
 
 
 class NLHLeaf(NLHNode):
+    """ Leaf node in an NLH tree. """
 
     def __init__(self, name, bin_hash, hashtype):
         # exception if check fails
@@ -160,7 +161,6 @@ class NLHLeaf(NLHNode):
         """ Return a deep copy of this node. """
 
         hash_len = len(self._bin_hash)
-        # pylint:disable=redefined-variable-type
         if hash_len == SHA1_BIN_LEN:
             hashtype = HashTypes.SHA1
         elif hash_len == SHA2_BIN_LEN:
@@ -257,15 +257,9 @@ class NLHTree(NLHNode):
 
     def __eq__(self, other):
         """ Whether this tree equals another. """
-        if other is None:
-            return False
-        if not isinstance(other, NLHTree):
-            return False
-        if self.name != other.name:
-            return False
-        if self.hashtype != other.hashtype:
-            return False
-        if len(self.nodes) != len(other.nodes):
+        if other is None or not isinstance(other, NLHTree) or \
+                self.name != other.name or self.hashtype != other.hashtype or \
+                len(self.nodes) != len(other.nodes):
             return False
         for i in range(len(self.nodes)):
             if not self.nodes[i] == other.nodes[i]:
@@ -403,7 +397,6 @@ class NLHTree(NLHNode):
                 string = os.lstat(path_to_file)        # ignores symlinks
                 mode = string.st_mode
                 # os.path.isdir(path) follows symbolic links
-                # pylint:disable=redefined-variable-type
                 if S_ISDIR(mode):
                     node = NLHTree.create_from_file_system(
                         path_to_file, hashtype, ex_re, match_re)
@@ -427,7 +420,7 @@ class NLHTree(NLHNode):
         match = NLHTree.DIR_LINE_RE.match(string)
         if not match:
             raise NLHParseError("first line doesn't match expected pattern")
-        if len(match.group(1)) != 0:
+        if match.group(1):
             raise NLHParseError("unexpected indent on first line")
         return match.group(2)   # the name
 
@@ -461,7 +454,7 @@ class NLHTree(NLHNode):
         # at entry, we don't know whether the string array uses
         # SHA1 or SHA256
 
-        if len(lines) == 0:
+        if not lines:
             return None
 
         name = NLHTree.parse_first_line(lines[0])
@@ -470,24 +463,23 @@ class NLHTree(NLHNode):
         stack = [root]
         depth = 0
 
-        lines = lines[1:]
-        for line in lines:
+        for line in lines[1:]:
             indent, name, hash_ = NLHTree.parse_other_line(line)
             if hash_ is not None:
                 b_hash = binascii.a2b_hex(hash_)
 
             if indent > depth + 1:
-                # DEBUG
-                print("IMPOSSIBLE: indent %d, depth %d" % (indent, depth))
-                # END
-                if hash_:
-                    leaf = NLHLeaf(name, b_hash, hashtype)
-                    stack[depth].insert(leaf)
-                else:
-                    sub_tree = NLHTree(name, hashtype)
-                    stack.append(sub_tree)
-                    depth += 1
-            elif indent == depth + 1:
+                raise NLHError("IMPOSSIBLE: indent %d, depth %d" %
+                               (indent, depth))
+#               if hash_:
+#                   leaf = NLHLeaf(name, b_hash, hashtype)
+#                   stack[depth].insert(leaf)
+#               else:
+#                   sub_tree = NLHTree(name, hashtype)
+#                   stack.append(sub_tree)
+#                   depth += 1
+
+            if indent == depth + 1:
                 if hash_ is None:
                     sub_tree = NLHTree(name, hashtype)
                     stack[depth].insert(sub_tree)
@@ -640,6 +632,7 @@ class NLHTree(NLHNode):
         all files present in data_dir into u_path by content key.  We assume
         that u_path is well-formed.
         """
+        _ = using_indir     # SUPRESS WARNING
 
         # the last part of data_dir is the name of the tree
         (path, _, name) = data_dir.rpartition('/')
@@ -857,11 +850,9 @@ class NLHTree(NLHNode):
             self._nn += 1
             return (os.path.join(self._prefix, self._name, next_node.name),
                     next_node.hex_hash,)
-        else:
-            self._sub_tree = next_node.__iter__()
 
-            self._sub_tree.prefix = os.path.join(self.prefix, self.name)
-
-            return self._sub_tree.__next__()
+        self._sub_tree = next_node.__iter__()
+        self._sub_tree.prefix = os.path.join(self.prefix, self.name)
+        return self._sub_tree.__next__()
 
     # END ITERABLE ########################################

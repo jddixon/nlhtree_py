@@ -40,6 +40,10 @@ class TestNLHLeaf(unittest.TestCase):
             sha = hashlib.sha256()
         elif hashtype == HashTypes.SHA3:
             sha = hashlib.sha3_256()
+        elif hashtype == HashTypes.BLAKE2B:
+            sha = hashlib.blake2b(digest_size=32)
+        else:
+            raise NotImplementedError
 
         name = self.rng.next_file_name(8)
         nnn = self.rng.some_bytes(8)

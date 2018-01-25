@@ -9,19 +9,23 @@ import re
 from stat import S_ISDIR
 
 from xlattice import HashTypes, check_hashtype
-from xlattice.crypto import SP   # for get_spaces()
-from xlattice.u import (file_sha1hex, file_sha2hex, file_sha3hex, UDir)
+from xlcrypto import SP   # for get_spaces()
+
+# BECOMES SEPARATE PROJECT
+from xlattice.u import (file_sha1hex, file_sha2hex, file_sha3hex,
+                        file_blake2b_hex, UDir)
 
 from xlattice import (
     SHA1_BIN_LEN, SHA1_HEX_NONE,
     SHA2_BIN_LEN, SHA2_HEX_NONE,
-    SHA3_BIN_LEN, SHA3_HEX_NONE)
+    SHA3_BIN_LEN, SHA3_HEX_NONE,
+    BLAKE2B_BIN_LEN, BLAKE2B_HEX_NONE)
 
 __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree', ]
 
-__version__ = '0.7.16'
-__version_date__ = '2017-12-04'
+__version__ = '0.7.17'
+__version_date__ = '2018-01-25'
 
 
 class NLHError(RuntimeError):
@@ -63,6 +67,10 @@ class NLHNode(object):
                 return SHA2_HEX_NONE
             elif self._hashtype == HashTypes.SHA3:
                 return SHA3_HEX_NONE
+            elif self._hashtype == HashTypes.BLAKE2B:
+                return BLAKE2B_HEX_NONE
+            else:
+                raise NotImplementedError
         else:
             return str(binascii.b2a_hex(self._bin_hash), 'ascii')
 
@@ -102,8 +110,11 @@ class NLHNode(object):
         elif hashtype == HashTypes.SHA3:
             if bin_hash_len != SHA3_BIN_LEN:
                 len_ok = False
+        elif hashtype == HashTypes.BLAKE2B:
+            if bin_hash_len != BLAKE2B_BIN_LEN:
+                len_ok = False
         else:
-            raise NLHError("invalid sha hash type ", hashtype)
+            raise NLHError("invalid hash type ", hashtype)
         if not len_ok:
             raise NLHError(
                 '%s: not a valid SHA binary hash length: %d' % (
@@ -167,6 +178,10 @@ class NLHLeaf(NLHNode):
             hashtype = HashTypes.SHA2
         elif hash_len == SHA3_BIN_LEN:
             hashtype = HashTypes.SHA3
+        elif hash_len == BLAKE2B_BIN_LEN:
+            hashtype = HashTypes.BLAKE2B
+        else:
+            raise NotImplementedError
 
         return NLHLeaf(self._name, self._bin_hash, hashtype)
 
@@ -200,6 +215,10 @@ class NLHLeaf(NLHNode):
                 hash_ = file_sha2hex(path)
             elif hashtype == HashTypes.SHA3:
                 hash_ = file_sha3hex(path)
+            elif hashtype == HashTypes.BLAKE2B:
+                hash_ = file_blake2b_hex(path)
+            else:
+                raise NotImplementedError
             b_hash = binascii.a2b_hex(hash_)
             return NLHLeaf(name, b_hash, hashtype)
         else:
@@ -226,6 +245,10 @@ class NLHTree(NLHNode):
         r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{64})$', re.IGNORECASE)
 
     FILE_LINE_RE_3 = re.compile(
+        r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{64})$', re.IGNORECASE)
+
+    # KLUDGE: USED FOR BLAKE2B
+    FILE_LINE_RE_4 = re.compile(
         r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{64})$', re.IGNORECASE)
 
     def __init__(self, name, hashtype=HashTypes.SHA2):
@@ -439,6 +462,7 @@ class NLHTree(NLHNode):
         if match:
             return len(match.group(1)), match.group(2), match.group(3)
 
+        # KLUDGE: SHA2, SHA3, BLAKE2B all use the same pattern
         match = NLHTree.FILE_LINE_RE_2.match(string)
         if match:
             return len(match.group(1)), match.group(2), match.group(3)
@@ -722,6 +746,8 @@ class NLHTree(NLHNode):
                         match = NLHTree.FILE_LINE_RE_2.match(line)
                     elif hashtype == HashTypes.SHA3:
                         match = NLHTree.FILE_LINE_RE_3.match(line)
+                    elif hashtype == HashTypes.BLAKE2B:
+                        match = NLHTree.FILE_LINE_RE_4.match(line)
                     if match:
                         cur_depth = len(match.group(1))
                         file_name = match.group(2)
@@ -771,6 +797,8 @@ class NLHTree(NLHNode):
                     match = NLHTree.FILE_LINE_RE_2.match(line)
                 elif hashtype == HashTypes.SHA3:
                     match = NLHTree.FILE_LINE_RE_3.match(line)
+                elif hashtype == HashTypes.BLAKE2B:
+                    match = NLHTree.FILE_LINE_RE_4.match(line)
                 else:
                     raise NotImplementedError()
                 if match:

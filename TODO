@@ -1,5 +1,8 @@
 py/nlhtree_py/TODO
 
+2018-01-25
+    * EXAMPLE4 tests need to be completed
+
 2017-12-04
     * need to implement cur_tree.setter
 

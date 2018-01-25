@@ -41,6 +41,9 @@ class TestCrossFunctions(unittest.TestCase):
         elif hashtype == HashTypes.SHA3:
             gold_data = 'example3/dataDir'
             gold_list_file = 'example3/example.nlh'
+        elif hashtype == HashTypes.BLAKE2B:
+            gold_data = 'example4/dataDir'
+            gold_list_file = 'example4/example.nlh'
         else:
             raise NotImplementedError
 

@@ -55,8 +55,11 @@ class TestNLHBase(unittest.TestCase):
         elif hashtype == HashTypes.SHA3:
             # pylint:disable=no-member
             sha = hashlib.sha3_256()
+        elif hashtype == HashTypes.BLAKE2B:
+            sha = hashlib.blake2b(digest_size=32)
+        else:
+            raise NotImplementedError
 
-        # XXX WORKING HERE
         assert sha          # suppress warning
 
     def test_simple_tree(self):

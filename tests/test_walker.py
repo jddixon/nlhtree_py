@@ -62,6 +62,23 @@ EXAMPLE3 = """dataDir
     data31 360ba73957c140fc28b8d6a8b7033cd2f896158fc8988fc68bb4877e4e13a048
 """
 
+# XXX THIS EXAMPLE IS * NOT CORRECT * :
+
+EXAMPLE4 = """dataDir
+ data1 adf6c7f792e8198631aacbbc8cee51181176f4c157d578ee226040d70f552db1
+ data2 c6e5bfc9f7189ef6276d0bf25f05c12c0e1dcdf10e1ac69f62a0642e9d7dfcc5
+ subDir1
+  data11 03ef2f36e12e9afaaabb71fe84c6db3a225714bfa0bd58440727932e23174886
+  data12 a7ffc6f8bf1ed76651c14756a061d662f580ff4de43b49fa82d80a4b80f8434a
+ subDir2
+ subDir3
+  data31 9400dfa37b52665f2056c93071a851a5e4c3c2c9245d39c640d9de796fa3d530
+ subDir4
+  subDir41
+   subDir411
+    data31 360ba73957c140fc28b8d6a8b7033cd2f896158fc8988fc68bb4877e4e13a048
+"""
+
 
 class TestWalker(unittest.TestCase):
     """
@@ -160,6 +177,12 @@ class TestWalker(unittest.TestCase):
             rel_path_to_data = 'example3/dataDir'
             rel_path_to_nlh = 'example3/example.nlh'
             example = EXAMPLE3
+        elif hashtype == HashTypes.BLAKE2B:
+            rel_path_to_data = 'example4/dataDir'
+            rel_path_to_nlh = 'example4/example.nlh'
+            example = EXAMPLE4
+        else:
+            raise NotImplementedError
 
         tree = NLHTree.create_from_file_system(rel_path_to_data, hashtype)
         self.assertIsNotNone(tree)

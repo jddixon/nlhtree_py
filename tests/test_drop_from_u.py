@@ -53,6 +53,10 @@ class TestDropFromU(unittest.TestCase):
                 sha = hashlib.sha256()
             elif hashtype == HashTypes.SHA3:
                 sha = hashlib.sha3_256()
+            elif hashtype == HashTypes.BLAKE2B:
+                sha = hashlib.blake2b(digest_size=32)
+            else:
+                raise NotImplementedError
             sha.update(datum)
             bin_key = sha.digest()
             hex_key = sha.hexdigest()

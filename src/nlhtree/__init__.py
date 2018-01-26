@@ -9,19 +9,23 @@ import re
 from stat import S_ISDIR
 
 from xlattice import HashTypes, check_hashtype
-from xlattice.crypto import SP   # for get_spaces()
-from xlattice.u import (file_sha1hex, file_sha2hex, file_sha3hex, UDir)
+from xlcrypto import SP   # for get_spaces()
+
+# BECOMES SEPARATE PROJECT
+from xlattice.u import (file_sha1hex, file_sha2hex, file_sha3hex,
+                        file_blake2b_hex, UDir)
 
 from xlattice import (
     SHA1_BIN_LEN, SHA1_HEX_NONE,
     SHA2_BIN_LEN, SHA2_HEX_NONE,
-    SHA3_BIN_LEN, SHA3_HEX_NONE)
+    SHA3_BIN_LEN, SHA3_HEX_NONE,
+    BLAKE2B_BIN_LEN, BLAKE2B_HEX_NONE)
 
 __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree', ]
 
-__version__ = '0.7.14'
-__version_date__ = '2017-09-10'
+__version__ = '0.8.0'
+__version_date__ = '2018-01-26'
 
 
 class NLHError(RuntimeError):
@@ -63,6 +67,10 @@ class NLHNode(object):
                 return SHA2_HEX_NONE
             elif self._hashtype == HashTypes.SHA3:
                 return SHA3_HEX_NONE
+            elif self._hashtype == HashTypes.BLAKE2B:
+                return BLAKE2B_HEX_NONE
+            else:
+                raise NotImplementedError
         else:
             return str(binascii.b2a_hex(self._bin_hash), 'ascii')
 
@@ -102,8 +110,11 @@ class NLHNode(object):
         elif hashtype == HashTypes.SHA3:
             if bin_hash_len != SHA3_BIN_LEN:
                 len_ok = False
+        elif hashtype == HashTypes.BLAKE2B:
+            if bin_hash_len != BLAKE2B_BIN_LEN:
+                len_ok = False
         else:
-            raise NLHError("invalid sha hash type ", hashtype)
+            raise NLHError("invalid hash type ", hashtype)
         if not len_ok:
             raise NLHError(
                 '%s: not a valid SHA binary hash length: %d' % (
@@ -127,6 +138,7 @@ class NLHNode(object):
 
 
 class NLHLeaf(NLHNode):
+    """ Leaf node in an NLH tree. """
 
     def __init__(self, name, bin_hash, hashtype):
         # exception if check fails
@@ -160,13 +172,16 @@ class NLHLeaf(NLHNode):
         """ Return a deep copy of this node. """
 
         hash_len = len(self._bin_hash)
-        # pylint:disable=redefined-variable-type
         if hash_len == SHA1_BIN_LEN:
             hashtype = HashTypes.SHA1
         elif hash_len == SHA2_BIN_LEN:
             hashtype = HashTypes.SHA2
         elif hash_len == SHA3_BIN_LEN:
             hashtype = HashTypes.SHA3
+        elif hash_len == BLAKE2B_BIN_LEN:
+            hashtype = HashTypes.BLAKE2B
+        else:
+            raise NotImplementedError
 
         return NLHLeaf(self._name, self._bin_hash, hashtype)
 
@@ -200,6 +215,10 @@ class NLHLeaf(NLHNode):
                 hash_ = file_sha2hex(path)
             elif hashtype == HashTypes.SHA3:
                 hash_ = file_sha3hex(path)
+            elif hashtype == HashTypes.BLAKE2B:
+                hash_ = file_blake2b_hex(path)
+            else:
+                raise NotImplementedError
             b_hash = binascii.a2b_hex(hash_)
             return NLHLeaf(name, b_hash, hashtype)
         else:
@@ -226,6 +245,10 @@ class NLHTree(NLHNode):
         r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{64})$', re.IGNORECASE)
 
     FILE_LINE_RE_3 = re.compile(
+        r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{64})$', re.IGNORECASE)
+
+    # KLUDGE: USED FOR BLAKE2B
+    FILE_LINE_RE_4 = re.compile(
         r'^( *)([a-z0-9_\$\+\-\.:~]+/?) ([0-9a-f]{64})$', re.IGNORECASE)
 
     def __init__(self, name, hashtype=HashTypes.SHA2):
@@ -257,15 +280,9 @@ class NLHTree(NLHNode):
 
     def __eq__(self, other):
         """ Whether this tree equals another. """
-        if other is None:
-            return False
-        if not isinstance(other, NLHTree):
-            return False
-        if self.name != other.name:
-            return False
-        if self.hashtype != other.hashtype:
-            return False
-        if len(self.nodes) != len(other.nodes):
+        if other is None or not isinstance(other, NLHTree) or \
+                self.name != other.name or self.hashtype != other.hashtype or \
+                len(self.nodes) != len(other.nodes):
             return False
         for i in range(len(self.nodes)):
             if not self.nodes[i] == other.nodes[i]:
@@ -403,7 +420,6 @@ class NLHTree(NLHNode):
                 string = os.lstat(path_to_file)        # ignores symlinks
                 mode = string.st_mode
                 # os.path.isdir(path) follows symbolic links
-                # pylint:disable=redefined-variable-type
                 if S_ISDIR(mode):
                     node = NLHTree.create_from_file_system(
                         path_to_file, hashtype, ex_re, match_re)
@@ -427,7 +443,7 @@ class NLHTree(NLHNode):
         match = NLHTree.DIR_LINE_RE.match(string)
         if not match:
             raise NLHParseError("first line doesn't match expected pattern")
-        if len(match.group(1)) != 0:
+        if match.group(1):
             raise NLHParseError("unexpected indent on first line")
         return match.group(2)   # the name
 
@@ -446,6 +462,7 @@ class NLHTree(NLHNode):
         if match:
             return len(match.group(1)), match.group(2), match.group(3)
 
+        # KLUDGE: SHA2, SHA3, BLAKE2B all use the same pattern
         match = NLHTree.FILE_LINE_RE_2.match(string)
         if match:
             return len(match.group(1)), match.group(2), match.group(3)
@@ -461,7 +478,7 @@ class NLHTree(NLHNode):
         # at entry, we don't know whether the string array uses
         # SHA1 or SHA256
 
-        if len(lines) == 0:
+        if not lines:
             return None
 
         name = NLHTree.parse_first_line(lines[0])
@@ -470,24 +487,23 @@ class NLHTree(NLHNode):
         stack = [root]
         depth = 0
 
-        lines = lines[1:]
-        for line in lines:
+        for line in lines[1:]:
             indent, name, hash_ = NLHTree.parse_other_line(line)
             if hash_ is not None:
                 b_hash = binascii.a2b_hex(hash_)
 
             if indent > depth + 1:
-                # DEBUG
-                print("IMPOSSIBLE: indent %d, depth %d" % (indent, depth))
-                # END
-                if hash_:
-                    leaf = NLHLeaf(name, b_hash, hashtype)
-                    stack[depth].insert(leaf)
-                else:
-                    sub_tree = NLHTree(name, hashtype)
-                    stack.append(sub_tree)
-                    depth += 1
-            elif indent == depth + 1:
+                raise NLHError("IMPOSSIBLE: indent %d, depth %d" %
+                               (indent, depth))
+#               if hash_:
+#                   leaf = NLHLeaf(name, b_hash, hashtype)
+#                   stack[depth].insert(leaf)
+#               else:
+#                   sub_tree = NLHTree(name, hashtype)
+#                   stack.append(sub_tree)
+#                   depth += 1
+
+            if indent == depth + 1:
                 if hash_ is None:
                     sub_tree = NLHTree(name, hashtype)
                     stack[depth].insert(sub_tree)
@@ -640,10 +656,11 @@ class NLHTree(NLHNode):
         all files present in data_dir into u_path by content key.  We assume
         that u_path is well-formed.
         """
+        _ = using_indir     # SUPRESS WARNING
 
         # the last part of data_dir is the name of the tree
         (path, _, name) = data_dir.rpartition('/')
-        if name != self.name:
+        if name != self._name:
             raise "name of directory (%s) does not match name of tree (%s)"
 
         # DEBUG
@@ -729,6 +746,8 @@ class NLHTree(NLHNode):
                         match = NLHTree.FILE_LINE_RE_2.match(line)
                     elif hashtype == HashTypes.SHA3:
                         match = NLHTree.FILE_LINE_RE_3.match(line)
+                    elif hashtype == HashTypes.BLAKE2B:
+                        match = NLHTree.FILE_LINE_RE_4.match(line)
                     if match:
                         cur_depth = len(match.group(1))
                         file_name = match.group(2)
@@ -778,6 +797,8 @@ class NLHTree(NLHNode):
                     match = NLHTree.FILE_LINE_RE_2.match(line)
                 elif hashtype == HashTypes.SHA3:
                     match = NLHTree.FILE_LINE_RE_3.match(line)
+                elif hashtype == HashTypes.BLAKE2B:
+                    match = NLHTree.FILE_LINE_RE_4.match(line)
                 else:
                     raise NotImplementedError()
                 if match:
@@ -857,11 +878,9 @@ class NLHTree(NLHNode):
             self._nn += 1
             return (os.path.join(self._prefix, self._name, next_node.name),
                     next_node.hex_hash,)
-        else:
-            self._sub_tree = next_node.__iter__()
 
-            self._sub_tree.prefix = os.path.join(self.prefix, self.name)
-
-            return self._sub_tree.__next__()
+        self._sub_tree = next_node.__iter__()
+        self._sub_tree.prefix = os.path.join(self.prefix, self.name)
+        return self._sub_tree.__next__()
 
     # END ITERABLE ########################################

@@ -1,0 +1,29 @@
+[meta]
+version = "0.1.0"
+
+[project]
+name = "nlhtree_py"
+package = "nlhtree"
+main_lang = "py"
+version = "0.8.0"
+version_date = "2018-01-26"
+author = "Jim Dixon"
+author_email = "jdd@gmail.com"
+copyright = "2015-2017"
+description = "data structure for representing directory and contents"
+dev_status = "beta"
+license = "mit"
+relpath = "py/nlhtree_py"
+state = "shared"
+url = "https://jddixon.github.io/nlhtree_py"
+
+[py]
+packages = [ "nlhtree",]
+package_dir = [ "src",]
+test_dir = "tests"
+py_modules = []
+scripts = [ "src/nlh_check_in_data_dir", "src/nlh_check_in_u_dir", "src/nlh_populate_data_dir", "src/nlh_save_to_u_dir",]
+ext_modules = []
+distshare = [ "options", "rnglib",]
+requirements = [ "cryptography", "pycrypt", "pysha3", "scandir", "setuptools",]
+test_requirements = [ "pyev",]

@@ -48,15 +48,18 @@ class TestNLHBase(unittest.TestCase):
     def do_test_with_simple_tree(self, hashtype):
         """ XXX STUB: test simple tree with specific hash. """
 
-        # pylint:disable=redefined-variable-type
         if hashtype == HashTypes.SHA1:
             sha = hashlib.sha1()
         elif hashtype == HashTypes.SHA2:
             sha = hashlib.sha256()
         elif hashtype == HashTypes.SHA3:
+            # pylint:disable=no-member
             sha = hashlib.sha3_256()
+        elif hashtype == HashTypes.BLAKE2B:
+            sha = hashlib.blake2b(digest_size=32)
+        else:
+            raise NotImplementedError
 
-        # XXX WORKING HERE
         assert sha          # suppress warning
 
     def test_simple_tree(self):

@@ -2,13 +2,7 @@
 
 """ Test behavior of NLHBase. """
 
-# from stat import *
-# from xlattice.crypto import SP   # for get_spaces()
 from nlhtree import NLHTree
-# from xlattice import (
-#     SHA1_BIN_LEN, SHA2_BIN_LEN,
-#     SHA1_HEX_LEN, SHA2_HEX_LEN,
-#     SHA1_BIN_NONE, SHA2_BIN_NONE)
 
 __all__ = [
     'NLHBase',
@@ -55,22 +49,24 @@ class NLHBase(object):
         XXX STUBBED
         """
 
-        if not path or path == '':
+        if not path:
             raise RuntimeError('path may not be None or empty')
 
         # needs to handle more complex cases
         path = path.strip()
         parts = path.split('/')             # many possible problems ignored
-        if len(parts) == 0:
-            # find a node with this name
-
-            # if it's a leaf, error
-
-            # otherwise set cur_tree to point to this node
-            pass
-        else:
+        if parts:
             raise NotImplementedError("can't handle multi-part paths yet")
 
             # XXX if the path begins with a forward slash ('/'), then
             # tentatively set the current tree to the root and then
             # apply the normal relpath logic from there
+
+        # find a node with this name
+        # XXX STUB XXX
+
+        # if it's a leaf, error
+        # XXX STUB XXX
+
+        # otherwise set cur_tree to point to this node
+        self._cur_tree = path

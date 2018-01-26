@@ -1,9 +1,21 @@
 py/nlhtree_py/TODO
 
+2018-01-26
+    * verify nlh_save_to_u_dir -h is correct
+    * make sure documentation for this is correct
+
+2018-01-25
+    * EXAMPLE4 tests need to be completed                               * DONE
+
+2017-12-04
+    * need to implement cur_tree.setter
+
+2017-11-25
+    * pylint option redefined-variable-type is now disabled by default,
+        so drop
+
 2017-02-08
     * need test of iterator(s) over xl_testData
-    * save_to_u_dir loses the hashtype parameter, using the tree's      * DONE
-        hashtype instead.                                               * DONE
     * save_to_u_dir needs to be tested
     * since uDir may not exist, save_to_u_dir() needs to be able 
         to supply all parameters to UDir.discover(), so needs optional
@@ -19,13 +31,9 @@ py/nlhtree_py/TODO
 
 2016-11-04
     * add sections on utilities to README.md
-    * drop function synonyms                                            * DONE
 
 2016-10-21
     * nlhtree/__init__.py functions need docstring
-
-2016-09-12
-    * get rid of noisy DEBUG statements                                 * DONE
 
 2016-09-07
     * NLHTree.insert params must include relPath; otherwise don't know
@@ -71,7 +79,6 @@ py/nlhtree_py/TODO
         be selectable from the command line, defaulting to U256
     
     * need to determine which of the tests is writing trash into tmp/
-    * get rid of isLeaf attribute                                       * DONE
 
 2016-05-11
     * write python3 utilities that wrap the functions (                 * DONE
@@ -100,23 +107,12 @@ py/nlhtree_py/TODO
     * need a similar iterator which traverses the serialized NLHTree,
         BuildList.walkFile(pathToFile)
 
-2016-05-02
-    * add clone() functions                                             * DONE
-        - and tests                                                     * DONE
-
 2015-09-09
     * testNLHTree3.py succeeded even though two file names (data11      * DONE
         and data12) were missing; FIX THIS (that is, make sure that     * DONE
         it fails if the NLHTree is ill-formed)                          * DONE
         - 2016-03-31 could not find any error                           * YEP
        
-2015-06-10
-    * move __SPACES__ and getSpaces() to xlattice/crypto to avoid       * DONE
-        import loops                                                    * DONE
-
-2015-06-08
-    * search for \r\n, CRLF sequences; certainly in NLHTree code        * DONE
-
 2015-06-06
     * BUG: typo in curTree setter path.strip('/') should be SPLIT       * FIXED
     * rest of code in that function is ropey and obviously never        * ???
@@ -125,8 +121,6 @@ py/nlhtree_py/TODO
             slashes
 
 2015-06-02
-    * G: add sample serialization                                       * DONE
-    * G: add explicit link to MerkleTree project                        * DONE
     * G: add a link to MagicSack, which uses NLHTrees
 
 2015-05-31

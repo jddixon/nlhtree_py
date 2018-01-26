@@ -35,34 +35,47 @@ class TestNLHTree3(unittest.TestCase):
     # this is just a hack but ...
     EXAMPLE2 = [
         'dataDir',
-        ' data1 012345678901234567890123bea7383743859a81b84cec8fde2ccd1f3e2ff688',
-        ' data2 012345678901234567890123895c210f5203c48c1e3a574a2d5eba043c0ec72d',
+        ' data1 012345678901234567890123bea7383743859a81b84' +
+        'cec8fde2ccd1f3e2ff688',
+        ' data2 012345678901234567890123895c210f5203c48c1e3' +
+        'a574a2d5eba043c0ec72d',
         ' subDir1',
-        '  data11 012345678901234567890123cb0ece05cbb91501d3dd78afaf362e63816f6757',
-        '  data12 012345678901234567890123da39a3ee5e6b4b0d3255bfef95601890afd80709',
+        '  data11 012345678901234567890123cb0ece05cbb91501d' +
+        '3dd78afaf362e63816f6757',
+        '  data12 012345678901234567890123da39a3ee5e6b4b0d3' +
+        '255bfef95601890afd80709',
         ' subDir2',
         ' subDir3',
-        '  data31 0123456789012345678901238cddeb23f9de9da4547a0d5adcecc7e26cb098c0',
+        '  data31 0123456789012345678901238cddeb23f9de9da45' +
+        '47a0d5adcecc7e26cb098c0',
         ' subDir4',
         '  subDir41',
         '   subDir411',
-        '    data41 01234567890123456789012331c16def9fc4a4b6415b0b133e156a919cf41cc8',
-        ' zData 01234567890123456789012331c16def9fc4a4b6415b0b133e156a919cf41cc8',
+        '    data41 01234567890123456789012331c16def9fc4a4b' +
+        '6415b0b133e156a919cf41cc8',
+        ' zData 01234567890123456789012331c16def9fc4a4b6415' +
+        'b0b133e156a919cf41cc8',
     ]
     EXAMPLE3 = [
         'dataDir',
-        ' data1 6d57759cf499a8ff7762a10043548f22513ed83456452332a8abd4b59d7e9203',
-        ' data2 dacbf5c11f4ddbd1277ecbc304e09967d3124148560f82634d3912db8b4bd547',
+        ' data1 6d57759cf499a8ff7762a10043548f22513ed834564' +
+        '52332a8abd4b59d7e9203',
+        ' data2 dacbf5c11f4ddbd1277ecbc304e09967d3124148560' +
+        'f82634d3912db8b4bd547',
         ' subDir1',
-        '  data11 fb47958129f261f65c1655002ff5f9806bc969283ad772af5e8caaf214a9ed72',
-        '  data12 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+        '  data11 fb47958129f261f65c1655002ff5f9806bc969283' +
+        'ad772af5e8caaf214a9ed72',
+        '  data12 e3b0c44298fc1c149afbf4c8996fb92427ae41e46' +
+        '49b934ca495991b7852b855',
         ' subDir2',
         ' subDir3',
-        '  data31 7659fb836a76fb3f3369e1a4ca247104220e4778d5862e38a123e10f02520e87',
+        '  data31 7659fb836a76fb3f3369e1a4ca247104220e4778d5' +
+        '862e38a123e10f02520e87',
         ' subDir4',
         '  subDir41',
         '   subDir411',
-        '    data41 00bb6d0864cb4952a0c41cbea65cf09de41e00fc6fa1011a27c5dd8814c98175',
+        '    data41 00bb6d0864cb4952a0c41cbea65cf09de41e00f' +
+        'c6fa1011a27c5dd8814c98175',
     ]
 
     def setUp(self):

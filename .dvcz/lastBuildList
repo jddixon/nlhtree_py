@@ -7,28 +7,26 @@ Giaje1YAJPNVBt3dlOA5lhBp4GpSYBskJ9UR2Zyt3lgAGK3dEwxYETLMh9VWEV8i
 k2lyCIE/V/CDb9eVDYQgYSJYrnQ/JAPST7NbcY8aI+/0l7QVBhLBpmOCvmS6ofvz
 /QIDAQAB
 -----END PUBLIC KEY-----
-nlhtree_py v0.7.14
-2017-09-11 01:30:55
+nlhtree_py
+2018-01-26 19:01:27
 # BEGIN CONTENT #
 nlhtree_py
  .cache
   v
    cache
-    lastfailed 46b16fbbdccc9d2ae5e7246ff99eb9a1f1ae4ea0
+    lastfailed bf21a9e8fbc5a3846fb05b4fa0859e0917b2202f
  .dvcz
-  builds 852c69567fa735fe2a3c0d9a902789e8019c4ac7
-  copyright 1e260b42471827b63297135ea88f5f793cced7ab
-  lastBuildList 9cd6511730e2735954d13920f04d2607a8cfb75e
-  license 5977a55c75bb4612004451a56b0b4c22d9d3311d
+  builds fc1e01c0297cd62ad89e1e75cdfa61fcc504e1c2
+  lastBuildList 575cb61b343a4f280cc458ce07284e6f11631b48
   projCfg 177f4bf363b27d3d57cbad30aba2fd85099b07cc
   projCfg.local 2ba7cb1ce7612606ea2a9524caef6ecbeb2b20df
-  version 8db8704cbd6f769314b52576d0b67c21c0592274
+  projConfig.toml 4a181c22058e64e53254e976d0edd2fd730203f7
  .gitignore c8129c7133b7a7755cefd3dfc62a9af7bc306aa0
- CHANGES dda54923a5279065b6cfe41d2d4c09dc66a50df7
+ CHANGES 5e07330491ceaef558823f239a55edd48179df98
  LICENSE-MIT.md b36c6fcddc299aa108eaa19eab76680adc8a7698
  MANIFEST.in ee87ecf6928c0c4c69376734eba9cf532ce748b1
  README.md 732bda78588f73f206d1dce073a5857cea96055c
- TODO 901b560f99c892fc55559701c6de98889e064057
+ TODO aa6df274743209d93780e0bd76f28eff5dfabf4b
  bkp2U 4bc5e565fcc140f4e28fa6f42cf4f7925e4d512d
  checkCoverage 60680f29981b45448aea18433b9ee5aba0aba927
  countem b4c9b790b72f996dbbc76a800e424aee3bc0a0ee
@@ -129,6 +127,31 @@ nlhtree_py
    e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 da39a3ee5e6b4b0d3255bfef95601890afd80709
    fb47958129f261f65c1655002ff5f9806bc969283ad772af5e8caaf214a9ed72 6cc7efca621b01e412830f6e613cceaa564d3f43
    in
+ example4
+  dataDir
+   data1 1dc6bc0d13769598dbc2cb719898bce7b903a97b
+   data2 cd441dd17f0c8573d4960a3fd35b92c3f79ae558
+   subDir1
+    data11 79ac6d6142128a729045f7fc671f5a0cc5e4f037
+    data12 da39a3ee5e6b4b0d3255bfef95601890afd80709
+   subDir2
+   subDir3
+    data31 e1ebb2c45d1bf1f9cb99308ac748cfab88b42d04
+   subDir4
+    subDir41
+     subDir411
+      data31 6de1d29eb3cc52c36ef6ced205afee91d90c376b
+  example.nlh 9cd05517d9b332f09e776c84657227a5f8bb28e0
+  node
+   skPriv.pem a257618ad255fdee61ed115d8a2974f2aea777fe
+  uDir
+   00df8c11fde7c8e90b09bff1b1ae288dd83da2b272bf211b8d40a0bf7986e109 e1ebb2c45d1bf1f9cb99308ac748cfab88b42d04
+   039e6f4892eed350302fea6a38ed549ca30978a99d2e13060a07a489c4e20173 cd441dd17f0c8573d4960a3fd35b92c3f79ae558
+   0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8 da39a3ee5e6b4b0d3255bfef95601890afd80709
+   1cf4912d2eb4b7dc34e1d61293c00bf33ad42c4cd6742249432ea042cf0a08d5 79ac6d6142128a729045f7fc671f5a0cc5e4f037
+   887aec1d8aebf76f56a3595cb33f25171e470584dbd7911d782da8744645889d 6de1d29eb3cc52c36ef6ced205afee91d90c376b
+   ebd4b136a9332be9f67ac4e92e1f6113b97407ed585c39257fccb26789bf0274 1dc6bc0d13769598dbc2cb719898bce7b903a97b
+   in
  ghpDoc
   css
    LICENSE.html5-boilerplate.md ded771b3245b190da0e81c76de5a80d41392c0a6
@@ -147,29 +170,29 @@ nlhtree_py
  installit fabcb17eafffd9bf015bdda55306ddb39968f43a
  pylintrc dd234fda24a547a9071f1e4608a3c1f3b7de9aa0
  requirements.txt f2cb8dd550fefced9af7c1beceffbb95fdd50fe7
- setup.py d780c25216032f2d9b6b3c16b996946aa8dab7e6
+ setup.py 42b9b473bafeb38c224aacf7f690c67365ab33c9
  src
   nlh_check_in_data_dir 068f9c2847405caf608a880028686c42f36ae0cf
   nlh_check_in_u_dir f0832bcb881fd24837c2ecf4f41c5fa2fee338bb
   nlh_populate_data_dir fcc1c7ba5c890a2d587bde85243b714f625ec4ba
-  nlh_save_to_u_dir a31bcc4d72959c1a9bec50398d8f57ff1c56f008
+  nlh_save_to_u_dir 86d794df337efb0333853350fe384c8ed5ee67f1
   nlhtree
-   __init__.py d7b0005dbaaabe100577a07421c4d4c4e310665a
-   base.py 36461e5089dfe4fdd58144fbd119ce7bf42fd7c2
+   __init__.py 3b5b9fb018b9768991787de54fb34261df31c07c
+   base.py 46109b85de202b09db94f8ddf72f2a982c93eded
  styleit bac7343a891cc8e4bcfd413173b2936fd29134d8
  test.all de45116ffe98121a95428fb4b422242d74669e9d
  test_requirements.txt e043a8947b82d3eb297242df0b2c9f74092592bc
  tests
-  test_cross_functions.py 59cc2c1d54907d533d6551b778e5fa03ad2e5483
-  test_drop_from_u.py 5186bbb4bfa24aa639b7dcfbbf4a1470a0e4bfed
-  test_iters.py f3d4c73daae76bc0949c01f40afedd3c0feb7365
-  test_nlh_base.py f46b6250ae9ba1e7b09e30cf801b40602f0948a0
-  test_nlh_leaf.py cae66ab5df26a896e2e7ff5d7056ebb77166cd82
-  test_nlh_tree.py 143d84c3f0d19ecb2daf03ff55fd34dc5b2633bd
+  test_cross_functions.py c3985967cddeaa30ca5349115c7e268b6c588dc6
+  test_drop_from_u.py 96ce99f0ab1211bc53e6a9eefe7646f884e5c969
+  test_iters.py 150d542530d357984f15a22e8fc9cee0c0adfda3
+  test_nlh_base.py fd516a1004a81516450b9697e496f069e1a81ce0
+  test_nlh_leaf.py 97bb1cbdee15e600306d25c3d2792baca2476294
+  test_nlh_tree.py a2e31ee16ccd174b993075797b604691728e06da
   test_nlh_tree2.py 7c90be100e06fb23c5c93912475192925343694a
-  test_nlh_tree3.py d292fe5d894fcb36d91b7f3c472cf4ff4407e1b3
-  test_walker.py ecb1a671dd602128c42fb8446cb19a78260e0977
+  test_nlh_tree3.py 4b938ff0c9defd10a3d329b0b712cd68f190d5b7
+  test_walker.py ad382c4bcb28fbe2562596d42ce34518b4a8251e
  tox.ini e287f12ae7dde279fb8ac1b07c8a2ff66e518bba
 # END CONTENT #
 
-gxNLF4Xi9TlnZ/dJqaIguPtkv7pRA0BXKxKi9l4Ux4GqQOHMuK3lkubSA/uJKpSSBnonaWorvqT2CqIqQuevk08JMN1bok5IeUYfF2L89UQ6egFuItAWk8zqyzmra78ScrUD6pGKwPjGwzAqIGDckcp9e8512df1lwEAmQY2FK5z9cODIJTF+mR/cyQbs08arVaOvyhUqkVuf49E1KwSUeQKK5oigawahcxPn6HeBjfpDo5PadeNFxgm4LhdTcLmRLzmya65281rogk0DTYefK6V8cbnfw3EJ3qxAy/8+hlqJVnAiI8U6RQ8xM3TnYdQSchjctXI5ks/yNbmJKlZrg==
+MvvQhEerrArumJbc4v14r5h33pVjl+ngu8Lzqw9vHxAZU5zg+VPuJs+xmJOeTX2Ef8qZ8AQEAKPiM8t7aNJ09TE+j1ieCvqj41bDJ6wYLqehxJXu24rCtaUQT0M5ubcQnCbeN2XvrzoiTDbsZLAtM4JQ7kz3guFKbBqUDjD+Nnstpwf0yaOqAgBus9AoIIxAxw0XJSmxjG7nHwXa6Mk+vDLbfKAtUIUt/yoe6UzHC58Ndv6flioCky2xRuXwbV2RljfN2opnjom7FeQeCj6kc4e/guZfgL/ggBrJagfkpqBrtxy4U7rH778quh1tOZSqoFo/VT80USBKhjQTXkzjWQ==

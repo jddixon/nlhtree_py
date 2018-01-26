@@ -34,13 +34,16 @@ class TestNLHLeaf(unittest.TestCase):
         """ Test constructor for specific hash. """
 
         check_hashtype(hashtype)
-        # pylint:disable=redefined-variable-type
         if hashtype == HashTypes.SHA1:
             sha = hashlib.sha1()
         elif hashtype == HashTypes.SHA2:
             sha = hashlib.sha256()
         elif hashtype == HashTypes.SHA3:
             sha = hashlib.sha3_256()
+        elif hashtype == HashTypes.BLAKE2B:
+            sha = hashlib.blake2b(digest_size=32)
+        else:
+            raise NotImplementedError
 
         name = self.rng.next_file_name(8)
         nnn = self.rng.some_bytes(8)

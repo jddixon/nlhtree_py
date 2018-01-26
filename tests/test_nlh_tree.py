@@ -38,7 +38,6 @@ class TestNLHTree(unittest.TestCase):
                 names_so_far.add(name)
                 break
         nnn = self.rng.some_bytes(8)        # 8 quasi-random bytes
-        # pylint:disable=redefined-variable-type
         if hashtype == HashTypes.SHA1:
             sha = hashlib.sha1()
         elif hashtype == HashTypes.SHA2:

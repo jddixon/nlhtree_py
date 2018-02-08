@@ -25,7 +25,7 @@ def main():
 
     parser = ArgumentParser(description=desc)
 
-    parser.add_argument('-b', '--listFile', default='list.nlh',
+    parser.add_argument('-b', '--list_file', default='list.nlh',
                         help='where to write listing (default = list.nlh)')
 
     parser.add_argument('-d', '--dataDir', default='.',
@@ -59,7 +59,7 @@ def main():
         # XXX this should be fixed to interpose # a random directory name
         #   that is not already in use
         # XXX This behavior needs to be clearly documented.
-        args.listFile = os.path.join('tmp', args.listFile)
+        args.list_file = os.path.join('tmp', args.list_file)
         if args.u_path[0] == '/':
             args.u_path = args.u_path[1:]
         args.u_path = os.path.join('tmp', args.u_path)
@@ -92,10 +92,12 @@ def main():
     if not args.justShow:
         if args.dontDoIt:
             print("would be saving %s to %s and writing a listing to %s" % (
-                args.dataDir, args.u_path, args.listFile))
+                args.dataDir, args.u_path, args.list_file))
         else:
-            NLHTree.save_to_u_dir(
-                args.dataDir, args.u_path, args.listFile, args.using_indir)
+            tree = NLHTree.create_from_file_system(args.dataDir, args.hashtype)
+            with open(args.list_file, 'w+') as file:
+                file.write(tree.__str__())
+            tree.save_to_u_dir(args.dataDir, args.u_path, args.using_indir)
 
 
 if __name__ == '__main__':

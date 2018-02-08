@@ -1,7 +1,11 @@
 py/nlhtree_py/TODO
 
+2018-01-26
+    * verify nlh_save_to_u_dir -h is correct
+    * make sure documentation for this is correct
+
 2018-01-25
-    * EXAMPLE4 tests need to be completed
+    * EXAMPLE4 tests need to be completed                               * DONE
 
 2017-12-04
     * need to implement cur_tree.setter

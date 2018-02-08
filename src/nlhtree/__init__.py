@@ -24,8 +24,8 @@ from xlattice import (
 __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree', ]
 
-__version__ = '0.7.17'
-__version_date__ = '2018-01-25'
+__version__ = '0.8.0'
+__version_date__ = '2018-01-26'
 
 
 class NLHError(RuntimeError):
@@ -660,7 +660,7 @@ class NLHTree(NLHNode):
 
         # the last part of data_dir is the name of the tree
         (path, _, name) = data_dir.rpartition('/')
-        if name != self.name:
+        if name != self._name:
             raise "name of directory (%s) does not match name of tree (%s)"
 
         # DEBUG

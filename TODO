@@ -1,8 +1,13 @@
 py/nlhtree_py/TODO
 
+2018-02-13
+    * use hash functions in xlcrypto, not hashlib directly
+
 2018-01-26
-    * verify nlh_save_to_u_dir -h is correct
-    * make sure documentation for this is correct
+    * verify nlh_save_to_u_dir -h is correct                            * DONE
+    * make sure documentation for this is correct                       * DONE
+    * need a utility which just prints a listing for a data dir         * DONE
+    * make sure all utilities respects -B                               * DONE
 
 2018-01-25
     * EXAMPLE4 tests need to be completed                               * DONE

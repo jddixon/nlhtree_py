@@ -1,6 +1,9 @@
 py/nlhtree_py/CHANGES
 
 
+v0.8.1
+    2018-02-13
+        * use xlu instead of xlattice.u                             SLOC 3054
 v0.8.0
     2018-01-26
         * fixed nlh_save_to_u_dir and example4                      SLOC 3059
@@ -246,7 +249,5 @@ v0.0.0
 
 
 
-<<<<<<< HEAD
-=======
 
->>>>>>> devel
+

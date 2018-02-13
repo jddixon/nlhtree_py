@@ -12,8 +12,8 @@ from xlattice import HashTypes, check_hashtype
 from xlcrypto import SP   # for get_spaces()
 
 # BECOMES SEPARATE PROJECT
-from xlattice.u import (file_sha1hex, file_sha2hex, file_sha3hex,
-                        file_blake2b_hex, UDir)
+from xlu import (file_sha1hex, file_sha2hex, file_sha3hex, file_blake2b_hex,
+                 UDir)
 
 from xlattice import (
     SHA1_BIN_LEN, SHA1_HEX_NONE,
@@ -24,8 +24,8 @@ from xlattice import (
 __all__ = ['__version__', '__version_date__',
            'NLHNode', 'NLHLeaf', 'NLHTree', ]
 
-__version__ = '0.8.0'
-__version_date__ = '2018-01-26'
+__version__ = '0.8.1'
+__version_date__ = '2018-02-13'
 
 
 class NLHError(RuntimeError):

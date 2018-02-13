@@ -56,31 +56,31 @@ are identical to those in the original form of the directory structure.
 
 As an example, this is the BuildList of a similar directory structure:
 
------BEGIN RSA PUBLIC KEY-----
-MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCzxJ0l1e898G/gBB9zBWUoQ7uw
-8C2Z6OTMJeXrNcTR2ZW7IIMevzYHeR26w+k54Roiv4Oec1uGGom4I7TSxF1QCmfG
-PDaWgvzE4mmwbPCiiYt6cl/y7paG00709ZnbNBjbaaS2Y3gWN+HwiBcENyNrX29i
-P3aQwEB1RNVW8r+SIQIDAQAB
------END RSA PUBLIC KEY-----
-sample build list
-2016-09-11 23:13:36
-# BEGIN CONTENT #
-dataDir
- data1 32056bdf38bed17ab7f2bfb37421fa5f4caade71
- data2 80b3b965bdfde312a4eeacc87c42f2a68ad1c7d8
- subDir1
-  data11 ca83a024cf4bb9c503f89c86b8819e012d64212d
-  data12 da39a3ee5e6b4b0d3255bfef95601890afd80709
- subDir2
- subDir3
-  data31 e5ea2d73b3801b38e2add428fa98219c48c69e93
- subDir4
-  subDir41
-   subDir411
-    data31 c4d1f005f36404cf15a00ce00d9a136a35409bc4
-# END CONTENT #
-
-SuJvEG5zYe5SAnYEHynZXvjIPdY/Fr792ltnwJyPxyg2QO+GCrSfepXnNeIUMJtG5c4zamqsijFZYuAuuhIHCxM1sLcEM5PVNmU/cJT9BLWI952bAqqcB+qaWRcDdSt/tQKZCvzeujZTCa9MsbygN2Wo+ToaIv6dkB21WufyRSs=
+    -----BEGIN RSA PUBLIC KEY-----
+    MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCzxJ0l1e898G/gBB9zBWUoQ7uw
+    8C2Z6OTMJeXrNcTR2ZW7IIMevzYHeR26w+k54Roiv4Oec1uGGom4I7TSxF1QCmfG
+    PDaWgvzE4mmwbPCiiYt6cl/y7paG00709ZnbNBjbaaS2Y3gWN+HwiBcENyNrX29i
+    P3aQwEB1RNVW8r+SIQIDAQAB
+    -----END RSA PUBLIC KEY-----
+    sample build list
+    2016-09-11 23:13:36
+    # BEGIN CONTENT #
+    dataDir
+     data1 32056bdf38bed17ab7f2bfb37421fa5f4caade71
+     data2 80b3b965bdfde312a4eeacc87c42f2a68ad1c7d8
+     subDir1
+      data11 ca83a024cf4bb9c503f89c86b8819e012d64212d
+      data12 da39a3ee5e6b4b0d3255bfef95601890afd80709
+     subDir2
+     subDir3
+      data31 e5ea2d73b3801b38e2add428fa98219c48c69e93
+     subDir4
+      subDir41
+       subDir411
+        data31 c4d1f005f36404cf15a00ce00d9a136a35409bc4
+    # END CONTENT #
+    
+    SuJvEG5zYe5SAnYEHynZXvjIPdY/Fr792ltnwJyPxyg2QO+GCrSfepXnNeIUMJtG5c4zamqsijFZYuAuuhIHCxM1sLcEM5PVNmU/cJT9BLWI952bAqqcB+qaWRcDdSt/tQKZCvzeujZTCa9MsbygN2Wo+ToaIv6dkB21WufyRSs=
 
 The RSA private key corresponding to the public part of the key at the
 top of the BuildList is used to generate the digital signature at the
@@ -93,7 +93,7 @@ tampered with.
 ### nlh_check_in_data_dir
 
     usage: nlh_check_in_data_dir [-h] [-b LIST_FILE] [-d DATA_DIR] [-j] [-T] [-V]
-                                 [-1] [-2] [-3] [-u U_PATH] [-v]
+                                 [-1] [-2] [-3] [-B] [-u U_PATH] [-v]
 
     list any files in the NLHTree not present in the directory,
 
@@ -109,13 +109,14 @@ tampered with.
       -1, --using_sha1      using the 160-bit SHA1 hash
       -2, --using_sha2      using the 256-bit SHA2 (SHA256) hash
       -3, --using_sha3      using the 256-bit SHA3 (Keccak-256) hash
+      -B, --using_blake2b   using blake2b with a 256-bit digest
       -u U_PATH, --u_path U_PATH
                             path to uDir
       -v, --verbose         be chatty
 
 ### nlh_check_in_u_dir
 
-    usage: nlh_check_in_u_dir [-h] [-b LIST_FILE] [-j] [-T] [-V] [-1] [-2] [-3]
+    usage: nlh_check_in_u_dir [-h] [-b LIST_FILE] [-j] [-T] [-V] [-1] [-2] [-3] [-B]
                               [-u U_PATH] [-v]
 
     given a project directory, write an NLHTree while backing the project up to U
@@ -130,6 +131,7 @@ tampered with.
       -1, --using_sha1      using the 160-bit SHA1 hash
       -2, --using_sha2      using the 256-bit SHA2 (SHA256) hash
       -3, --using_sha3      using the 256-bit SHA3 (Keccak-256) hash
+      -B, --using_blake2b   using blake2b with a 256-bit digest
       -u U_PATH, --u_path U_PATH
                             path to uDir
       -v, --verbose         be chatty
@@ -137,7 +139,7 @@ tampered with.
 ### nlh_populate_data_dir
 
     usage: nlh_populate_data_dir [-h] [-b LIST_FILE] [-j] [-p PATH] [-T] [-V] [-z]
-                                 [-1] [-2] [-3] [-u U_PATH] [-v]
+                                 [-1] [-2] [-3] [-B] [-u U_PATH] [-v]
 
     given an NLHTree and U, recreate the corresponding data directory
 
@@ -153,16 +155,23 @@ tampered with.
       -1, --using_sha1      using the 160-bit SHA1 hash
       -2, --using_sha2      using the 256-bit SHA2 (SHA256) hash
       -3, --using_sha3      using the 256-bit SHA3 (Keccak-256) hash
+      -B, --using_blake2b   using blake2b with a 256-bit digest
       -u U_PATH, --u_path U_PATH
                             path to uDir
       -v, --verbose         be chatty
 
 ### nlh_save_to_u_dir
 
-    usage: nlh_save_to_u_dir [-h] [-b LISTFILE] [-d DATADIR] [-j] [-T] [-V] [-z]
-                             [-1] [-2] [-3] [-u U_PATH] [-v]
+This is the most frequently used utility.  It scans a data directory, 
+builds an NLHTree using any of the four supported hashes, and then either
+writes the NLHTree out to a file or backs up the input data diretory to
+a content-keyed store (U) or both.
 
-    given a project directory, write an NLHTree while backing the project up to U
+    usage: nlh_save_to_u_dir [-h] [-b LISTFILE] [-d DATADIR] [-j] [-T] [-V] [-z]
+                             [-1] [-2] [-3] [-B] [-u U_PATH] [-v]
+
+    Given a project directory, write an NLHTree while backing the project up 
+    to content-keyed store U.
 
     optional arguments:
       -h, --help            show this help message and exit
@@ -177,6 +186,7 @@ tampered with.
       -1, --using_sha1      using the 160-bit SHA1 hash
       -2, --using_sha2      using the 256-bit SHA2 (SHA256) hash
       -3, --using_sha3      using the 256-bit SHA3 (Keccak-256) hash
+      -B, --using_blake2b   using blake2b with a 256-bit digest
       -u U_PATH, --u_path U_PATH
                             path to uDir
       -v, --verbose         be chatty

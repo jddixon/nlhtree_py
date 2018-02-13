@@ -13,7 +13,7 @@ import hashlib
 from rnglib import SimpleRNG
 from nlhtree import NLHTree, NLHLeaf
 from xlattice import HashTypes
-from xlattice.u import UDir, DirStruc
+from xlu import UDir, DirStruc
 
 if sys.version_info < (3, 6):
     # pylint: disable=unused-import

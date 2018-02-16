@@ -1,6 +1,9 @@
 py/nlhtree_py/CHANGES
 
 
+v0.8.2
+    2018-02-16
+        * mop up missed xlattice.u imports                          SLOC 3054
 v0.8.1
     2018-02-13
         * use xlu instead of xlattice.u                             SLOC 3054
@@ -213,6 +216,7 @@ v0.1.0
 v0.0.0
     2015-05-20
         * initial import                                            SLOC   47
+
 
 
 

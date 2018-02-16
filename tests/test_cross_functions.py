@@ -11,7 +11,7 @@ import unittest
 from rnglib import SimpleRNG
 from nlhtree import NLHTree
 from xlattice import HashTypes, check_hashtype
-from xlattice.util import make_ex_re
+from xlutil import make_ex_re
 
 
 class TestCrossFunctions(unittest.TestCase):

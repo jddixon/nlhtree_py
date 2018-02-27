@@ -79,7 +79,7 @@ As an example, this is the BuildList of a similar directory structure:
        subDir411
         data31 c4d1f005f36404cf15a00ce00d9a136a35409bc4
     # END CONTENT #
-    
+
     SuJvEG5zYe5SAnYEHynZXvjIPdY/Fr792ltnwJyPxyg2QO+GCrSfepXnNeIUMJtG5c4zamqsijFZYuAuuhIHCxM1sLcEM5PVNmU/cJT9BLWI952bAqqcB+qaWRcDdSt/tQKZCvzeujZTCa9MsbygN2Wo+ToaIv6dkB21WufyRSs=
 
 The RSA private key corresponding to the public part of the key at the
@@ -162,7 +162,7 @@ tampered with.
 
 ### nlh_save_to_u_dir
 
-This is the most frequently used utility.  It scans a data directory, 
+This is the most frequently used utility.  It scans a data directory,
 builds an NLHTree using any of the four supported hashes, and then either
 writes the NLHTree out to a file or backs up the input data diretory to
 a content-keyed store (U) or both.
@@ -170,7 +170,7 @@ a content-keyed store (U) or both.
     usage: nlh_save_to_u_dir [-h] [-b LISTFILE] [-d DATADIR] [-j] [-T] [-V] [-z]
                              [-1] [-2] [-3] [-B] [-u U_PATH] [-v]
 
-    Given a project directory, write an NLHTree while backing the project up 
+    Given a project directory, write an NLHTree while backing the project up
     to content-keyed store U.
 
     optional arguments:
